@@ -14,25 +14,39 @@ var lowmap = 50;
 
 var durationLeng = 100;
 
-// The midi notes of a scale
+var holdDownDelay = 0;
 
-// For automatically playing the song
 var index = 0;
 
 var osc;
 
-function setup() {
-  createCanvas(windowWidth, windowHeight);
+var buttonDown = false;
 
-  // A triangle oscillator
+var textToSpeech = new p5.Speech();
+
+var detailsPlaying = false;
+
+var rate = 1.5;
+
+var canvasHeight = 500;
+
+var controlPress = false;
+var plusPress = false;
+var minusPress = false;
+
+function setup() {
+
+  createCanvas(windowWidth - 20, canvasHeight);
+
   osc = new p5.TriOsc();
-  // Start silent
   osc.start();
   osc.amp(0);
 
-	  dataset = loadTable("assets/wholefoods.csv", "csv", "header");
+	dataset = loadTable("assets/wholefoods.csv", "csv", "header");
+  checkLoad();
 
-	  checkLoad();
+  textToSpeech.setRate(rate);
+  textToSpeech.onEnd = resetDetails;
 
 }
 
@@ -56,40 +70,127 @@ function draw() {
 
 	drawVis();
 
+  if(buttonDown) {
+    checkLeftRight();
+    playValue();
+    changeRate();
+    checkBegEnd();
+  }
+
+}
+
+function playValue() {
+
+  if(key == ' ') {
+
+    if(detailsPlaying == true) {
+      stopSpeech();
+      detailsPlaying = false;
+      console.log("true");
+      buttonDown = false;
+
+    } else if(detailsPlaying == false) {
+
+      textToSpeech.speak('hello world blah blah'); // say something 
+      console.log("false");
+      detailsPlaying = true;
+      buttonDown = false;
+    }
+
+  }
+
+}
+
+function resetDetails() {
+
+  detailsPlaying = false;
+}
+
+function stopSpeech() {
+
+  textToSpeech.stop();
+
+}
+
+function changeRate() {
+
+
+  if(key == '=' && rate <1.7){
+    rate+=0.2;
+    textToSpeech.setRate(rate);
+    buttonDown = false;
+  } 
+
+  if(key == '-' && rate > 0.3){
+    rate-=0.2;
+    textToSpeech.setRate(rate);
+    buttonDown = false;
+  }
 }
 
 
 
 function keyPressed() {
 
-
-  	if (keyCode == LEFT_ARROW  && loc > 0) {
-
-  		loc--;
-
-  		playNote(map(dataset.getRow(loc).arr[4], lowclose, highclose, lowmap, highmap), durationLeng);
-
-    	console.log(dataset.getRow(loc).arr[4]);
-
-	} else if (keyCode == RIGHT_ARROW && loc < datasize) {
-
-		loc++;
-
-		playNote(map(dataset.getRow(loc).arr[4], lowclose, highclose, lowmap, highmap), durationLeng);
-
-    	console.log(dataset.getRow(loc).arr[4]);
-
-	}
-
-
-	//setTimeout(flip(), 10000);
-
+  buttonDown = true;
 
 }
 
-function flip() {
+function keyReleased() {
 
-	keyPressed() = false;
+  buttonDown = false;
+
+}
+
+
+function checkLeftRight(){
+
+  if (keyCode == LEFT_ARROW  && loc > 0) {
+
+    stopSpeech();
+
+    loc--;
+
+    playNote(map(dataset.getRow(loc).arr[4], lowclose, highclose, lowmap, highmap), durationLeng);
+
+    //console.log(dataset.getRow(loc).arr[4]);
+
+  } else if (keyCode == RIGHT_ARROW && loc < datasize-1) {
+
+    stopSpeech();
+
+    loc++;
+
+    playNote(map(dataset.getRow(loc).arr[4], lowclose, highclose, lowmap, highmap), durationLeng);
+
+    //console.log(dataset.getRow(loc).arr[4]);
+
+  }
+}
+
+function checkBegEnd(){
+
+  if (key == '.') {
+
+    stopSpeech();
+
+    loc = datasize-1;
+
+    playNote(map(dataset.getRow(loc).arr[4], lowclose, highclose, lowmap, highmap), durationLeng);
+
+
+  } 
+
+  else if (key == ',') {
+
+    stopSpeech();
+
+    loc = 0;
+
+    playNote(map(dataset.getRow(loc).arr[4], lowclose, highclose, lowmap, highmap), durationLeng);
+
+
+  }
 }
 
 
@@ -98,16 +199,15 @@ function checkLoad()
 {
     if ( dataset.getRowCount() != 0 )
     {
-        datasize = dataset.getRowCount();
-        console.log(datasize);
-
-        close = dataset.getColumn("close");
-		close.sort();
-		console.log(close);
-		highclose = close[close.length-1];
-		console.log(highclose);
-		lowclose = close[0];
-		console.log(lowclose);
+      datasize = dataset.getRowCount();
+      //console.log(datasize);
+      close = dataset.getColumn("close");
+  		close.sort();
+  		//console.log(close);
+  		highclose = close[close.length-1];
+  		//console.log(highclose);
+  		lowclose = close[0];
+  		//console.log(lowclose);
     }
     else
     {
@@ -130,7 +230,7 @@ if(dataset.getRow(0) != undefined) {
     
   for(var i = 0; i < datasize; i++) {
   
-    if(i != 0 && i != datasize-1) {
+    if(i != 0 && i != datasize) {
       var xPos = map(i, 0, datasize, 0, width);
       var lastxPos = map(i-1, 0, datasize, 0, width);
       stroke(0);
@@ -155,7 +255,7 @@ if( dataset.getRow(loc) != undefined) {
 
   stroke(255, 0, 0);
   var curMapped = map (loc, 0, datasize, 0, width);
-  line( curMapped,0,curMapped ,height);
+  line( curMapped,0,curMapped ,canvasHeight);
   fill(255,0,0);
   ellipse(curMapped, dataset.getRow(loc).arr[4] * multiplier + shift, 5,5);
 
@@ -163,5 +263,5 @@ if( dataset.getRow(loc) != undefined) {
   
 }
 
-function windowResized () {resizeCanvas (windowWidth, windowHeight); }
+function windowResized () {resizeCanvas (windowWidth - 20, canvasHeight); }
 
