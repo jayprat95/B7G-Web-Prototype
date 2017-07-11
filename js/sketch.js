@@ -1,4 +1,3 @@
-
 var osc, fft;
 
 var loc = 0;
@@ -97,6 +96,8 @@ function getYears(numYears) {
 
 
 function setup() {
+
+
 
 
     //old code kept just in case 
