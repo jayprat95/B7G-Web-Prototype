@@ -34,29 +34,71 @@ var canvasHeight = 500;
 var controlPress = false;
 var plusPress = false;
 var minusPress = false;
-var quandlQ = "https://www.quandl.com/api/v3/datatables/WIKI/PRICES.json?api_key=iz12PA5nC-YLyESare9X&qopts.columns=open,high,low,close,volume"; 
+var quandlQ = "https://www.quandl.com/api/v3/datatables/WIKI/PRICES.json?api_key=iz12PA5nC-YLyESare9X&qopts.columns=open,high,low,close,volume,date";
 var ticker = "AAPL"
-var fromDate = new Date(new Date().setFullYear(new Date().getFullYear() + 1)); 
-var toDate = new Date(); 
-var addtl = "&ticker=" + ticker + "&date.gte="+ formatDate(fromDate) + "&date.lte=" + formatDate(fromDate); 
+var fromDate = new Date(new Date().setFullYear(new Date().getFullYear() - 1));
+var toDate = new Date();
+var addtl = "&ticker=" + ticker + "&date.gte=" + toJSONLocal(fromDate) + "&date.lte=" + toJSONLocal(toDate);
 
-// var query = quandlQ + addtl;
-var query = "https://www.quandl.com/api/v3/datatables/WIKI/PRICES.json?api_key=iz12PA5nC-YLyESare9X&qopts.columns=open,high,low,close,volume&ticker=AAPL&date.gte=2016-07-10&date.lte=2017-01-13"; 
+var query = quandlQ + addtl;
+// var query = "https://www.quandl.com/api/v3/datatables/WIKI/PRICES.json?api_key=iz12PA5nC-YLyESare9X&qopts.columns=open,high,low,close,volume&ticker=AAPL&date.gte=2016-07-10&date.lte=2017-01-13"; 
 
-function formatDate(d) {
-  var ret = '' + d.getUTCFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getUTCDate(); 
-  return ret; 
+
+var data = {};
+
+function toLocal(date) {
+    var local = new Date(date);
+    local.setMinutes(date.getMinutes() - date.getTimezoneOffset());
+    return local.toJSON();
 }
 
+function toJSONLocal(date) {
+    var local = new Date(date);
+    local.setMinutes(date.getMinutes() - date.getTimezoneOffset());
+    return local.toJSON().slice(0, 10);
+}
+
+
+function getOneYear() {
+    $.getJSON(query, function(json) {
+        console.log(json['datatable']['data']);
+        json['datatable']['data'].forEach(function(element) {
+            var dict = {};
+            dict['open'] = element[0];
+            dict['high'] = element[1];
+            dict['low'] = element[2];
+            dict['close'] = element[3];
+            dict['volume'] = element[4];
+            data[element[5]] = dict;
+        });
+    });
+}
+
+function getYears(numYears) {
+    var fromDate = new Date(new Date().setFullYear(new Date().getFullYear() - numYears));
+    var toDate = new Date();
+    var addtl = "&ticker=" + ticker + "&date.gte=" + toJSONLocal(fromDate) + "&date.lte=" + toJSONLocal(toDate);
+    var query = quandlQ + addtl;
+    $.getJSON(query, function(json) {
+        console.log(json['datatable']['data']);
+        json['datatable']['data'].forEach(function(element) {
+            var dict = {};
+            dict['open'] = element[0];
+            dict['high'] = element[1];
+            dict['low'] = element[2];
+            dict['close'] = element[3];
+            dict['volume'] = element[4];
+            data[element[5]] = dict;
+        });
+    });
+}
 
 
 
 function setup() {
 
-    
-    $.getJSON(query, function(json) {
-      console.log(json); 
-    }); 
+
+
     // $.getJSON('https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol=MSFT&outputsize=full&apikey=CXSGLM08JIC4DD17', function(jd) {
     //     Object.keys(jd['Time Series (Daily)']).forEach(function(elem) {
     //         var d1 = new Date(elem);
@@ -66,6 +108,8 @@ function setup() {
 
     //     console.log(jd['Time Series (Daily)']);
     // });
+
+    getOneYear();
 
     createCanvas(windowWidth - 20, canvasHeight);
 
