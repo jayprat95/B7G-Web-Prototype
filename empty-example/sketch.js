@@ -23,19 +23,7 @@ var osc;
 
 function setup() {
 
-  $.getJSON('https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol=MSFT&outputsize=full&apikey=CXSGLM08JIC4DD17', function(jd) {
 
-
-  Object.keys(jd['Time Series (Daily)']).forEach(function(elem) {
-    var d1 = new Date(elem); 
-    d1.setTime( d1.getTime() + d1.getTimezoneOffset()*60*1000 );
-    elem = d1; 
-  }); 
-
-  console.log(jd['Time Series (Daily)']); 
-
-
-});
 
   createCanvas(windowWidth, windowHeight);
 
