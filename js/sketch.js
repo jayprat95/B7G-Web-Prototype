@@ -1,3 +1,4 @@
+
 var osc, fft;
 
 var loc = 0;
@@ -98,7 +99,7 @@ function getYears(numYears) {
 function setup() {
 
 
-
+    //old code kept just in case 
     // $.getJSON('https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol=MSFT&outputsize=full&apikey=CXSGLM08JIC4DD17', function(jd) {
     //     Object.keys(jd['Time Series (Daily)']).forEach(function(elem) {
     //         var d1 = new Date(elem);
