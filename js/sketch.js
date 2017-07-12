@@ -63,30 +63,40 @@ $(document).ready(function () {
     $( "#onemonth" ).mousedown(function() {
       timerange = "onemonth";
       data = getData();
+      deselectAll();
+      $(this).addClass( 'buttonSelected' );
       //console.log("onemonth");
     });
 
     $( "#threemonths" ).mousedown(function() {
       timerange = "threemonths";
       data = getData();
+      deselectAll();
+      $(this).addClass( 'buttonSelected' );
       //console.log("threemonths");
     });
 
     $( "#sixmonths" ).mousedown(function() {
       timerange = "sixmonths";
       data = getData();
+      deselectAll();
+      $(this).addClass( 'buttonSelected' );
       //console.log("sixmonths");
     });
 
     $( "#oneyear" ).mousedown(function() {
       timerange = "oneyear";
       data = getData();
+      deselectAll();
+      $(this).addClass( 'buttonSelected' );
       //console.log("oneyear");
     });
 
     $( "#fiveyears" ).mousedown(function() {
       timerange = "fiveyears";
       data = getData();
+      deselectAll();
+      $(this).addClass( 'buttonSelected' );
       //console.log("fiveyears");
     });
 
@@ -99,6 +109,13 @@ $(document).ready(function () {
     
 });
 
+function deselectAll() {
+    $( "#onemonth" ).removeClass( 'buttonSelected' );
+    $( "#threemonths" ).removeClass( 'buttonSelected' );
+    $( "#sixmonths" ).removeClass( 'buttonSelected' );
+    $( "#oneyear" ).removeClass( 'buttonSelected' );
+    $( "#fiveyears" ).removeClass( 'buttonSelected' );
+}
 
 
 function toLocal(date) {
@@ -318,6 +335,7 @@ function changeTicker() {
         setTimeout(function() { playChangeSound(); }, 100);
     }
     $("#submit").blur();
+    $('#submit').attr('disabled',true);
     
 }
 
