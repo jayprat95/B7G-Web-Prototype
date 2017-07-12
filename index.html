@@ -8,7 +8,6 @@
     <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
     <link rel="stylesheet" type="text/css" href="style.css">
     <script src="js/p5.speech.js"></script>
-    <script src="js/form.js"></script>
     <script src="js/sketch.js"></script>
     <link rel="stylesheet" type="text/css" href="css/style.css">
     <style>
@@ -33,11 +32,11 @@
 
 <body>
     <div id="content">
-        <form class="form">
-            Ticker Name:
-            <input type="text" name="tickername" class="tickerfield">
-            <input type="submit" value="Submit" onclick="changeTicker()">
-        </form>
+       <!--  <form class="form"> -->
+            <h1 id="tickerName"></h1>
+            <input aria-label="New Ticker Input" type="text" name="tickername" class="tickerfield">
+            <input aria-label="New Ticker Submit" type="submit" value="Submit" onclick="changeTicker()">
+    <!--     </form> -->
     </div>
 </body>
 

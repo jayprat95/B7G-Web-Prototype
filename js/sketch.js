@@ -1,5 +1,7 @@
 var osc, fft;
 
+var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November","December"];
+
 var loc = 0;
 var datasize = 0;
 
@@ -14,15 +16,18 @@ var lowmap = 50;
 
 var durationLeng = 100;
 
+var toneDuration = 1000;
+
 var holdDownDelay = 0;
 
 var index = 0;
+
+var timerange = "oneyear";
 
 var osc;
 
 var buttonDown = false;
 
-//this isn't reading? 
 var textToSpeech = new p5.Speech();
 
 var detailsPlaying = false;
@@ -35,7 +40,7 @@ var controlPress = false;
 var plusPress = false;
 var minusPress = false;
 var quandlQ = "https://www.quandl.com/api/v3/datatables/WIKI/PRICES.json?api_key=iz12PA5nC-YLyESare9X&qopts.columns=open,high,low,close,volume,date";
-var ticker = "AAPL"
+var ticker = "AAPL";
 var fromDate = new Date(new Date().setFullYear(new Date().getFullYear() - 1));
 var toDate = new Date();
 var addtl = "&ticker=" + ticker + "&date.gte=" + toJSONLocal(fromDate) + "&date.lte=" + toJSONLocal(toDate);
@@ -44,7 +49,7 @@ var query = quandlQ + addtl;
 // var query = "https://www.quandl.com/api/v3/datatables/WIKI/PRICES.json?api_key=iz12PA5nC-YLyESare9X&qopts.columns=open,high,low,close,volume&ticker=AAPL&date.gte=2016-07-10&date.lte=2017-01-13"; 
 
 
-var data = {};
+var data = [];
 
 function toLocal(date) {
     var local = new Date(date);
@@ -58,39 +63,109 @@ function toJSONLocal(date) {
     return local.toJSON().slice(0, 10);
 }
 
+class Day {
 
-function getOneYear() {
-    $.getJSON(query, function(json) {
-        console.log(json['datatable']['data']);
-        json['datatable']['data'].forEach(function(element) {
-            var dict = {};
-            dict['open'] = element[0];
-            dict['high'] = element[1];
-            dict['low'] = element[2];
-            dict['close'] = element[3];
-            dict['volume'] = element[4];
-            data[element[5]] = dict;
-        });
-    });
+    constructor(date, open, high, low, close, volume, sethigh, setlow) {
+        this.date = date;
+        this.open = open;
+        this.low = low;
+        this.close = close;
+        this.volume = volume;
+        this.sethigh = sethigh;
+        this.setlow = setlow;
+    }
 }
 
+function getData() {
+
+    var dataset; 
+
+    if(timerange == "onemonth"){
+        dataset = getMonths(1);
+    } else if(timerange == "threemonths"){
+        dataset = getMonths(3);
+    } else if(timerange == "sixmonths"){
+        dataset = getMonths(6);
+    } else if(timerange == "oneyear"){
+        dataset = getYears(1);
+    } else if(timerange == "fiveyears"){
+        dataset = getYears(5);
+    }
+
+    return dataset;
+}
+
+//TO DO
+
+function getMonths(numMonths) {
+    var newdata = [];
+    // var fromDate = new Date(new Date().setFullYear(new Date().getFullYear() - numMonths));
+    // var toDate = new Date();
+    // var addtl = "&ticker=" + ticker + "&date.gte=" + toJSONLocal(fromDate) + "&date.lte=" + toJSONLocal(toDate);
+    // var query = quandlQ + addtl;
+
+    // $.getJSON(query, function(json) {
+    //     var sethigh = -1;
+    //     var setlow = Number.MAX_SAFE_INTEGER;
+
+    //     json['datatable']['data'].forEach(function(element) {
+    //         if (element[1] > sethigh) {
+    //             sethigh = element[1];
+    //         }
+
+    //         if (element[2] < setlow) {
+    //             setlow = element[2];
+    //         }
+    //     });
+
+    //     json['datatable']['data'].forEach(function(element) {
+
+    //         var d = new Date(element[5]);
+
+    //         var newDate = ""+months[d.getMonth()]+" "+d.getDate()+", "+d.getFullYear();
+
+    //         var today = new Day(newDate, element[0], element[1], element[2], element[3], element[4], sethigh, setlow);
+    //         newdata.push(today);
+
+    //     });
+    // });
+    return newdata;
+}
+
+
 function getYears(numYears) {
+    var newdata = [];
     var fromDate = new Date(new Date().setFullYear(new Date().getFullYear() - numYears));
     var toDate = new Date();
     var addtl = "&ticker=" + ticker + "&date.gte=" + toJSONLocal(fromDate) + "&date.lte=" + toJSONLocal(toDate);
     var query = quandlQ + addtl;
+
     $.getJSON(query, function(json) {
-        console.log(json['datatable']['data']);
+        var sethigh = -1;
+        var setlow = Number.MAX_SAFE_INTEGER;
+
         json['datatable']['data'].forEach(function(element) {
-            var dict = {};
-            dict['open'] = element[0];
-            dict['high'] = element[1];
-            dict['low'] = element[2];
-            dict['close'] = element[3];
-            dict['volume'] = element[4];
-            data[element[5]] = dict;
+            if (element[1] > sethigh) {
+                sethigh = element[1];
+            }
+
+            if (element[2] < setlow) {
+                setlow = element[2];
+            }
+        });
+
+        json['datatable']['data'].forEach(function(element) {
+
+            var d = new Date(element[5]);
+
+            var newDate = ""+months[d.getMonth()]+" "+d.getDate()+", "+d.getFullYear();
+
+            var today = new Day(newDate, element[0], element[1], element[2], element[3], element[4], sethigh, setlow);
+            newdata.push(today);
+
         });
     });
+    return newdata;
 }
 
 
@@ -98,7 +173,7 @@ function getYears(numYears) {
 function setup() {
 
 
-
+    $("#tickerName").text(ticker);
 
     //old code kept just in case 
     // $.getJSON('https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol=MSFT&outputsize=full&apikey=CXSGLM08JIC4DD17', function(jd) {
@@ -111,29 +186,26 @@ function setup() {
     //     console.log(jd['Time Series (Daily)']);
     // });
 
-    getOneYear();
+    data = getData();
 
-    createCanvas(windowWidth - 20, canvasHeight);
+    console.log(data);
+
+    createCanvas(windowWidth, canvasHeight);
 
     osc = new p5.TriOsc();
     osc.start();
     osc.amp(0);
-
-    dataset = loadTable("assets/wholefoods.csv", "csv", "header");
-    checkLoad();
 
     textToSpeech.setRate(rate);
     textToSpeech.onEnd = resetDetails;
 
 }
 
-// A function to play a note
+
 function playNote(note, duration) {
     osc.freq(midiToFreq(note));
-    // Fade it in
     osc.fade(0.5, 0.2);
 
-    // If we sest a duration, fade it out
     if (duration) {
         setTimeout(function() {
             osc.fade(0, 0.2);
@@ -154,6 +226,25 @@ function draw() {
         checkBegEnd();
     }
 
+    //TO DO
+
+    // $(".tickerfield").on('keyup', function (e) {
+    //     if (e.keyCode == 13) {
+    //         console.log($(".tickerfield").val());
+    //         ticker = $(".tickerfield").val();
+    //         $("#tickerName").text(ticker);
+    //         $(".tickerfield").val("");
+    //     }
+    // });
+
+}
+
+function changeTicker() {
+    console.log($(".tickerfield").val());
+    ticker = $(".tickerfield").val().toUpperCase();
+    $("#tickerName").text(ticker);
+    $(".tickerfield").val("");
+    data = getData();
 }
 
 function playValue() {
@@ -168,7 +259,30 @@ function playValue() {
 
         } else if (detailsPlaying == false) {
 
-            textToSpeech.speak('hello world blah blah'); // say something 
+            textToSpeech.speak(data[loc].date);
+
+            //TO DO
+            //WHY ISNT THIS WORKING???
+
+            if(data[loc].open > data[loc].close){
+                textToSpeech.speak("Downward Trend"); 
+                textToSpeech.speak("High: " + data[loc].high); 
+                textToSpeech.speak("Open: " + data[loc].open); 
+                textToSpeech.speak("Close: " + data[loc].close); 
+                textToSpeech.speak("Low: " + data[loc].low); 
+            } else if(data[loc].close > data[loc].open){
+                textToSpeech.speak("Upward Trend"); 
+                textToSpeech.speak("Low: " + data[loc].low);
+                textToSpeech.speak("Open: " + data[loc].open); 
+                textToSpeech.speak("Close: " + data[loc].close); 
+                textToSpeech.speak("High: " + data[loc].high); 
+            } else {
+                textToSpeech.speak("Neutral Trend");
+                textToSpeech.speak("High: " + data[loc].high); 
+                textToSpeech.speak("Open: " + data[loc].open); 
+                textToSpeech.speak("Low: " + data[loc].low);  
+            }
+            
             console.log("false");
             detailsPlaying = true;
             buttonDown = false;
@@ -181,6 +295,7 @@ function playValue() {
 function resetDetails() {
 
     detailsPlaying = false;
+
 }
 
 function stopSpeech() {
@@ -191,17 +306,18 @@ function stopSpeech() {
 
 function changeRate() {
 
-
-    if (key == '=' && rate < 1.7) {
+    if (key == '=' && rate < 1.9) {
         rate += 0.2;
         textToSpeech.setRate(rate);
         buttonDown = false;
+        console.log(rate);
     }
 
     if (key == '-' && rate > 0.3) {
         rate -= 0.2;
         textToSpeech.setRate(rate);
         buttonDown = false;
+        console.log(rate);
     }
 }
 
@@ -222,25 +338,22 @@ function keyReleased() {
 
 function checkLeftRight() {
 
-    if (keyCode == LEFT_ARROW && loc > 0) {
+    if (key == 'g' && loc > 0) {
 
         stopSpeech();
 
         loc--;
 
-        playNote(map(dataset.getRow(loc).arr[4], lowclose, highclose, lowmap, highmap), durationLeng);
+        playNote(map(data[loc].close, data[loc].setlow, data[loc].sethigh, lowmap, highmap), durationLeng);
 
-        //console.log(dataset.getRow(loc).arr[4]);
 
-    } else if (keyCode == RIGHT_ARROW && loc < datasize - 1) {
+    } else if (key == 'h' && loc < data.length - 1) {
 
         stopSpeech();
 
         loc++;
 
-        playNote(map(dataset.getRow(loc).arr[4], lowclose, highclose, lowmap, highmap), durationLeng);
-
-        //console.log(dataset.getRow(loc).arr[4]);
+        playNote(map(data[loc].close, data[loc].setlow, data[loc].sethigh, lowmap, highmap), durationLeng);
 
     }
 }
@@ -253,7 +366,7 @@ function checkBegEnd() {
 
         loc = datasize - 1;
 
-        playNote(map(dataset.getRow(loc).arr[4], lowclose, highclose, lowmap, highmap), durationLeng);
+        playNote(map(data[loc].close, data[loc].setlow, data[loc].sethigh, lowmap, highmap), durationLeng);
 
 
     } else if (key == ',') {
@@ -262,76 +375,81 @@ function checkBegEnd() {
 
         loc = 0;
 
-        playNote(map(dataset.getRow(loc).arr[4], lowclose, highclose, lowmap, highmap), durationLeng);
-
+        playNote(map(data[loc].close, data[loc].setlow, data[loc].sethigh, lowmap, highmap), durationLeng);
 
     }
 }
-
-
-
-function checkLoad() {
-    if (dataset.getRowCount() != 0) {
-        datasize = dataset.getRowCount();
-        //console.log(datasize);
-        close = dataset.getColumn("close");
-        close.sort();
-        //console.log(close);
-        highclose = close[close.length - 1];
-        //console.log(highclose);
-        lowclose = close[0];
-        //console.log(lowclose);
-    } else {
-        window.setTimeout("checkLoad();", 100);
-    }
-}
-
 
 
 function drawVis() {
 
 
-    if (dataset.getRow(0) != undefined) {
+    var padding = 100;
 
-        var multiplier = -25;
-        var shift = 1200;
-        var lastY = dataset.getRow(0).arr[4] * multiplier + shift;
-        var lastUB = dataset.getRow(0).arr[5] * multiplier + shift;
-        var lastLB = dataset.getRow(0).arr[6] * multiplier + shift;
+    var newLow = window.height - padding;
+    var newHigh = 0 + padding; 
 
-        for (var i = 0; i < datasize; i++) {
 
-            if (i != 0 && i != datasize) {
-                var xPos = map(i, 0, datasize, 0, width);
-                var lastxPos = map(i - 1, 0, datasize, 0, width);
+    if (data != undefined && data[0] != undefined) {
+
+        var lastY = map(data[0].close, data[0].setlow, data[0].sethigh, newLow, newHigh);
+        // var lastUB = dataset.getRow(0).arr[5] * multiplier + shift;
+        // var lastLB = dataset.getRow(0).arr[6] * multiplier + shift;
+
+        for (var i in data) {
+
+
+            if (i != 0 && i != data.length) {
+
+                var xPos = map(i, 0, data.length, 0, width);
+
+                var lastxPos = map(i - 1, 0, data.length, 0, width);
+
                 stroke(0);
-                line(lastxPos, lastY, xPos, dataset.getRow(i).arr[4] * multiplier + shift);
 
-                stroke(216, 11, 207);
-                line(lastxPos, lastUB, xPos, dataset.getRow(i).arr[5] * multiplier + shift);
+                line(lastxPos, lastY, xPos, map(data[i].close, data[i].setlow, data[i].sethigh, newLow, newHigh));
 
-                stroke(47, 229, 37);
-                line(lastxPos, lastLB, xPos, dataset.getRow(i).arr[6] * multiplier + shift);
+
+
+                // stroke(216, 11, 207);
+                // line(lastxPos, lastUB, xPos, dataset.getRow(i).arr[5] * multiplier + shift);
+
+                // stroke(47, 229, 37);
+                // line(lastxPos, lastLB, xPos, dataset.getRow(i).arr[6] * multiplier + shift);
 
             }
 
-            lastY = dataset.getRow(i).arr[4] * multiplier + shift;
-            lastUB = dataset.getRow(i).arr[5] * multiplier + shift;
-            lastLB = dataset.getRow(i).arr[6] * multiplier + shift;
+            lastY = map(data[i].close, data[0].setlow, data[0].sethigh, newLow, newHigh);
+            // lastUB = dataset.getRow(i).arr[5] * multiplier + shift;
+            // lastLB = dataset.getRow(i).arr[6] * multiplier + shift;
 
         }
-    }
-
-    if (dataset.getRow(loc) != undefined) {
 
         stroke(255, 0, 0);
-        var curMapped = map(loc, 0, datasize, 0, width);
+        var curMapped = map(loc, 0, data.length, 0, window.width);
         line(curMapped, 0, curMapped, canvasHeight);
         fill(255, 0, 0);
-        ellipse(curMapped, dataset.getRow(loc).arr[4] * multiplier + shift, 5, 5);
-
+        ellipse(curMapped, map(data[i].close, data[i].setlow, data[i].sethigh, newLow, newHigh));
     }
 
 }
 
-function windowResized() { resizeCanvas(windowWidth - 20, canvasHeight); }
+function windowResized() { 
+    resizeCanvas(windowWidth, canvasHeight); 
+}
+
+// function playOpen() {
+//     playNote(map(data[loc].open, data[loc].setlow, data[loc].sethigh, lowmap, highmap), toneDuration);
+// }
+
+// function playClose() {
+//     playNote(map(data[loc].close, data[loc].setlow, data[loc].sethigh, lowmap, highmap), toneDuration);
+// }
+
+// function playHigh() {
+//     playNote(map(data[loc].high, data[loc].setlow, data[loc].sethigh, lowmap, highmap), toneDuration);
+// }
+
+// function playLow() {
+//     playNote(map(data[loc].low, data[loc].setlow, data[loc].sethigh, lowmap, highmap), toneDuration);
+// }       
