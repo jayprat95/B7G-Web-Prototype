@@ -30,6 +30,15 @@ var buttonDown = false;
 
 var textToSpeech = new p5.Speech();
 
+var trendType = new p5.Speech();
+var openSound = new p5.Speech();
+var highSound = new p5.Speech();
+var lowSound = new p5.Speech();
+var closeSound = new p5.Speech();
+
+var stockNameSound = new p5.Speech();
+
+
 var detailsPlaying = false;
 
 var rate = 1.5;
@@ -95,47 +104,48 @@ function getData() {
     return dataset;
 }
 
-//TO DO
 
 function getMonths(numMonths) {
     var newdata = [];
-    // var fromDate = new Date(new Date().setFullYear(new Date().getFullYear() - numMonths));
-    // var toDate = new Date();
-    // var addtl = "&ticker=" + ticker + "&date.gte=" + toJSONLocal(fromDate) + "&date.lte=" + toJSONLocal(toDate);
-    // var query = quandlQ + addtl;
+    var fromDate = new Date();
+    fromDate.setMonth(new Date().getMonth() - numMonths);
+    var toDate = new Date();
+    var addtl = "&ticker=" + ticker + "&date.gte=" + toJSONLocal(fromDate) + "&date.lte=" + toJSONLocal(toDate);
+    var query = quandlQ + addtl;
 
-    // $.getJSON(query, function(json) {
-    //     var sethigh = -1;
-    //     var setlow = Number.MAX_SAFE_INTEGER;
+    $.getJSON(query, function(json) {
+        var sethigh = -1;
+        var setlow = Number.MAX_SAFE_INTEGER;
 
-    //     json['datatable']['data'].forEach(function(element) {
-    //         if (element[1] > sethigh) {
-    //             sethigh = element[1];
-    //         }
+        json['datatable']['data'].forEach(function(element) {
+            if (element[1] > sethigh) {
+                sethigh = element[1];
+            }
 
-    //         if (element[2] < setlow) {
-    //             setlow = element[2];
-    //         }
-    //     });
+            if (element[2] < setlow) {
+                setlow = element[2];
+            }
+        });
 
-    //     json['datatable']['data'].forEach(function(element) {
+        json['datatable']['data'].forEach(function(element) {
 
-    //         var d = new Date(element[5]);
+            var d = new Date(element[5]);
 
-    //         var newDate = ""+months[d.getMonth()]+" "+d.getDate()+", "+d.getFullYear();
+            var newDate = ""+months[d.getMonth()]+" "+d.getDate()+", "+d.getFullYear();
 
-    //         var today = new Day(newDate, element[0], element[1], element[2], element[3], element[4], sethigh, setlow);
-    //         newdata.push(today);
+            var today = new Day(newDate, element[0], element[1], element[2], element[3], element[4], sethigh, setlow);
+            newdata.push(today);
 
-    //     });
-    // });
+        });
+    });
     return newdata;
 }
 
 
 function getYears(numYears) {
     var newdata = [];
-    var fromDate = new Date(new Date().setFullYear(new Date().getFullYear() - numYears));
+    var fromDate = new Date();
+    fromDate.setFullYear(new Date().getFullYear() - numYears);
     var toDate = new Date();
     var addtl = "&ticker=" + ticker + "&date.gte=" + toJSONLocal(fromDate) + "&date.lte=" + toJSONLocal(toDate);
     var query = quandlQ + addtl;
@@ -173,7 +183,7 @@ function getYears(numYears) {
 function setup() {
 
 
-    $("#tickerName").text(ticker);
+    $("#tickerName").text("Company: " +ticker);
 
     //old code kept just in case 
     // $.getJSON('https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol=MSFT&outputsize=full&apikey=CXSGLM08JIC4DD17', function(jd) {
@@ -199,12 +209,21 @@ function setup() {
     textToSpeech.setRate(rate);
     textToSpeech.onEnd = resetDetails;
 
+    trendType.setRate(rate);
+    openSound.setRate(rate);
+    highSound.setRate(rate);
+    lowSound.setRate(rate);
+    closeSound.setRate(rate);
+
+    stockNameSound.setRate(rate);
+
 }
 
 
 function playNote(note, duration) {
     osc.freq(midiToFreq(note));
-    osc.fade(0.5, 0.2);
+    //osc.amp(1);
+    osc.fade(1, 0.1);
 
     if (duration) {
         setTimeout(function() {
@@ -242,9 +261,15 @@ function draw() {
 function changeTicker() {
     console.log($(".tickerfield").val());
     ticker = $(".tickerfield").val().toUpperCase();
-    $("#tickerName").text(ticker);
+    $("#tickerName").text("Company: " +ticker);
     $(".tickerfield").val("");
     data = getData();
+    if (data != undefined && data[0] != undefined) {
+        playChangeSound();
+    } else {
+        setTimeout(function() { playChangeSound(); }, 100);
+    }
+    
 }
 
 function playValue() {
@@ -254,7 +279,6 @@ function playValue() {
         if (detailsPlaying == true) {
             stopSpeech();
             detailsPlaying = false;
-            console.log("true");
             buttonDown = false;
 
         } else if (detailsPlaying == false) {
@@ -262,28 +286,30 @@ function playValue() {
             textToSpeech.speak(data[loc].date);
 
             //TO DO
-            //WHY ISNT THIS WORKING???
+            //HIGH IS UNDEFINED???
 
             if(data[loc].open > data[loc].close){
-                textToSpeech.speak("Downward Trend"); 
-                textToSpeech.speak("High: " + data[loc].high); 
-                textToSpeech.speak("Open: " + data[loc].open); 
-                textToSpeech.speak("Close: " + data[loc].close); 
-                textToSpeech.speak("Low: " + data[loc].low); 
+                console.log("Downward Trend");
+                trendType.speak("Downward Trend"); 
+                highSound.speak("High: " + data[loc].high); 
+                openSound.speak("Open: " + data[loc].open); 
+                closeSound.speak("Close: " + data[loc].close); 
+                lowSound.speak("Low: " + data[loc].low); 
             } else if(data[loc].close > data[loc].open){
-                textToSpeech.speak("Upward Trend"); 
-                textToSpeech.speak("Low: " + data[loc].low);
-                textToSpeech.speak("Open: " + data[loc].open); 
-                textToSpeech.speak("Close: " + data[loc].close); 
-                textToSpeech.speak("High: " + data[loc].high); 
+                console.log("Upward Trend");
+                trendType.speak("Upward Trend"); 
+                lowSound.speak("Low: " + data[loc].low);
+                openSound.speak("Open: " + data[loc].open); 
+                closeSound.speak("Close: " + data[loc].close); 
+                highSound.speak("High: " + data[loc].high); 
             } else {
-                textToSpeech.speak("Neutral Trend");
-                textToSpeech.speak("High: " + data[loc].high); 
-                textToSpeech.speak("Open: " + data[loc].open); 
-                textToSpeech.speak("Low: " + data[loc].low);  
+                console.log("Neutral Trend")
+                trendType.speak("Neutral Trend");
+                highSound.speak("High: " + data[loc].high); 
+                openSound.speak("Open: " + data[loc].open); 
+                lowSound.speak("Low: " + data[loc].low);  
             }
             
-            console.log("false");
             detailsPlaying = true;
             buttonDown = false;
         }
@@ -301,7 +327,12 @@ function resetDetails() {
 function stopSpeech() {
 
     textToSpeech.stop();
-
+    trendType.stop();
+    openSound.stop();
+    highSound.stop();
+    lowSound.stop();
+    closeSound.stop();
+    stockNameSound.stop();
 }
 
 function changeRate() {
@@ -309,6 +340,17 @@ function changeRate() {
     if (key == '=' && rate < 1.9) {
         rate += 0.2;
         textToSpeech.setRate(rate);
+
+        trendType.setRate(rate);
+        openSound.setRate(rate);
+        highSound.setRate(rate);
+        lowSound.setRate(rate);
+        closeSound.setRate(rate);
+
+        stockNameSound.setRate(rate);
+        currentPriceSound.setRate(rate);
+        dateRangeSound.setRate(rate);
+
         buttonDown = false;
         console.log(rate);
     }
@@ -316,11 +358,37 @@ function changeRate() {
     if (key == '-' && rate > 0.3) {
         rate -= 0.2;
         textToSpeech.setRate(rate);
+
+        trendType.setRate(rate);
+        openSound.setRate(rate);
+        highSound.setRate(rate);
+        lowSound.setRate(rate);
+        closeSound.setRate(rate);
+
+        stockNameSound.setRate(rate);
+
         buttonDown = false;
         console.log(rate);
     }
 }
 
+function playChangeSound() {
+    var rangeString;
+
+    if(timerange == "onemonth"){
+        rangeString = "One month prior to today";
+    } else if(timerange == "threemonths"){
+        rangeString = "Three months prior to today";
+    } else if(timerange == "sixmonths"){
+        rangeString = "Six months prior to today";
+    } else if(timerange == "oneyear"){
+        rangeString = "One year prior to today";
+    } else if(timerange == "fiveyears"){
+        rangeString = "Five years prior to today";
+    }
+        
+    stockNameSound.speak("Changed to" + ticker+". Current price: " + data[data.length-1].close+". Percent Change. Point Change. Date Range "+rangeString+""); 
+}
 
 
 function keyPressed() {
@@ -426,10 +494,10 @@ function drawVis() {
         }
 
         stroke(255, 0, 0);
-        var curMapped = map(loc, 0, data.length, 0, window.width);
+        var curMapped = map(loc, 0, data.length, 0, width);
         line(curMapped, 0, curMapped, canvasHeight);
         fill(255, 0, 0);
-        ellipse(curMapped, map(data[i].close, data[i].setlow, data[i].sethigh, newLow, newHigh));
+        ellipse(curMapped, map(data[loc].close, data[loc].setlow, data[loc].sethigh, newLow, newHigh), 5, 5);
     }
 
 }
