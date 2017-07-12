@@ -58,35 +58,48 @@ var query = quandlQ + addtl;
 
 var data = [];
 
-$( "#onemonth" ).click(function() {
-  changeRate("onemonth");
-  console.log("onemonth");
+$(document).ready(function () {
+
+    $( "#onemonth" ).mousedown(function() {
+      timerange = "onemonth";
+      data = getData();
+      //console.log("onemonth");
+    });
+
+    $( "#threemonths" ).mousedown(function() {
+      timerange = "threemonths";
+      data = getData();
+      //console.log("threemonths");
+    });
+
+    $( "#sixmonths" ).mousedown(function() {
+      timerange = "sixmonths";
+      data = getData();
+      //console.log("sixmonths");
+    });
+
+    $( "#oneyear" ).mousedown(function() {
+      timerange = "oneyear";
+      data = getData();
+      //console.log("oneyear");
+    });
+
+    $( "#fiveyears" ).mousedown(function() {
+      timerange = "fiveyears";
+      data = getData();
+      //console.log("fiveyears");
+    });
+
+    $('#input').keyup(function(){
+        if($(this).val().length !=0)
+            $('#submit').attr('disabled', false);            
+        else
+            $('#submit').attr('disabled',true);
+    })
+    
 });
 
-$( "#threemonths" ).click(function() {
-  changeRate("threemonths");
-  console.log("threemonths");
-});
 
-$( "#sixmonths" ).click(function() {
-  changeRate("sixmonths");
-  console.log("sixmonths");
-});
-
-$( "#oneyear" ).click(function() {
-  changeRate("oneyear");
-  console.log("oneyear");
-});
-
-$( "#fiveyears" ).click(function() {
-  changeRate("fiveyears");
-  console.log("fiveyears");
-});
-
-$("#submit").mousedown(function() {
-    changeTicker();
-    console.log("change ticker");
-});
 
 function toLocal(date) {
     var local = new Date(date);
@@ -223,7 +236,7 @@ function updateRate() {
 
 function setup() {
 
-
+    $('#submit').attr('disabled',true);
     $("#tickerName").text("Company: " +ticker);
 
     //old code kept just in case 
@@ -304,6 +317,7 @@ function changeTicker() {
     } else {
         setTimeout(function() { playChangeSound(); }, 100);
     }
+    $("#submit").blur();
     
 }
 
