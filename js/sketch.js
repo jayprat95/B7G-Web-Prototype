@@ -77,6 +77,7 @@ class Day {
     constructor(date, open, high, low, close, volume, sethigh, setlow) {
         this.date = date;
         this.open = open;
+        this.high = high;
         this.low = low;
         this.close = close;
         this.volume = volume;
