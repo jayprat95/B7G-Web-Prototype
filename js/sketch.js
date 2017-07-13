@@ -46,6 +46,15 @@ var newLoc = false;
 
 var dragging = false;
 
+var dataReceived = false;
+
+var lastMonth = [];
+var lastThreeMonths = []; 
+var lastSixMonths = [];
+var lastOneYear = [];
+var lastFiveYears = [];
+
+
 var controlPress = false;
 var plusPress = false;
 var minusPress = false;
@@ -72,7 +81,7 @@ $(document).ready(function () {
 
     $( "#onemonth" ).mousedown(function() {
       timerange = "onemonth";
-      data = getData();
+      data = setData();
       deselectAll();
       $(this).addClass( 'buttonSelected' );
       //console.log("onemonth");
@@ -80,7 +89,7 @@ $(document).ready(function () {
 
     $( "#threemonths" ).mousedown(function() {
       timerange = "threemonths";
-      data = getData();
+      data = setData();
       deselectAll();
       $(this).addClass( 'buttonSelected' );
       //console.log("threemonths");
@@ -88,7 +97,7 @@ $(document).ready(function () {
 
     $( "#sixmonths" ).mousedown(function() {
       timerange = "sixmonths";
-      data = getData();
+      data = setData();
       deselectAll();
       $(this).addClass( 'buttonSelected' );
       //console.log("sixmonths");
@@ -96,7 +105,7 @@ $(document).ready(function () {
 
     $( "#oneyear" ).mousedown(function() {
       timerange = "oneyear";
-      data = getData();
+      data = setData();
       deselectAll();
       $(this).addClass( 'buttonSelected' );
       //console.log("oneyear");
@@ -104,7 +113,7 @@ $(document).ready(function () {
 
     $( "#fiveyears" ).mousedown(function() {
       timerange = "fiveyears";
-      data = getData();
+      data = setData();
       deselectAll();
       $(this).addClass( 'buttonSelected' );
       //console.log("fiveyears");
@@ -160,35 +169,36 @@ class Day {
     }
 }
 
-function getData() {
+function setData() {
 
     var dataset; 
 
     if(timerange == "onemonth"){
-        dataset = getMonths(1);
+        dataset = lastMonth;
     } else if(timerange == "threemonths"){
-        dataset = getMonths(3);
+        dataset = lastThreeMonths;
     } else if(timerange == "sixmonths"){
-        dataset = getMonths(6);
+        dataset = lastSixMonths;
     } else if(timerange == "oneyear"){
-        dataset = getYears(1);
+        dataset = lastOneYear;
     } else if(timerange == "fiveyears"){
-        dataset = getYears(5);
+        dataset = lastFiveYears;
     }
     resetLoc();
     return dataset;
 }
 
-
-function getMonths(numMonths) {
-    var newdata = [];
+function getData() {
+    console.log("getData");
+    var lastFiveYears = [];
     var fromDate = new Date();
-    fromDate.setMonth(new Date().getMonth() - numMonths);
+    fromDate.setFullYear(new Date().getFullYear() - 5);
     var toDate = new Date();
     var addtl = "&ticker=" + ticker + "&date.gte=" + toJSONLocal(fromDate) + "&date.lte=" + toJSONLocal(toDate);
     var query = quandlQ + addtl;
 
     $.getJSON(query, function(json) {
+        console.log("json");
         var sethigh = -1;
         var setlow = Number.MAX_SAFE_INTEGER;
 
@@ -209,52 +219,127 @@ function getMonths(numMonths) {
 
             var newDate = ""+months[d.getMonth()]+" "+d.getDate()+", "+d.getFullYear();
 
-            var today = new Day(newDate, element[0], element[1], element[2], element[3], element[4], sethigh, setlow);
-            newdata.push(today);
+            var today = new Day(newDate, element[0], element[1], element[2], element[3], element[4], sethigh, setlow, d);
+            lastFiveYears.push(today);
 
         });
+
+        //newData is now what we want 
+        lastMonth = []; 
+        var lastMonthDate = new Date(); 
+        lastMonthDate.setMonth(new Date().getMonth() - 1);
+
+
+        lastThreeMonths = []; 
+        var lastThreeMonthsDate = new Date(); 
+        lastThreeMonthsDate.setMonth(new Date().getMonth() - 3);
+
+        lastSixMonths = []; 
+        var lastSixMonthsDate = new Date(); 
+        lastSixMonthsDate.setMonth(new Date().getMonth() - 6);
+
+        lastYear = []; 
+        var lastYearDate = new Date(); 
+        lastYearDate.setFullYear(new Date().getFullYear() - 1);
+
+        var i = lastFiveYears.length - 1; 
+        var end = i - 365; 
+        //worst case you have to traverse 365 points for one year 
+        for(i; i >= end; i--) {
+            var item = newdata[i]; 
+            if(item.date > lastMonthDate) {
+                lastMonth.push(item); 
+            }
+            if(item.date > lastThreeMonthsDate) {
+                lastThreeMonths.push(item); 
+            }
+            if(item.date > lastSixMonthsDate) {
+                lastSixMonths.push(item); 
+            }
+            if(item.date > lastYearDate) {
+                lastYear.push(item); 
+            }
+        }
+
+        dataReceived = true;
     });
-    return newdata;
 }
 
+// function getMonths(numMonths) {
+//     var newdata = [];
+//     var fromDate = new Date();
+//     fromDate.setMonth(new Date().getMonth() - numMonths);
+//     var toDate = new Date();
+//     var addtl = "&ticker=" + ticker + "&date.gte=" + toJSONLocal(fromDate) + "&date.lte=" + toJSONLocal(toDate);
+//     var query = quandlQ + addtl;
 
-function getYears(numYears) {
-    var newdata = [];
-    var fromDate = new Date();
-    fromDate.setFullYear(new Date().getFullYear() - numYears);
-    var toDate = new Date();
-    var addtl = "&ticker=" + ticker + "&date.gte=" + toJSONLocal(fromDate) + "&date.lte=" + toJSONLocal(toDate);
-    var query = quandlQ + addtl;
+//     $.getJSON(query, function(json) {
+//         var sethigh = -1;
+//         var setlow = Number.MAX_SAFE_INTEGER;
 
-    $.getJSON(query, function(json) {
-        var sethigh = -1;
-        var setlow = Number.MAX_SAFE_INTEGER;
+//         json['datatable']['data'].forEach(function(element) {
+//             if (element[1] > sethigh) {
+//                 sethigh = element[1];
+//             }
 
-        json['datatable']['data'].forEach(function(element) {
-            if (element[1] > sethigh) {
-                sethigh = element[1];
-            }
+//             if (element[2] < setlow) {
+//                 setlow = element[2];
+//             }
+//         });
 
-            if (element[2] < setlow) {
-                setlow = element[2];
-            }
-        });
+//         json['datatable']['data'].forEach(function(element) {
 
-        json['datatable']['data'].forEach(function(element) {
+//             var d = new Date(element[5]);
+//             d.setDate(d.getDate() + 1);
 
-            var d = new Date(element[5]);
-            d.setDate(d.getDate() + 1);
+//             var newDate = ""+months[d.getMonth()]+" "+d.getDate()+", "+d.getFullYear();
 
-            var newDate = ""+months[d.getMonth()]+" "+d.getDate()+", "+d.getFullYear();
+//             var today = new Day(newDate, element[0], element[1], element[2], element[3], element[4], sethigh, setlow);
+//             newdata.push(today);
 
-            var today = new Day(newDate, element[0], element[1], element[2], element[3], element[4], sethigh, setlow);
-            newdata.push(today);
+//         });
+//     });
+//     return newdata;
+// }
 
-        });
 
-    });
-    return newdata;
-}
+// function getYears(numYears) {
+//     var newdata = [];
+//     var fromDate = new Date();
+//     fromDate.setFullYear(new Date().getFullYear() - numYears);
+//     var toDate = new Date();
+//     var addtl = "&ticker=" + ticker + "&date.gte=" + toJSONLocal(fromDate) + "&date.lte=" + toJSONLocal(toDate);
+//     var query = quandlQ + addtl;
+
+//     $.getJSON(query, function(json) {
+//         var sethigh = -1;
+//         var setlow = Number.MAX_SAFE_INTEGER;
+
+//         json['datatable']['data'].forEach(function(element) {
+//             if (element[1] > sethigh) {
+//                 sethigh = element[1];
+//             }
+
+//             if (element[2] < setlow) {
+//                 setlow = element[2];
+//             }
+//         });
+
+//         json['datatable']['data'].forEach(function(element) {
+
+//             var d = new Date(element[5]);
+//             d.setDate(d.getDate() + 1);
+
+//             var newDate = ""+months[d.getMonth()]+" "+d.getDate()+", "+d.getFullYear();
+
+//             var today = new Day(newDate, element[0], element[1], element[2], element[3], element[4], sethigh, setlow);
+//             newdata.push(today);
+
+//         });
+
+//     });
+//     return newdata;
+// }
 
 function updateRate() {
     textToSpeech.setRate(rate);
@@ -275,7 +360,14 @@ function setup() {
     $("#tickerName").text("Company: " +ticker);
     $( "#oneyear" ).addClass( 'buttonSelected' );
 
-    data = getData();
+    dataReceived = false;
+
+    getData();
+    data = setData();
+
+    while(dataReceived == false) {
+
+    } 
 
     console.log(data);
 
@@ -362,7 +454,14 @@ function changeTicker() {
     var tickerCompany = row.getString("Description");
     $("#tickerName").text("Company: " +tickerCompany);
     $(".tickerfield").val("");
-    data = getData();
+    dataReceived = false;
+
+    getData();
+    data = setData();
+
+    while(dataReceived == false) {
+
+    } 
     if (data != undefined && data[0] != undefined) {
         playChangeSound();
         resetLoc();
