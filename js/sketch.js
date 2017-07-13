@@ -44,6 +44,8 @@ var prevLoc = -1;
 
 var newLoc = false;
 
+var dragging = false;
+
 var controlPress = false;
 var plusPress = false;
 var minusPress = false;
@@ -327,12 +329,30 @@ function draw() {
         checkMonth();
     }
 
-    $( 'canvas' ).click(function() {
+}
+
+function isInside(){
+    if(mouseX > 0 && mouseX < width && mouseY > 0 && mouseY < height){
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function mousePressed(){
+    if(isInside()) {
         console.log("hello");
         loc = Math.floor( map(mouseX, 0, width, 0, data.length-1) );
         playNote(map(data[loc].close, data[loc].setlow, data[loc].sethigh, lowmap, highmap), durationLeng);
-    });
+    }
+}
 
+function mouseDragged(){
+    if(isInside()) {
+        console.log("hello");
+        loc = Math.floor( map(mouseX, 0, width, 0, data.length-1) );
+        playNote(map(data[loc].close, data[loc].setlow, data[loc].sethigh, lowmap, highmap), durationLeng);
+    }
 }
 
 function changeTicker() {
