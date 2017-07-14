@@ -60,6 +60,7 @@ var plusPress = false;
 var minusPress = false;
 var quandlQ = "https://www.quandl.com/api/v3/datatables/WIKI/PRICES.json?api_key=iz12PA5nC-YLyESare9X&qopts.columns=open,high,low,close,volume,date";
 var ticker = "AAPL";
+var tickerCompany = "Apple";
 var fromDate = new Date(new Date().setFullYear(new Date().getFullYear() - 1));
 var toDate = new Date();
 var addtl = "&ticker=" + ticker + "&date.gte=" + toJSONLocal(fromDate) + "&date.lte=" + toJSONLocal(toDate);
@@ -71,7 +72,7 @@ var query = quandlQ + addtl;
 var data = [];
 
 function resetLoc() {
-    // console.log(loc, data.length);
+    console.log(loc, data.length);
     if(loc > data.length-1) {
         loc = 0;
     }
@@ -291,7 +292,7 @@ function preload() {
 function setup() {
 
     $('#submit').attr('disabled',true);
-    $("#tickerName").text("Company: " +ticker);
+    $("#tickerName").text("Company: " +tickerCompany);
     $( "#oneyear" ).addClass( 'buttonSelected' );
 
     createCanvas(windowWidth, canvasHeight);
@@ -374,23 +375,30 @@ function changeTicker() {
     console.log($(".tickerfield").val());
     ticker = $(".tickerfield").val().toUpperCase();
     var row = table.findRow(ticker, "Symbol");
-    var tickerCompany = row.getString("Description");
-    $("#tickerName").text("Company: " +tickerCompany);
-    $(".tickerfield").val("");
-    dataReceived = false;
+    try {
+        tickerCompany = row.getString("Description");
 
-    getData();
-    data = setData();
-
-    if (data != undefined && data[0] != undefined) {
-        playChangeSound();
-        resetLoc();
-        console.log("changesound!");
-    } else {
-        setTimeout(function() { playChangeSound(); }, 100);
+        $("#tickerName").text("Company: " +tickerCompany);
+        $(".tickerfield").val("");
+        dataReceived = false;
+    
+        getData();
+        data = setData();
+    
+        if (data != undefined && data[0] != undefined) {
+            playChangeSound();
+            resetLoc();
+            console.log("changesound!");
+        } else {
+            setTimeout(function() { playChangeSound(); }, 100);
+        }
+        $("#submit").blur();
+        $('#submit').attr('disabled',true);
     }
-    $("#submit").blur();
-    $('#submit').attr('disabled',true);
+
+    catch(err){
+        textToSpeech.speak(ticker + "is not a valid ticker name");
+    }
     
 }
 
@@ -491,7 +499,7 @@ function playChangeSound() {
     var pt = data[data.length-1].close - data[data.length-1].open;
     var pcnt = pt/data[data.length-1].open *100;
     
-    textToSpeech.speak("Changed to" + ticker+". Current price: " + data[data.length-1].close+". Percent Change. "+  pcnt +" Point Change. "+  pt +" Date Range "+rangeString+""); 
+    textToSpeech.speak("Changed to" + tickerCompany+". Current price: " + data[data.length-1].close+". Percent Change. "+  pcnt +" Point Change. "+  pt +" Date Range "+rangeString+""); 
 }
 
 
