@@ -171,6 +171,8 @@ class Day {
 
 function setData() {
 
+    console.log(lastOneYear, lastFiveYears);
+
     var dataset; 
 
     if(timerange == "onemonth"){
@@ -210,7 +212,7 @@ function getData() {
 
 function afterData( thedata ) {
 
-    var lastFiveYears = [];
+    lastFiveYears = [];
     console.log("after load");
     var sethigh = -1;
     var setlow = Number.MAX_SAFE_INTEGER;
@@ -248,7 +250,7 @@ function afterData( thedata ) {
     var lastSixMonthsDate = new Date(); 
     lastSixMonthsDate.setMonth(new Date().getMonth() - 6);
 
-    lastYear = []; 
+    lastOneYear = []; 
     var lastYearDate = new Date(); 
     lastYearDate.setFullYear(new Date().getFullYear() - 1);
 
@@ -270,7 +272,7 @@ function afterData( thedata ) {
             lastSixMonths.push(item); 
         }
         if(thedate > lastYearDate) {
-            lastYear.push(item); 
+            lastOneYear.push(item); 
         }
     }
 
