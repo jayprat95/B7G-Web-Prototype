@@ -324,7 +324,6 @@ function playNote(note, duration) {
 function draw() {
 
 
-    //what is going on here? 
     prevLoc = loc;
 
     if (prevLoc != loc) {
