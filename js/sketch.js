@@ -1,5 +1,7 @@
 var osc, fft;
 
+var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
 var loc = 0;
 var datasize = 0;
 
@@ -14,15 +16,22 @@ var lowmap = 50;
 
 var durationLeng = 100;
 
+var toneDuration = 1000;
+
 var holdDownDelay = 0;
 
 var index = 0;
+
+var table;
+
+var timerange = "oneyear";
 
 var osc;
 
 var buttonDown = false;
 
-//this isn't reading? 
+var monthPlaying = false;
+
 var textToSpeech = new p5.Speech();
 
 var detailsPlaying = false;
@@ -31,21 +40,99 @@ var rate = 1.5;
 
 var canvasHeight = 500;
 
+var prevLoc = -1;
+
+var newLoc = false;
+
+var dragging = false;
+
+var dataReceived = false;
+
+var lastMonth = [];
+var lastThreeMonths = [];
+var lastSixMonths = [];
+var lastOneYear = [];
+var lastFiveYears = [];
+
+
 var controlPress = false;
 var plusPress = false;
 var minusPress = false;
+
+//TODO: move API key out of repository 
 var quandlQ = "https://www.quandl.com/api/v3/datatables/WIKI/PRICES.json?api_key=iz12PA5nC-YLyESare9X&qopts.columns=open,high,low,close,volume,date";
-var ticker = "AAPL"
+var ticker = "AAPL";
+var tickerCompany = "Apple";
 var fromDate = new Date(new Date().setFullYear(new Date().getFullYear() - 1));
 var toDate = new Date();
 var addtl = "&ticker=" + ticker + "&date.gte=" + toJSONLocal(fromDate) + "&date.lte=" + toJSONLocal(toDate);
 
 var query = quandlQ + addtl;
-// var query = "https://www.quandl.com/api/v3/datatables/WIKI/PRICES.json?api_key=iz12PA5nC-YLyESare9X&qopts.columns=open,high,low,close,volume&ticker=AAPL&date.gte=2016-07-10&date.lte=2017-01-13"; 
 
 
-var data = {};
 
+var data = [];
+
+
+//functions that are required to run pre-startup 
+$(document).ready(function() {
+
+    $("#onemonth").mousedown(function() {
+        timerange = "onemonth";
+        data = setData();
+        deselectAll();
+        $(this).addClass('buttonSelected');
+    });
+
+    $("#threemonths").mousedown(function() {
+        timerange = "threemonths";
+        data = setData();
+        deselectAll();
+        $(this).addClass('buttonSelected');
+    });
+
+    $("#sixmonths").mousedown(function() {
+        timerange = "sixmonths";
+        data = setData();
+        deselectAll();
+        $(this).addClass('buttonSelected');
+    });
+
+    $("#oneyear").mousedown(function() {
+        timerange = "oneyear";
+        data = setData();
+        deselectAll();
+        $(this).addClass('buttonSelected');
+    });
+
+    $("#fiveyears").mousedown(function() {
+        timerange = "fiveyears";
+        data = setData();
+        deselectAll();
+        $(this).addClass('buttonSelected');
+    });
+
+    $('#input').keyup(function() {
+
+        if ($(this).val().length != 0) {
+            $('#submit').attr('disabled', false);
+        } else {
+            $('#submit').attr('disabled', true);
+        }
+
+    })
+});
+
+function deselectAll() {
+    $("#onemonth").removeClass('buttonSelected');
+    $("#threemonths").removeClass('buttonSelected');
+    $("#sixmonths").removeClass('buttonSelected');
+    $("#oneyear").removeClass('buttonSelected');
+    $("#fiveyears").removeClass('buttonSelected');
+}
+
+
+//functions to get date string from application 
 function toLocal(date) {
     var local = new Date(date);
     local.setMinutes(date.getMinutes() - date.getTimezoneOffset());
@@ -58,82 +145,175 @@ function toJSONLocal(date) {
     return local.toJSON().slice(0, 10);
 }
 
+//day class to get ohlc 
+class Day {
 
-function getOneYear() {
-    $.getJSON(query, function(json) {
-        console.log(json['datatable']['data']);
-        json['datatable']['data'].forEach(function(element) {
-            var dict = {};
-            dict['open'] = element[0];
-            dict['high'] = element[1];
-            dict['low'] = element[2];
-            dict['close'] = element[3];
-            dict['volume'] = element[4];
-            data[element[5]] = dict;
-        });
-    });
+    constructor(date, open, high, low, close, volume, sethigh, setlow) {
+        this.date = date;
+        this.open = open;
+        this.high = high;
+        this.low = low;
+        this.close = close;
+        this.volume = volume;
+        this.sethigh = sethigh;
+        this.setlow = setlow;
+    }
 }
 
-function getYears(numYears) {
-    var fromDate = new Date(new Date().setFullYear(new Date().getFullYear() - numYears));
+
+
+function setData() {
+
+
+    var dataset;
+    //TODO: add notification so users know that the location changed
+    if (timerange == "onemonth") {
+        dataset = lastMonth;
+        if (loc > lastMonth.length) {
+            loc = 0;
+        }
+    } else if (timerange == "threemonths") {
+        dataset = lastThreeMonths;
+        if (loc > lastThreeMonths.length) {
+            loc = 0;
+        }
+    } else if (timerange == "sixmonths") {
+        dataset = lastSixMonths;
+        if (loc > lastSixMonths.length) {
+            loc = 0;
+        }
+    } else if (timerange == "oneyear") {
+        dataset = lastOneYear;
+        if (loc > lastOneYear.length) {
+            loc = 0;
+        }
+    } else if (timerange == "fiveyears") {
+        dataset = lastFiveYears;
+        if (loc > lastFiveYears.length) {
+            loc = 0;
+        }
+    }
+    return dataset;
+}
+
+
+function getData() {
+    var fromDate = new Date();
+    fromDate.setFullYear(new Date().getFullYear() - 5);
     var toDate = new Date();
     var addtl = "&ticker=" + ticker + "&date.gte=" + toJSONLocal(fromDate) + "&date.lte=" + toJSONLocal(toDate);
     var query = quandlQ + addtl;
-    $.getJSON(query, function(json) {
-        console.log(json['datatable']['data']);
-        json['datatable']['data'].forEach(function(element) {
-            var dict = {};
-            dict['open'] = element[0];
-            dict['high'] = element[1];
-            dict['low'] = element[2];
-            dict['close'] = element[3];
-            dict['volume'] = element[4];
-            data[element[5]] = dict;
-        });
-    });
+
+    $.getJSON(query).done(function(d) {
+        afterData(d);
+    })
 }
 
+function afterData(thedata) {
 
+    lastFiveYears = [];
+    var sethigh = -1;
+    var setlow = Number.MAX_SAFE_INTEGER;
+
+
+
+    //get low and get high? 
+    thedata['datatable']['data'].forEach(function(element) {
+
+        if (element[1] > sethigh) {
+            sethigh = element[1];
+        }
+        if (element[2] < setlow) {
+            setlow = element[2];
+        }
+    });
+
+
+    thedata['datatable']['data'].forEach(function(element) {
+        var d = new Date(element[5]);
+        d.setDate(d.getDate() + 1);
+        var newDate = "" + months[d.getMonth()] + " " + d.getDate() + ", " + d.getFullYear();
+        var today = new Day(newDate, element[0], element[1], element[2], element[3], element[4], sethigh, setlow, d);
+        lastFiveYears.push(today);
+    });
+
+
+    lastMonth = [];
+    var lastMonthDate = new Date();
+    lastMonthDate.setMonth(new Date().getMonth() - 1);
+
+    lastThreeMonths = [];
+    var lastThreeMonthsDate = new Date();
+    lastThreeMonthsDate.setMonth(new Date().getMonth() - 3);
+
+    lastSixMonths = [];
+    var lastSixMonthsDate = new Date();
+    lastSixMonthsDate.setMonth(new Date().getMonth() - 6);
+
+    lastOneYear = [];
+    var lastYearDate = new Date();
+    lastYearDate.setFullYear(new Date().getFullYear() - 1);
+
+    var i = lastFiveYears.length - 1;
+    var end = i - 365;
+
+    for (i; i >= end; i--) {
+
+        var item = lastFiveYears[i];
+        var thedate = new Date(item.date);
+
+
+        if (thedate > lastMonthDate) {
+            lastMonth.push(item);
+        }
+        if (thedate > lastThreeMonthsDate) {
+            lastThreeMonths.push(item);
+        }
+        if (thedate > lastSixMonthsDate) {
+            lastSixMonths.push(item);
+        }
+        if (thedate > lastYearDate) {
+            lastOneYear.push(item);
+        }
+    }
+
+    data = setData();
+}
+
+function updateRate() {
+    textToSpeech.setRate(rate);
+}
+
+function preload() {
+    table = loadTable("assets/tickers.csv", "csv", "header");
+    getData();
+}
 
 function setup() {
 
+    $('#submit').attr('disabled', true);
+    $("#tickerName").text("Company: " + tickerCompany);
+    $("#oneyear").addClass('buttonSelected');
 
-
-
-    //old code kept just in case 
-    // $.getJSON('https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol=MSFT&outputsize=full&apikey=CXSGLM08JIC4DD17', function(jd) {
-    //     Object.keys(jd['Time Series (Daily)']).forEach(function(elem) {
-    //         var d1 = new Date(elem);
-    //         d1.setTime(d1.getTime() + d1.getTimezoneOffset() * 60 * 1000);
-    //         elem = d1;
-    //     });
-
-    //     console.log(jd['Time Series (Daily)']);
-    // });
-
-    getOneYear();
-
-    createCanvas(windowWidth - 20, canvasHeight);
+    createCanvas(windowWidth, canvasHeight);
 
     osc = new p5.TriOsc();
     osc.start();
     osc.amp(0);
 
-    dataset = loadTable("assets/wholefoods.csv", "csv", "header");
-    checkLoad();
-
     textToSpeech.setRate(rate);
     textToSpeech.onEnd = resetDetails;
 
+    updateRate();
+
 }
 
-// A function to play a note
+
 function playNote(note, duration) {
     osc.freq(midiToFreq(note));
-    // Fade it in
-    osc.fade(0.5, 0.2);
+    //osc.amp(1);
+    osc.fade(1, 0.1);
 
-    // If we sest a duration, fade it out
     if (duration) {
         setTimeout(function() {
             osc.fade(0, 0.2);
@@ -142,6 +322,13 @@ function playNote(note, duration) {
 }
 
 function draw() {
+
+
+    prevLoc = loc;
+
+    if (prevLoc != loc) {
+        newLoc = true;
+    }
 
     background(255);
 
@@ -152,6 +339,64 @@ function draw() {
         playValue();
         changeRate();
         checkBegEnd();
+        checkMonth();
+    }
+
+}
+
+function isInside() {
+    if (mouseX > 0 && mouseX < width && mouseY > 0 && mouseY < height) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function mousePressed() {
+    if (isInside()) {
+        loc = Math.floor(map(mouseX, 0, width, 0, data.length - 1));
+        playNote(map(data[loc].close, data[loc].setlow, data[loc].sethigh, lowmap, highmap), durationLeng);
+    }
+}
+
+function mouseDragged() {
+    if (isInside()) {
+        loc = Math.floor(map(mouseX, 0, width, 0, data.length - 1));
+        playNote(map(data[loc].close, data[loc].setlow, data[loc].sethigh, lowmap, highmap), durationLeng);
+    }
+}
+
+function changeTicker() {
+    ticker = $(".tickerfield").val().toUpperCase();
+    var row = table.findRow(ticker, "Symbol");
+    try {
+        tickerCompany = row.getString("Description");
+
+        $("#tickerName").text("Company: " + tickerCompany);
+        $(".tickerfield").val("");
+        dataReceived = false;
+
+        getData();
+        data = setData();
+
+        if (data != undefined && data[0] != undefined) {
+            playChangeSound();
+            resetLoc();
+            console.log("changesound!");
+        } else {
+            setTimeout(function() { playChangeSound(); }, 100);
+        }
+        $("#submit").blur();
+        $('#submit').attr('disabled', true);
+    } catch (err) {
+        textToSpeech.speak(ticker + "is not a valid ticker name");
+    }
+
+    if (data != undefined && data[0] != undefined) {
+        playChangeSound();
+        resetLoc();
+    } else {
+        setTimeout(function() { playChangeSound(); }, 100);
     }
 
 }
@@ -163,15 +408,37 @@ function playValue() {
         if (detailsPlaying == true) {
             stopSpeech();
             detailsPlaying = false;
-            console.log("true");
             buttonDown = false;
 
         } else if (detailsPlaying == false) {
 
-            textToSpeech.speak('hello world blah blah'); // say something 
-            console.log("false");
             detailsPlaying = true;
             buttonDown = false;
+
+            textToSpeech.speak(data[loc].date);
+
+            var high = " High: " + data[loc].high;
+            var open = " Open: " + data[loc].open;
+            var close = " Close: " + data[loc].close;
+            var low = " Low: " + data[loc].low;
+
+
+            if (data[loc].open > data[loc].close) {
+
+                textToSpeech.speak("Downward Trend, " + high + open + close + low);
+
+            } else if (data[loc].close > data[loc].open) {
+
+                textToSpeech.speak("Upward Trend, " + low + open + close + high);
+
+            } else {
+
+                textToSpeech.speak("Neutral Trend " + high + open + low);
+                textToSpeech.onEnd(function() { detailsPlaying = false; });
+
+            }
+
+
         }
 
     }
@@ -181,157 +448,200 @@ function playValue() {
 function resetDetails() {
 
     detailsPlaying = false;
+
 }
 
 function stopSpeech() {
 
     textToSpeech.stop();
-
 }
 
 function changeRate() {
 
-
-    if (key == '=' && rate < 1.7) {
+    if (key == '=' && rate < 1.9) {
         rate += 0.2;
-        textToSpeech.setRate(rate);
+
+        updateRate();
+
         buttonDown = false;
     }
 
     if (key == '-' && rate > 0.3) {
         rate -= 0.2;
-        textToSpeech.setRate(rate);
+
+        updateRate();
+
         buttonDown = false;
     }
 }
 
+function playChangeSound() {
+    var rangeString;
+
+    if (timerange == "onemonth") {
+        rangeString = "One month prior to today";
+    } else if (timerange == "threemonths") {
+        rangeString = "Three months prior to today";
+    } else if (timerange == "sixmonths") {
+        rangeString = "Six months prior to today";
+    } else if (timerange == "oneyear") {
+        rangeString = "One year prior to today";
+    } else if (timerange == "fiveyears") {
+        rangeString = "Five years prior to today";
+    }
+
+    var pt = data[data.length - 1].close - data[data.length - 1].open;
+    var pcnt = pt / data[data.length - 1].open * 100;
+
+    textToSpeech.speak("Changed to" + tickerCompany + ". Current price: " + data[data.length - 1].close + ". Percent Change. " + pcnt + " Point Change. " + pt + " Date Range " + rangeString + "");
+}
 
 
 function keyPressed() {
 
     buttonDown = true;
-
 }
 
 function keyReleased() {
 
     buttonDown = false;
-
 }
 
 
 function checkLeftRight() {
 
-    if (keyCode == LEFT_ARROW && loc > 0) {
+    if (key == 'g' && loc > 0) {
 
-        stopSpeech();
+        if (detailsPlaying) {
+            stopSpeech();
+        }
 
         loc--;
 
-        playNote(map(dataset.getRow(loc).arr[4], lowclose, highclose, lowmap, highmap), durationLeng);
+        playNote(map(data[loc].close, data[loc].setlow, data[loc].sethigh, lowmap, highmap), durationLeng);
 
-        //console.log(dataset.getRow(loc).arr[4]);
+        if (loc == 0) {
+            textToSpeech.speak("Beginning");
+        }
 
-    } else if (keyCode == RIGHT_ARROW && loc < datasize - 1) {
+    } else if (key == 'h' && loc < data.length - 1) {
 
-        stopSpeech();
+        if (detailsPlaying) {
+            stopSpeech();
+        }
 
         loc++;
 
-        playNote(map(dataset.getRow(loc).arr[4], lowclose, highclose, lowmap, highmap), durationLeng);
+        playNote(map(data[loc].close, data[loc].setlow, data[loc].sethigh, lowmap, highmap), durationLeng);
 
-        //console.log(dataset.getRow(loc).arr[4]);
+        if (loc == data.length - 1) {
+            textToSpeech.speak("End");
+        }
 
     }
+
+
+
 }
+
+function checkMonth() {
+
+
+    if (loc - 1 >= 0) {
+        var currentDate = new Date(data[loc].date);
+        var previousDate = new Date(data[loc - 1].date);
+
+
+        if (currentDate.getMonth() != previousDate.getMonth()) {
+            monthPlaying = true;
+            textToSpeech.speak(months[currentDate.getMonth()]);
+            textToSpeech.onEnd(function() { monthPlaying = false; })
+        }
+    }
+
+}
+
 
 function checkBegEnd() {
 
     if (key == '.') {
 
-        stopSpeech();
+        if (detailsPlaying) {
+            stopSpeech();
+        }
 
-        loc = datasize - 1;
+        loc = data.length - 1;
 
-        playNote(map(dataset.getRow(loc).arr[4], lowclose, highclose, lowmap, highmap), durationLeng);
+        playNote(map(data[loc].close, data[loc].setlow, data[loc].sethigh, lowmap, highmap), durationLeng);
 
 
     } else if (key == ',') {
 
-        stopSpeech();
+        if (detailsPlaying) {
+            stopSpeech();
+        }
 
         loc = 0;
 
-        playNote(map(dataset.getRow(loc).arr[4], lowclose, highclose, lowmap, highmap), durationLeng);
-
+        playNote(map(data[loc].close, data[loc].setlow, data[loc].sethigh, lowmap, highmap), durationLeng);
 
     }
 }
-
-
-
-function checkLoad() {
-    if (dataset.getRowCount() != 0) {
-        datasize = dataset.getRowCount();
-        //console.log(datasize);
-        close = dataset.getColumn("close");
-        close.sort();
-        //console.log(close);
-        highclose = close[close.length - 1];
-        //console.log(highclose);
-        lowclose = close[0];
-        //console.log(lowclose);
-    } else {
-        window.setTimeout("checkLoad();", 100);
-    }
-}
-
 
 
 function drawVis() {
 
 
-    if (dataset.getRow(0) != undefined) {
+    var padding = 100;
 
-        var multiplier = -25;
-        var shift = 1200;
-        var lastY = dataset.getRow(0).arr[4] * multiplier + shift;
-        var lastUB = dataset.getRow(0).arr[5] * multiplier + shift;
-        var lastLB = dataset.getRow(0).arr[6] * multiplier + shift;
+    var newLow = window.height - padding;
+    var newHigh = 0 + padding;
 
-        for (var i = 0; i < datasize; i++) {
 
-            if (i != 0 && i != datasize) {
-                var xPos = map(i, 0, datasize, 0, width);
-                var lastxPos = map(i - 1, 0, datasize, 0, width);
+    if (data != undefined && data[0] != undefined) {
+
+        var lastY = map(data[0].close, data[0].setlow, data[0].sethigh, newLow, newHigh);
+        // var lastUB = dataset.getRow(0).arr[5] * multiplier + shift;
+        // var lastLB = dataset.getRow(0).arr[6] * multiplier + shift;
+
+        for (var i in data) {
+
+
+            if (i != 0 && i != data.length) {
+
+                var xPos = map(i, 0, data.length - 1, 0, width);
+
+                var lastxPos = map(i - 1, 0, data.length - 1, 0, width);
+
                 stroke(0);
-                line(lastxPos, lastY, xPos, dataset.getRow(i).arr[4] * multiplier + shift);
 
-                stroke(216, 11, 207);
-                line(lastxPos, lastUB, xPos, dataset.getRow(i).arr[5] * multiplier + shift);
+                line(lastxPos, lastY, xPos, map(data[i].close, data[i].setlow, data[i].sethigh, newLow, newHigh));
 
-                stroke(47, 229, 37);
-                line(lastxPos, lastLB, xPos, dataset.getRow(i).arr[6] * multiplier + shift);
+
+
+                // stroke(216, 11, 207);
+                // line(lastxPos, lastUB, xPos, dataset.getRow(i).arr[5] * multiplier + shift);
+
+                // stroke(47, 229, 37);
+                // line(lastxPos, lastLB, xPos, dataset.getRow(i).arr[6] * multiplier + shift);
 
             }
 
-            lastY = dataset.getRow(i).arr[4] * multiplier + shift;
-            lastUB = dataset.getRow(i).arr[5] * multiplier + shift;
-            lastLB = dataset.getRow(i).arr[6] * multiplier + shift;
+            lastY = map(data[i].close, data[0].setlow, data[0].sethigh, newLow, newHigh);
+            // lastUB = dataset.getRow(i).arr[5] * multiplier + shift;
+            // lastLB = dataset.getRow(i).arr[6] * multiplier + shift;
 
         }
-    }
-
-    if (dataset.getRow(loc) != undefined) {
 
         stroke(255, 0, 0);
-        var curMapped = map(loc, 0, datasize, 0, width);
+        var curMapped = map(loc, 0, data.length - 1, 0, width);
         line(curMapped, 0, curMapped, canvasHeight);
         fill(255, 0, 0);
-        ellipse(curMapped, dataset.getRow(loc).arr[4] * multiplier + shift, 5, 5);
-
+        ellipse(curMapped, map(data[loc].close, data[loc].setlow, data[loc].sethigh, newLow, newHigh), 5, 5);
     }
 
 }
 
-function windowResized() { resizeCanvas(windowWidth - 20, canvasHeight); }
+function windowResized() {
+    resizeCanvas(windowWidth, canvasHeight);
+}
