@@ -171,20 +171,34 @@ class Day {
 
 function setData() {
 
-    console.log(lastOneYear, lastFiveYears);
 
     var dataset; 
-
+    //change item here 
     if(timerange == "onemonth"){
         dataset = lastMonth;
+        if(loc > lastMonth.length) {
+            loc = 0; 
+        }
     } else if(timerange == "threemonths"){
         dataset = lastThreeMonths;
+        if(loc > lastThreeMonths.length) {
+            loc = 0; 
+        }
     } else if(timerange == "sixmonths"){
         dataset = lastSixMonths;
+        if(loc > lastSixMonths.length) {
+            loc = 0; 
+        }
     } else if(timerange == "oneyear"){
         dataset = lastOneYear;
+        if(loc > lastOneYear.length) {
+            loc = 0; 
+        }
     } else if(timerange == "fiveyears"){
         dataset = lastFiveYears;
+        if(loc > lastFiveYears.length) {
+            loc = 0; 
+        }
     }
     resetLoc();
     return dataset;
@@ -356,7 +370,6 @@ function isInside(){
 
 function mousePressed(){
     if(isInside()) {
-        console.log("hello");
         loc = Math.floor( map(mouseX, 0, width, 0, data.length-1) );
         playNote(map(data[loc].close, data[loc].setlow, data[loc].sethigh, lowmap, highmap), durationLeng);
     }
@@ -364,14 +377,12 @@ function mousePressed(){
 
 function mouseDragged(){
     if(isInside()) {
-        console.log("hello");
         loc = Math.floor( map(mouseX, 0, width, 0, data.length-1) );
         playNote(map(data[loc].close, data[loc].setlow, data[loc].sethigh, lowmap, highmap), durationLeng);
     }
 }
 
 function changeTicker() {
-    console.log($(".tickerfield").val());
     ticker = $(".tickerfield").val().toUpperCase();
     var row = table.findRow(ticker, "Symbol");
     var tickerCompany = row.getString("Description");
@@ -385,7 +396,6 @@ function changeTicker() {
     if (data != undefined && data[0] != undefined) {
         playChangeSound();
         resetLoc();
-        console.log("changesound!");
     } else {
         setTimeout(function() { playChangeSound(); }, 100);
     }
@@ -417,17 +427,14 @@ function playValue() {
 
 
             if(data[loc].open > data[loc].close){
-                console.log("Downward Trend");
 
                 textToSpeech.speak("Downward Trend, " + high + open + close + low); 
 
             } else if(data[loc].close > data[loc].open){
-                console.log("Upward Trend");
 
                 textToSpeech.speak("Upward Trend, " + low + open + close + high); 
 
             } else {
-                console.log("Neutral Trend")
 
                 textToSpeech.speak("Neutral Trend " + high + open + low);
                 textToSpeech.onEnd(function(){ detailsPlaying = false;});
@@ -460,7 +467,6 @@ function changeRate() {
         updateRate();
 
         buttonDown = false;
-        console.log(rate);
     }
 
     if (key == '-' && rate > 0.3) {
@@ -469,7 +475,6 @@ function changeRate() {
         updateRate();
 
         buttonDown = false;
-        console.log(rate);
     }
 }
 
@@ -552,7 +557,6 @@ function checkMonth() {
 
         if(currentDate.getMonth() != previousDate.getMonth()){
             monthPlaying = true;
-            console.log("speaking month");
             textToSpeech.speak(months[currentDate.getMonth()]); 
             textToSpeech.onEnd(function() { monthPlaying = false;})
         } 
