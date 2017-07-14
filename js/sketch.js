@@ -14,6 +14,9 @@ var lowclose;
 var highmap = 70;
 var lowmap = 50;
 
+var sethigh = -1;
+var setlow = Number.MAX_SAFE_INTEGER;
+
 var durationLeng = 100;
 
 var toneDuration = 1000;
@@ -26,11 +29,13 @@ var table;
 
 var timerange = "oneyear";
 
+var monthPlaying;
+
+var stopTime = 0;
+
 var osc;
 
 var buttonDown = false;
-
-var monthPlaying = false;
 
 var textToSpeech = new p5.Speech();
 
@@ -47,6 +52,8 @@ var newLoc = false;
 var dragging = false;
 
 var dataReceived = false;
+
+var keyLength = 0;
 
 var lastMonth = [];
 var lastThreeMonths = [];
@@ -148,15 +155,14 @@ function toJSONLocal(date) {
 //day class to get ohlc 
 class Day {
 
-    constructor(date, open, high, low, close, volume, sethigh, setlow) {
+    constructor(dateStr, open, high, low, close, volume, date) {
+        this.dateStr = dateStr;
         this.date = date;
         this.open = open;
         this.high = high;
         this.low = low;
         this.close = close;
         this.volume = volume;
-        this.sethigh = sethigh;
-        this.setlow = setlow;
     }
 }
 
@@ -212,12 +218,7 @@ function getData() {
 function afterData(thedata) {
 
     lastFiveYears = [];
-    var sethigh = -1;
-    var setlow = Number.MAX_SAFE_INTEGER;
 
-
-
-    //get low and get high? 
     thedata['datatable']['data'].forEach(function(element) {
 
         if (element[1] > sethigh) {
@@ -226,14 +227,11 @@ function afterData(thedata) {
         if (element[2] < setlow) {
             setlow = element[2];
         }
-    });
 
-
-    thedata['datatable']['data'].forEach(function(element) {
         var d = new Date(element[5]);
         d.setDate(d.getDate() + 1);
         var newDate = "" + months[d.getMonth()] + " " + d.getDate() + ", " + d.getFullYear();
-        var today = new Day(newDate, element[0], element[1], element[2], element[3], element[4], sethigh, setlow, d);
+        var today = new Day(newDate, element[0], element[1], element[2], element[3], element[4], d);
         lastFiveYears.push(today);
     });
 
@@ -323,23 +321,33 @@ function playNote(note, duration) {
 
 function draw() {
 
-
     prevLoc = loc;
 
-    if (prevLoc != loc) {
-        newLoc = true;
+    if(keyIsPressed === false) {
+        stopTime = 1;
+    } else {
+        stopTime = 0;
     }
+
+    console.log(stopTime);
 
     background(255);
 
     drawVis();
 
     if (buttonDown) {
+        
         checkLeftRight();
         playValue();
         changeRate();
         checkBegEnd();
         checkMonth();
+    }
+
+    if (prevLoc != loc) {
+        newLoc = true;
+    } else {
+        newLoc = false;
     }
 
 }
@@ -355,14 +363,14 @@ function isInside() {
 function mousePressed() {
     if (isInside()) {
         loc = Math.floor(map(mouseX, 0, width, 0, data.length - 1));
-        playNote(map(data[loc].close, data[loc].setlow, data[loc].sethigh, lowmap, highmap), durationLeng);
+        playNote(map(data[loc].close, setlow, sethigh, lowmap, highmap), durationLeng);
     }
 }
 
 function mouseDragged() {
     if (isInside()) {
         loc = Math.floor(map(mouseX, 0, width, 0, data.length - 1));
-        playNote(map(data[loc].close, data[loc].setlow, data[loc].sethigh, lowmap, highmap), durationLeng);
+        playNote(map(data[loc].close, setlow, sethigh, lowmap, highmap), durationLeng);
     }
 }
 
@@ -500,15 +508,18 @@ function playChangeSound() {
 function keyPressed() {
 
     buttonDown = true;
+
 }
 
 function keyReleased() {
 
     buttonDown = false;
+    keyLength = 0;
 }
 
 
 function checkLeftRight() {
+    //console.log(keyLength);
 
     if (key == 'g' && loc > 0) {
 
@@ -516,9 +527,12 @@ function checkLeftRight() {
             stopSpeech();
         }
 
-        loc--;
+        if(keyLength == 0 || keyLength > 10) {
+            loc--;
+            playNote(map(data[loc].close, setlow, sethigh, lowmap, highmap), durationLeng);
+        }
 
-        playNote(map(data[loc].close, data[loc].setlow, data[loc].sethigh, lowmap, highmap), durationLeng);
+        keyLength++;
 
         if (loc == 0) {
             textToSpeech.speak("Beginning");
@@ -529,10 +543,14 @@ function checkLeftRight() {
         if (detailsPlaying) {
             stopSpeech();
         }
+        
 
-        loc++;
+        if(keyLength == 0 || keyLength > 10) {
+            loc++;
+            playNote(map(data[loc].close, setlow, sethigh, lowmap, highmap), durationLeng);
+        }
 
-        playNote(map(data[loc].close, data[loc].setlow, data[loc].sethigh, lowmap, highmap), durationLeng);
+        keyLength++;
 
         if (loc == data.length - 1) {
             textToSpeech.speak("End");
@@ -540,23 +558,20 @@ function checkLeftRight() {
 
     }
 
-
-
 }
 
 function checkMonth() {
-
 
     if (loc - 1 >= 0) {
         var currentDate = new Date(data[loc].date);
         var previousDate = new Date(data[loc - 1].date);
 
-
-        if (currentDate.getMonth() != previousDate.getMonth()) {
+        if (currentDate.getMonth() != previousDate.getMonth() && stopTime == 0) {
             monthPlaying = true;
+            console.log("month played");
             textToSpeech.speak(months[currentDate.getMonth()]);
-            textToSpeech.onEnd(function() { monthPlaying = false; })
-        }
+            keyLength = 0;
+        } 
     }
 
 }
@@ -570,9 +585,13 @@ function checkBegEnd() {
             stopSpeech();
         }
 
+
         loc = data.length - 1;
 
-        playNote(map(data[loc].close, data[loc].setlow, data[loc].sethigh, lowmap, highmap), durationLeng);
+        if(stopTime == 0){
+            playNote(map(data[loc].close, setlow, sethigh, lowmap, highmap), durationLeng);
+        }
+        
 
 
     } else if (key == ',') {
@@ -583,8 +602,9 @@ function checkBegEnd() {
 
         loc = 0;
 
-        playNote(map(data[loc].close, data[loc].setlow, data[loc].sethigh, lowmap, highmap), durationLeng);
-
+        if(stopTime == 0){
+            playNote(map(data[loc].close, setlow, sethigh, lowmap, highmap), durationLeng);
+        }
     }
 }
 
@@ -600,7 +620,7 @@ function drawVis() {
 
     if (data != undefined && data[0] != undefined) {
 
-        var lastY = map(data[0].close, data[0].setlow, data[0].sethigh, newLow, newHigh);
+        var lastY = map(data[0].close, setlow, sethigh, newLow, newHigh);
         // var lastUB = dataset.getRow(0).arr[5] * multiplier + shift;
         // var lastLB = dataset.getRow(0).arr[6] * multiplier + shift;
 
@@ -615,7 +635,7 @@ function drawVis() {
 
                 stroke(0);
 
-                line(lastxPos, lastY, xPos, map(data[i].close, data[i].setlow, data[i].sethigh, newLow, newHigh));
+                line(lastxPos, lastY, xPos, map(data[i].close, setlow, sethigh, newLow, newHigh));
 
 
 
@@ -627,7 +647,7 @@ function drawVis() {
 
             }
 
-            lastY = map(data[i].close, data[0].setlow, data[0].sethigh, newLow, newHigh);
+            lastY = map(data[i].close, setlow, sethigh, newLow, newHigh);
             // lastUB = dataset.getRow(i).arr[5] * multiplier + shift;
             // lastLB = dataset.getRow(i).arr[6] * multiplier + shift;
 
@@ -637,7 +657,7 @@ function drawVis() {
         var curMapped = map(loc, 0, data.length - 1, 0, width);
         line(curMapped, 0, curMapped, canvasHeight);
         fill(255, 0, 0);
-        ellipse(curMapped, map(data[loc].close, data[loc].setlow, data[loc].sethigh, newLow, newHigh), 5, 5);
+        ellipse(curMapped, map(data[loc].close, setlow, sethigh, newLow, newHigh), 5, 5);
     }
 
 }
