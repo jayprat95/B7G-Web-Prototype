@@ -321,7 +321,6 @@ function playNote(note, duration) {
 
 function draw() {
 
-    prevLoc = loc;
 
     if(keyIsPressed === false) {
         stopTime = 1;
@@ -349,6 +348,8 @@ function draw() {
     } else {
         newLoc = false;
     }
+
+    prevLoc = loc;
 
 }
 
