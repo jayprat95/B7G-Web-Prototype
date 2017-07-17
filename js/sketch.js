@@ -389,7 +389,6 @@ function changeTicker() {
 
         if (data != undefined && data[0] != undefined) {
             playChangeSound();
-            resetLoc();
         } else {
             setTimeout(function() { playChangeSound(); }, 100);
         }
@@ -401,7 +400,6 @@ function changeTicker() {
 
     if (data != undefined && data[0] != undefined) {
         playChangeSound();
-        resetLoc();
     } else {
         setTimeout(function() { playChangeSound(); }, 100);
     }
