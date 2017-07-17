@@ -285,7 +285,6 @@ function afterData(thedata) {
 
 
         var newDate = "" + months[d.getMonth()] + " " + d.getDate() + ", " + d.getFullYear();
-        console.log("SMA: " + sma50 + " Actual : "+ element[3] + " magnitude: " + magnitude + " direction: " + direction + " Date: " + newDate); 
         var today = new Day(newDate, element[0], element[1], element[2], element[3], element[4], sethigh, setlow, d, sma50, magnitude, direction);
         lastFiveYears.push(today);
     });
