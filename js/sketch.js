@@ -328,7 +328,6 @@ function draw() {
         stopTime = 0;
     }
 
-    console.log(stopTime);
 
     background(255);
 
@@ -391,7 +390,6 @@ function changeTicker() {
         if (data != undefined && data[0] != undefined) {
             playChangeSound();
             resetLoc();
-            console.log("changesound!");
         } else {
             setTimeout(function() { playChangeSound(); }, 100);
         }
@@ -520,7 +518,6 @@ function keyReleased() {
 
 
 function checkLeftRight() {
-    //console.log(keyLength);
 
     if (key == 'g' && loc > 0) {
 
@@ -569,7 +566,6 @@ function checkMonth() {
 
         if (currentDate.getMonth() != previousDate.getMonth() && stopTime == 0) {
             monthPlaying = true;
-            console.log("month played");
             textToSpeech.speak(months[currentDate.getMonth()]);
             keyLength = 0;
         } 
