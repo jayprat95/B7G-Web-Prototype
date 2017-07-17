@@ -28,6 +28,8 @@ var timerange = "oneyear";
 
 var osc;
 
+var currentGraph = 1;
+
 var buttonDown = false;
 
 var monthPlaying = false;
@@ -120,7 +122,26 @@ $(document).ready(function() {
             $('#submit').attr('disabled', true);
         }
 
-    })
+    });
+
+    $("#graphView").mousedown(function(){
+
+        if($( this ).attr( "value" ) ==  "Study View"){
+            console.log("hello");
+            $(this).attr("aria-label","Change to Summary View");
+            $(this).attr("value","Summary View");
+            currentGraph = 2;
+        } else if($( this ).attr( "value" ) ==  "Summary View"){
+            console.log("hi");
+            $(this).attr("aria-label","Change to Study View");
+            $(this).attr("value","Study View");
+            currentGraph = 1;
+        }
+
+
+        // console.log($( this ).attr( "aria-label" ));
+        
+    });
 });
 
 function deselectAll() {
@@ -283,6 +304,12 @@ function afterData(thedata) {
     lastOneYear.reverse();
 
     data = setData();
+
+    if (data != undefined && data[0] != undefined) {
+        setTickerDetails();
+    } else {
+        setTimeout(function() { setTickerDetails(); }, 100);
+    }
 }
 
 function updateRate() {
@@ -292,6 +319,7 @@ function updateRate() {
 function preload() {
     table = loadTable("assets/tickers.csv", "csv", "header");
     getData();
+
 }
 
 function setup() {
@@ -299,6 +327,16 @@ function setup() {
     $('#submit').attr('disabled', true);
     $("#tickerName").text("Company: " + tickerCompany);
     $("#oneyear").addClass('buttonSelected');
+
+    var graphName;
+
+    if(currentGraph == 1 ) {
+        graphName = "Closing price view";
+    } else if (currentGraph == 2) {
+        graphName = "Study view";
+    }
+
+    $("#currentGraph").text(graphName);
 
     createCanvas(windowWidth, canvasHeight);
 
@@ -337,7 +375,16 @@ function draw() {
 
     background(255);
 
-    drawVis();
+    if(currentGraph == 1) {
+        drawVisGraphA();
+        console.log("graph A");
+    }
+
+    if(currentGraph == 2) {
+        drawVisGraphB();
+        console.log("graph B");
+    }
+    
 
     if (buttonDown) {
         checkLeftRight();
@@ -377,29 +424,16 @@ function changeTicker() {
     try {
         tickerCompany = row.getString("Description");
 
-        $("#tickerName").text("Company: " + tickerCompany);
+        $("#tickerName").text("Company: " + tickerCompany+", ");
         $(".tickerfield").val("");
         dataReceived = false;
 
         getData();
-        data = setData();
 
-        if (data != undefined && data[0] != undefined) {
-            playChangeSound();
-            console.log("changesound!");
-        } else {
-            setTimeout(function() { playChangeSound(); }, 100);
-        }
         $("#submit").blur();
         $('#submit').attr('disabled', true);
     } catch (err) {
         textToSpeech.speak(ticker + "is not a valid ticker name");
-    }
-
-    if (data != undefined && data[0] != undefined) {
-        playChangeSound();
-    } else {
-        setTimeout(function() { playChangeSound(); }, 100);
     }
 
 }
@@ -478,7 +512,7 @@ function changeRate() {
     }
 }
 
-function playChangeSound() {
+function setTickerDetails() {
     var rangeString;
 
     if (timerange == "onemonth") {
@@ -493,10 +527,15 @@ function playChangeSound() {
         rangeString = "Five years prior to today";
     }
 
-    var pt = data[data.length - 1].close - data[data.length - 1].open;
-    var pcnt = pt / data[data.length - 1].open * 100;
+    var pt = (data[data.length - 1].close - data[data.length - 1].open).toFixed(4);
+    var pcnt = (pt / data[data.length - 1].open * 100).toFixed(4);
 
-    textToSpeech.speak("Changed to" + tickerCompany + ". Current price: " + data[data.length - 1].close + ". Percent Change. " + pcnt + " Point Change. " + pt + " Date Range " + rangeString + "");
+    //textToSpeech.speak("Changed to" + tickerCompany + ". Current price: " + data[data.length - 1].close + ". Percent Change. " + pcnt + " Point Change. " + pt + " Date Range " + rangeString + "");
+
+    $("#current-price").text("Current Price: " + data[data.length - 1].close);
+    $("#percent-change").text("Percent Change: " + pcnt);
+    $("#point-change").text("Point Change: " + pt);
+    $("#date-range").text("Date Range: " + rangeString);
 }
 
 
@@ -602,7 +641,7 @@ function checkBegEnd() {
 }
 
 
-function drawVis() {
+function drawVisGraphA() {
 
 
     var padding = 100;
@@ -614,8 +653,6 @@ function drawVis() {
     if (data != undefined && data[0] != undefined) {
 
         var lastY = map(data[0].close, data[0].setlow, data[0].sethigh, newLow, newHigh);
-        // var lastUB = dataset.getRow(0).arr[5] * multiplier + shift;
-        // var lastLB = dataset.getRow(0).arr[6] * multiplier + shift;
 
         for (var i in data) {
 
@@ -629,21 +666,48 @@ function drawVis() {
                 stroke(0);
 
                 line(lastxPos, lastY, xPos, map(data[i].close, data[i].setlow, data[i].sethigh, newLow, newHigh));
-
-
-
-                // stroke(216, 11, 207);
-                // line(lastxPos, lastUB, xPos, dataset.getRow(i).arr[5] * multiplier + shift);
-
-                // stroke(47, 229, 37);
-                // line(lastxPos, lastLB, xPos, dataset.getRow(i).arr[6] * multiplier + shift);
-
             }
 
             lastY = map(data[i].close, data[0].setlow, data[0].sethigh, newLow, newHigh);
-            // lastUB = dataset.getRow(i).arr[5] * multiplier + shift;
-            // lastLB = dataset.getRow(i).arr[6] * multiplier + shift;
+        }
 
+        stroke(255, 0, 0);
+        var curMapped = map(loc, 0, data.length - 1, 0, width);
+        line(curMapped, 0, curMapped, canvasHeight);
+        fill(255, 0, 0);
+        ellipse(curMapped, map(data[loc].close, data[loc].setlow, data[loc].sethigh, newLow, newHigh), 5, 5);
+    }
+
+}
+
+function drawVisGraphB() {
+
+
+    var padding = 100;
+
+    var newLow = window.height - padding;
+    var newHigh = 0 + padding;
+
+
+    if (data != undefined && data[0] != undefined) {
+
+        var lastY = map(data[0].close, data[0].setlow, data[0].sethigh, newLow, newHigh);
+
+        for (var i in data) {
+
+
+            if (i != 0 && i != data.length) {
+
+                var xPos = map(i, 0, data.length - 1, 0, width);
+
+                var lastxPos = map(i - 1, 0, data.length - 1, 0, width);
+
+                stroke(0);
+
+                line(lastxPos, lastY, xPos, map(data[i].close, data[i].setlow, data[i].sethigh, newLow, newHigh));
+            }
+
+            lastY = map(data[i].close, data[0].setlow, data[0].sethigh, newLow, newHigh);
         }
 
         stroke(255, 0, 0);
