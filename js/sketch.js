@@ -63,6 +63,10 @@ var lastSixMonths = [];
 var lastOneYear = [];
 var lastFiveYears = [];
 
+var localHigh;
+var localLow;
+var localMagHigh;
+var localMagLow;
 
 var controlPress = false;
 var plusPress = false;
@@ -133,20 +137,18 @@ $(document).ready(function() {
 
     $("#graphView").mousedown(function(){
 
-        if($( this ).attr( "value" ) ==  "Study View"){
-            console.log("hello");
-            $(this).attr("aria-label","Change to Summary View");
-            $(this).attr("value","Summary View");
+        var on = "Turn On Study";
+        var off = "Turn Off Study"
+
+        if($( this ).attr( "value" ) ==  on){
+            $(this).attr("aria-label",off);
+            $(this).attr("value",off);
             currentGraph = 2;
-        } else if($( this ).attr( "value" ) ==  "Summary View"){
-            console.log("hi");
-            $(this).attr("aria-label","Change to Study View");
-            $(this).attr("value","Study View");
+        } else if($( this ).attr( "value" ) ==  off){
+            $(this).attr("aria-label",on);
+            $(this).attr("value",on);
             currentGraph = 1;
         }
-
-
-        // console.log($( this ).attr( "aria-label" ));
         
     });
 });
@@ -224,6 +226,12 @@ function setData() {
             loc = 0;
         }
     }
+
+    localHigh = getHighLow(dataset)[0];
+    localLow = getHighLow(dataset)[1];
+    localMagHigh = getHighLow(dataset)[2];
+    localMagLow = getHighLow(dataset)[3];
+
     return dataset;
 }
 
@@ -410,7 +418,29 @@ function setup() {
 
 function playNote(note, duration) {
     osc.freq(midiToFreq(note));
-    //osc.amp(1);
+    osc.amp(1);
+    osc.fade(1, 0.1);
+
+    if (duration) {
+        setTimeout(function() {
+            osc.fade(0, 0.2);
+        }, duration - 50);
+    }
+}
+
+function playMag(note, duration, abovebelow) {
+
+    if(abovebelow == 1) {
+        osc.amp(1);
+        osc.setType('sawtooth');
+    } else if(abovebelow == -1) {
+        osc.amp(1);
+        osc.setType('triangle');
+    }
+    
+    console.log(note);
+
+    osc.freq(midiToFreq(note));
     osc.fade(1, 0.1);
 
     if (duration) {
@@ -627,7 +657,13 @@ function checkLeftRight() {
 
         if(keyLength == 0 || keyLength > 10) {
             loc--;
-            playNote(map(data[loc].close, setlow, sethigh, lowmap, highmap), durationLeng);
+
+            if(currentGraph == 1){
+                playNote(map(data[loc].close, localLow, localHigh, lowmap, highmap), durationLeng);
+            } else if (currentGraph == 2) {
+                playMag(map(data[loc].magnitude, localMagLow, localMagHigh, lowmap, highmap), durationLeng, data[loc].overOrUnder);
+            }
+            
         }
 
         keyLength++;
@@ -645,7 +681,12 @@ function checkLeftRight() {
 
         if(keyLength == 0 || keyLength > 10) {
             loc++;
-            playNote(map(data[loc].close, setlow, sethigh, lowmap, highmap), durationLeng);
+
+            if(currentGraph == 1){
+                playNote(map(data[loc].close, localLow, localHigh, lowmap, highmap), durationLeng);
+            } else if (currentGraph == 2) {
+                playMag(map(data[loc].magnitude, localMagLow, localMagHigh, lowmap, highmap), durationLeng, data[loc].overOrUnder);
+            }
         }
 
         keyLength++;
@@ -714,6 +755,38 @@ function checkBegEnd() {
     }
 }
 
+function getHighLow(myArray) {
+
+    var highlow = [];
+
+    var low = myArray[0].close;
+    var high = myArray[0].close;
+
+    var maglow = myArray[0].magnitude;
+    var maghigh = myArray[0].magnitude;
+
+    for (var i = 0; i < myArray.length; i++) {
+        if (myArray[i].close > high) {
+            high = myArray[i].close;
+        } else if (myArray[i].close < low) {
+            low = myArray[i].close;
+        }
+
+        if (myArray[i].magnitude > maghigh) {
+            maghigh = myArray[i].magnitude;
+        } else if (myArray[i].magnitude < maglow) {
+            maglow = myArray[i].magnitude;
+        }
+    }
+    highlow.push(high);
+    highlow.push(low);
+    highlow.push(maghigh);
+    highlow.push(maglow);
+
+    return highlow;
+
+}
+
 
 function drawVisGraphA() {
 
@@ -726,7 +799,7 @@ function drawVisGraphA() {
 
     if (data != undefined && data[0] != undefined) {
 
-        var lastY = map(data[0].close, setlow, sethigh, newLow, newHigh);
+        var lastY = map(data[0].close, localLow,localHigh, newLow, newHigh);
         // var lastUB = dataset.getRow(0).arr[5] * multiplier + shift;
         // var lastLB = dataset.getRow(0).arr[6] * multiplier + shift;
 
@@ -741,22 +814,24 @@ function drawVisGraphA() {
 
                 stroke(0);
 
-                line(lastxPos, lastY, xPos, map(data[i].close, setlow, sethigh, newLow, newHigh));
+                line(lastxPos, lastY, xPos, map(data[i].close, localLow,localHigh, newLow, newHigh));
             }
 
-            lastY = map(data[i].close, setlow, sethigh, newLow, newHigh);
+            lastY = map(data[i].close, localLow,localHigh, newLow, newHigh);
         }
 
         stroke(255, 0, 0);
         var curMapped = map(loc, 0, data.length - 1, 0, width);
         line(curMapped, 0, curMapped, canvasHeight);
         fill(255, 0, 0);
-        ellipse(curMapped, map(data[loc].close, setlow, sethigh, newLow, newHigh), 5, 5);
+        ellipse(curMapped, map(data[loc].close, localLow,localHigh, newLow, newHigh), 5, 5);
     }
 
 }
 
 function drawVisGraphB() {
+
+    strokeWeight(1);
 
     var padding = 100;
 
@@ -766,12 +841,10 @@ function drawVisGraphB() {
 
     if (data != undefined && data[0] != undefined) {
 
-        var lastY = map(data[0].close, setlow, sethigh, newLow, newHigh);
-        // var lastUB = dataset.getRow(0).arr[5] * multiplier + shift;
-        // var lastLB = dataset.getRow(0).arr[6] * multiplier + shift;
+        var lastY = map(data[0].close, localLow,localHigh, newLow, newHigh);
+        var lastS = map(data[0].sma50, localLow,localHigh, newLow, newHigh);
 
         for (var i in data) {
-
 
             if (i != 0 && i != data.length) {
 
@@ -779,19 +852,46 @@ function drawVisGraphB() {
 
                 var lastxPos = map(i - 1, 0, data.length - 1, 0, width);
 
-                stroke(0);
+                
 
-                line(lastxPos, lastY, xPos, map(data[i].close, setlow, sethigh, newLow, newHigh));
+                if(data[i].overOrUnder == 1) {
+                    strokeWeight(0.5);
+                    fill(216,25,75);
+                    stroke(216,25,75);
+                    quad(lastxPos, lastS, lastxPos, lastY, xPos, map(data[i].close, localLow,localHigh, newLow, newHigh), xPos, map(data[i].sma50, localLow,localHigh, newLow, newHigh));
+                   
+                } else if(data[i].overOrUnder == -1) {
+                    strokeWeight(0.5);
+                    fill(60,173,23);
+                    stroke(60,173,23);
+                    quad(lastxPos, lastS, lastxPos, lastY, xPos, map(data[i].close, localLow,localHigh, newLow, newHigh), xPos, map(data[i].sma50, localLow,localHigh, newLow, newHigh));
+                }
+
+
+                if(data[i].sma50 != 0 || data[i-1].sma50 != 0) {
+                    strokeWeight(1);
+                    stroke(0,67,234);
+                    line(lastxPos, lastS, xPos, map(data[i].sma50, localLow,localHigh, newLow, newHigh));
+                }
+
+                stroke(1);
+                line(lastxPos, lastY, xPos, map(data[i].close, localLow,localHigh, newLow, newHigh));
+                
             }
 
-            lastY = map(data[i].close, setlow, sethigh, newLow, newHigh);
+            lastY = map(data[i].close, localLow,localHigh, newLow, newHigh);
+            lastS = map(data[i].sma50, localLow,localHigh, newLow, newHigh);
         }
 
         stroke(255, 0, 0);
         var curMapped = map(loc, 0, data.length - 1, 0, width);
         line(curMapped, 0, curMapped, canvasHeight);
         fill(255, 0, 0);
-        ellipse(curMapped, map(data[loc].close, setlow, sethigh, newLow, newHigh), 5, 5);
+        // ellipse(curMapped, map(data[loc].close, localLow,localHigh, newLow, newHigh), 5, 5);
+        strokeWeight(2);
+        stroke(0, 0, 0);
+        line(curMapped, map(data[loc].close, localLow,localHigh, newLow, newHigh), curMapped, map(data[loc].sma50, localLow,localHigh, newLow, newHigh));
+
     }
 
 }
