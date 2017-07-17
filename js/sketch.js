@@ -277,6 +277,11 @@ function afterData(thedata) {
         }
     }
 
+    lastMonth.reverse();
+    lastThreeMonths.reverse();
+    lastSixMonths.reverse();
+    lastOneYear.reverse();
+
     data = setData();
 }
 
@@ -552,12 +557,22 @@ function checkMonth() {
 
         if (currentDate.getMonth() != previousDate.getMonth()) {
             monthPlaying = true;
-            textToSpeech.speak(months[currentDate.getMonth()]);
-            textToSpeech.onEnd(function() { monthPlaying = false; })
+
+            console.log(currentDate.getMonth());
+
+            if(currentDate.getMonth() == 0) {
+                textToSpeech.speak(currentDate.getFullYear()+" "+months[currentDate.getMonth()]);
+                textToSpeech.onEnd(function() { monthPlaying = false; })
+            } else {
+                textToSpeech.speak(months[currentDate.getMonth()]);
+                textToSpeech.onEnd(function() { monthPlaying = false; })
+            }
+            
         }
     }
 
 }
+
 
 
 function checkBegEnd() {
