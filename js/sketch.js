@@ -40,6 +40,7 @@ var currentGraph = 1;
 var buttonDown = false;
 
 var textToSpeech = new p5.Speech();
+textToSpeech.onEnd = resetDetails; 
 
 var detailsPlaying = false;
 
@@ -401,7 +402,6 @@ function setup() {
     osc.amp(0);
 
     textToSpeech.setRate(rate);
-    textToSpeech.onEnd = resetDetails;
 
     updateRate();
 
@@ -434,12 +434,12 @@ function draw() {
 
     if(currentGraph == 1) {
         drawVisGraphA();
-        console.log("graph A");
+        // console.log("graph A");
     }
 
     if(currentGraph == 2) {
         drawVisGraphB();
-        console.log("graph B");
+        // console.log("graph B");
     }
     
 
@@ -507,15 +507,19 @@ function playValue() {
 
     if (key == ' ') {
 
+        console.log("space clicked"); 
         if (detailsPlaying == true) {
             stopSpeech();
             detailsPlaying = false;
             buttonDown = false;
+            console.log("stopping"); 
 
         } else if (detailsPlaying == false) {   
-
+            
             detailsPlaying = true;
+            console.log("making details true: " + detailsPlaying); 
             buttonDown = false;
+            console.log("playing"); 
 
             textToSpeech.speak(data[loc].date);
 
@@ -536,7 +540,6 @@ function playValue() {
             } else {
 
                 textToSpeech.speak("Neutral Trend " + high + open + low);
-                textToSpeech.onEnd(function() { detailsPlaying = false; });
 
             }
 
@@ -548,13 +551,14 @@ function playValue() {
 }
 
 function resetDetails() {
-
+    console.log("this has been started"); 
     detailsPlaying = false;
-
+    monthPlaying = false; 
+    textToSpeech.stop(); 
 }
 
 function stopSpeech() {
-
+    console.log("Hello World"); 
     textToSpeech.stop();
 }
 
@@ -664,16 +668,12 @@ function checkMonth() {
         var currentDate = new Date(data[loc].date);
         var previousDate = new Date(data[loc - 1].date);
 
-        if (currentDate.getMonth() != previousDate.getMonth()) {
+        if ((currentDate.getMonth() != previousDate.getMonth()) && !monthPlaying) {
             monthPlaying = true;
-        
-
             if(currentDate.getMonth() == 0) {
                 textToSpeech.speak(currentDate.getFullYear()+" "+months[currentDate.getMonth()]);
-                textToSpeech.onEnd(function() { monthPlaying = false; })
             } else {
                 textToSpeech.speak(months[currentDate.getMonth()]);
-                textToSpeech.onEnd(function() { monthPlaying = false; })
             }
             
         }
