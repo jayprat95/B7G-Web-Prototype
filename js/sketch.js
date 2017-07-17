@@ -155,7 +155,8 @@ function toJSONLocal(date) {
 //day class to get ohlc 
 class Day {
 
-    constructor(dateStr, open, high, low, close, volume, date) {
+
+    constructor(dateStr, open, high, low, close, volume, date, sma50, magnitude, overOrUnder) {
         this.dateStr = dateStr;
         this.date = date;
         this.open = open;
@@ -163,6 +164,9 @@ class Day {
         this.low = low;
         this.close = close;
         this.volume = volume;
+        this.sma50 = sma50; 
+        this.magnitude = magnitude; 
+        this.overOrUnder = overOrUnder; 
     }
 }
 
@@ -206,6 +210,8 @@ function setData() {
 function getData() {
     var fromDate = new Date();
     fromDate.setFullYear(new Date().getFullYear() - 5);
+    //get earlier dates for moving averages 
+    fromDate.setDate(fromDate.getDate() - 200);
     var toDate = new Date();
     var addtl = "&ticker=" + ticker + "&date.gte=" + toJSONLocal(fromDate) + "&date.lte=" + toJSONLocal(toDate);
     var query = quandlQ + addtl;
@@ -218,6 +224,24 @@ function getData() {
 function afterData(thedata) {
 
     lastFiveYears = [];
+    sethigh = -1;
+    setlow = Number.MAX_SAFE_INTEGER;
+    var fromDate = new Date();
+    fromDate.setFullYear(new Date().getFullYear() - 5);
+
+
+    var unprocessedData = thedata['datatable']['data']; 
+
+    //find the right date 
+    var index = 0; 
+    for (var i = 0; i < unprocessedData.length; i++) {
+        var currDate = new Date(unprocessedData[i][5]); 
+        if(currDate > fromDate) {
+            index = i; 
+            break; 
+        }
+    }
+
 
     thedata['datatable']['data'].forEach(function(element) {
 
@@ -227,13 +251,47 @@ function afterData(thedata) {
         if (element[2] < setlow) {
             setlow = element[2];
         }
+    }); 
 
+    thedata['datatable']['data'].forEach(function(element, i) {
         var d = new Date(element[5]);
         d.setDate(d.getDate() + 1);
+
+        //base case make it 0
+        var sma50 = 0; 
+        if(i >= index) {
+            if(i >= 50) {
+                for(var j = (i - 50); j < i; j++) {
+                    //fix this 
+                    sma50 += thedata['datatable']['data'][j][3]; 
+                }
+                sma50 = sma50/50; 
+            }
+        }
+        
+        var magnitude = Math.abs(sma50 - element[3]); 
+        magnitude = parseFloat((magnitude).toFixed(5)); 
+
+        //if it intersects then it's 0
+        var direction = 0; 
+
+        if((sma50 - element[3]) > 0) {
+            direction = 1; 
+        }
+        else if((sma50 - element[3]) < 0) {
+            direction = -1; 
+        }
+        sma50 = parseFloat((sma50).toFixed(4)); 
+
+        
+
+
         var newDate = "" + months[d.getMonth()] + " " + d.getDate() + ", " + d.getFullYear();
-        var today = new Day(newDate, element[0], element[1], element[2], element[3], element[4], d);
+        var today = new Day(newDate, element[0], element[1], element[2], element[3], element[4], d, sma50, magnitude, direction);
         lastFiveYears.push(today);
     });
+
+    
 
 
     lastMonth = [];
@@ -415,7 +473,7 @@ function playValue() {
             detailsPlaying = false;
             buttonDown = false;
 
-        } else if (detailsPlaying == false) {
+        } else if (detailsPlaying == false) {   
 
             detailsPlaying = true;
             buttonDown = false;
