@@ -14,6 +14,10 @@ var lowclose;
 var highmap = 70;
 var lowmap = 50;
 
+
+var highMagmap = 80;
+var lowMagmap = 60;
+
 var sethigh = -1;
 var setlow = Number.MAX_SAFE_INTEGER;
 
@@ -86,6 +90,38 @@ var query = quandlQ + addtl;
 
 
 var data = [];
+
+
+var piano = new Wad({
+    source : 'square', 
+    env : {
+        attack : .015, 
+        decay : .002, 
+        sustain : .1, 
+        hold : .05, 
+        release : .03
+    }, 
+    filter : {
+        type : 'lowpass', 
+        frequency : 600, 
+        q : 7, 
+        env : { 
+            attack : .07, 
+            frequency : 1600
+        }
+    }
+})
+
+var bass = new Wad({
+    source : 'triangle',
+    env : {
+        attack : .02,
+        decay : .01,
+        sustain : .1,
+        hold : .002,
+        release : .01
+    },
+})
 
 
 //functions that are required to run pre-startup 
@@ -387,8 +423,33 @@ function preload() {
 
 }
 
-function setup() {
+function makeDistortionCurve(amount) {
+      var k = typeof amount === 'number' ? amount : 50,
+        n_samples = 44100,
+        curve = new Float32Array(n_samples),
+        deg = Math.PI / 180,
+        i = 0,
+        x;
+      for ( ; i < n_samples; ++i ) {
+        x = i * 2 / n_samples - 1;
+        curve[i] = ( 3 + k ) * x * 20 * deg / ( Math.PI + k * Math.abs(x) );
+      }
+      return curve;
+    };
 
+
+function setup() {
+    // var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    // var oscillator = audioCtx.createOscillator();
+    // oscillator.start(0);
+
+    // var distortion = audioCtx.createWaveShaper();
+    // distortion.curve = makeDistortionCurve(400);
+    // distortion.oversample = '2x';
+
+    // oscillator.connect(distortion);
+    // distortion.connect(audioCtx.destination);
+    
     $('#submit').attr('disabled', true);
     $("#tickerName").text("Company: " + tickerCompany);
     $("#oneyear").addClass('buttonSelected');
@@ -419,6 +480,7 @@ function setup() {
 function playNote(note, duration) {
     osc.freq(midiToFreq(note));
     osc.amp(1);
+    osc.setType('triangle');
     osc.fade(1, 0.1);
 
     if (duration) {
@@ -428,26 +490,14 @@ function playNote(note, duration) {
     }
 }
 
-function playMag(note, duration, abovebelow) {
+function playMag(note, abovebelow) {
 
     if(abovebelow == 1) {
-        osc.amp(1);
-        osc.setType('sawtooth');
+        piano.play({ pitch : note });
     } else if(abovebelow == -1) {
-        osc.amp(1);
-        osc.setType('triangle');
+        bass.play({ pitch : note });
     }
     
-    console.log(note);
-
-    osc.freq(midiToFreq(note));
-    osc.fade(1, 0.1);
-
-    if (duration) {
-        setTimeout(function() {
-            osc.fade(0, 0.2);
-        }, duration - 50);
-    }
 }
 
 function draw() {
@@ -551,28 +601,7 @@ function playValue() {
             detailsPlaying = true;
             buttonDown = false;
 
-            textToSpeech.speak(data[loc].date);
-
-            var high = " High: " + data[loc].high;
-            var open = " Open: " + data[loc].open;
-            var close = " Close: " + data[loc].close;
-            var low = " Low: " + data[loc].low;
-
-
-            if (data[loc].open > data[loc].close) {
-
-                textToSpeech.speak("Downward Trend, " + high + open + close + low);
-
-            } else if (data[loc].close > data[loc].open) {
-
-                textToSpeech.speak("Upward Trend, " + low + open + close + high);
-
-            } else {
-
-                textToSpeech.speak("Neutral Trend " + high + open + low);
-
-            }
-
+            textToSpeech.speak(data[loc].dateStr);
 
         }
 
@@ -651,6 +680,8 @@ function keyReleased() {
 
 function checkLeftRight() {
 
+    var note = midiToFreq(map(data[loc].magnitude, localMagLow, localMagHigh, lowMagmap, highMagmap));
+
     if (key == 'g' && loc > 0) {
 
         if (detailsPlaying) {
@@ -660,11 +691,7 @@ function checkLeftRight() {
         if(keyLength == 0 || keyLength > 10) {
             loc--;
 
-            if(currentGraph == 1){
-                playNote(map(data[loc].close, localLow, localHigh, lowmap, highmap), durationLeng);
-            } else if (currentGraph == 2) {
-                playMag(map(data[loc].magnitude, localMagLow, localMagHigh, lowmap, highmap), durationLeng, data[loc].overOrUnder);
-            }
+            playPoint(note);
             
         }
 
@@ -684,11 +711,7 @@ function checkLeftRight() {
         if(keyLength == 0 || keyLength > 10) {
             loc++;
 
-            if(currentGraph == 1){
-                playNote(map(data[loc].close, localLow, localHigh, lowmap, highmap), durationLeng);
-            } else if (currentGraph == 2) {
-                playMag(map(data[loc].magnitude, localMagLow, localMagHigh, lowmap, highmap), durationLeng, data[loc].overOrUnder);
-            }
+            playPoint(note);
         }
 
         keyLength++;
@@ -699,6 +722,14 @@ function checkLeftRight() {
 
     }
 
+}
+
+function playPoint(n) {
+    if(currentGraph == 1){
+        playNote(map(data[loc].close, localLow, localHigh, lowmap, highmap), durationLeng);
+    } else if (currentGraph == 2) {
+        playMag(n, data[loc].overOrUnder);
+    }
 }
 
 function checkMonth() {
