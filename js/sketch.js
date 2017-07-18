@@ -40,6 +40,7 @@ var currentGraph = 1;
 var buttonDown = false;
 
 var textToSpeech = new p5.Speech();
+textToSpeech.onEnd = resetDetails; 
 
 var detailsPlaying = false;
 
@@ -134,19 +135,15 @@ $(document).ready(function() {
     $("#graphView").mousedown(function(){
 
         if($( this ).attr( "value" ) ==  "Study View"){
-            console.log("hello");
             $(this).attr("aria-label","Change to Summary View");
             $(this).attr("value","Summary View");
             currentGraph = 2;
         } else if($( this ).attr( "value" ) ==  "Summary View"){
-            console.log("hi");
             $(this).attr("aria-label","Change to Study View");
             $(this).attr("value","Study View");
             currentGraph = 1;
         }
 
-
-        // console.log($( this ).attr( "aria-label" ));
         
     });
 });
@@ -401,7 +398,6 @@ function setup() {
     osc.amp(0);
 
     textToSpeech.setRate(rate);
-    textToSpeech.onEnd = resetDetails;
 
     updateRate();
 
@@ -434,12 +430,10 @@ function draw() {
 
     if(currentGraph == 1) {
         drawVisGraphA();
-        console.log("graph A");
     }
 
     if(currentGraph == 2) {
         drawVisGraphB();
-        console.log("graph B");
     }
     
 
@@ -506,14 +500,14 @@ function changeTicker() {
 function playValue() {
 
     if (key == ' ') {
-
+ 
         if (detailsPlaying == true) {
             stopSpeech();
             detailsPlaying = false;
             buttonDown = false;
 
         } else if (detailsPlaying == false) {   
-
+            
             detailsPlaying = true;
             buttonDown = false;
 
@@ -536,7 +530,6 @@ function playValue() {
             } else {
 
                 textToSpeech.speak("Neutral Trend " + high + open + low);
-                textToSpeech.onEnd(function() { detailsPlaying = false; });
 
             }
 
@@ -548,13 +541,12 @@ function playValue() {
 }
 
 function resetDetails() {
-
     detailsPlaying = false;
-
+    monthPlaying = false; 
+    textToSpeech.stop(); 
 }
 
 function stopSpeech() {
-
     textToSpeech.stop();
 }
 
@@ -664,16 +656,12 @@ function checkMonth() {
         var currentDate = new Date(data[loc].date);
         var previousDate = new Date(data[loc - 1].date);
 
-        if (currentDate.getMonth() != previousDate.getMonth()) {
+        if ((currentDate.getMonth() != previousDate.getMonth()) && !monthPlaying) {
             monthPlaying = true;
-        
-
             if(currentDate.getMonth() == 0) {
                 textToSpeech.speak(currentDate.getFullYear()+" "+months[currentDate.getMonth()]);
-                textToSpeech.onEnd(function() { monthPlaying = false; })
             } else {
                 textToSpeech.speak(months[currentDate.getMonth()]);
-                textToSpeech.onEnd(function() { monthPlaying = false; })
             }
             
         }
