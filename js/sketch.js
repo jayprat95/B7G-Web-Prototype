@@ -135,19 +135,15 @@ $(document).ready(function() {
     $("#graphView").mousedown(function(){
 
         if($( this ).attr( "value" ) ==  "Study View"){
-            console.log("hello");
             $(this).attr("aria-label","Change to Summary View");
             $(this).attr("value","Summary View");
             currentGraph = 2;
         } else if($( this ).attr( "value" ) ==  "Summary View"){
-            console.log("hi");
             $(this).attr("aria-label","Change to Study View");
             $(this).attr("value","Study View");
             currentGraph = 1;
         }
 
-
-        // console.log($( this ).attr( "aria-label" ));
         
     });
 });
@@ -434,12 +430,10 @@ function draw() {
 
     if(currentGraph == 1) {
         drawVisGraphA();
-        // console.log("graph A");
     }
 
     if(currentGraph == 2) {
         drawVisGraphB();
-        // console.log("graph B");
     }
     
 
@@ -506,20 +500,16 @@ function changeTicker() {
 function playValue() {
 
     if (key == ' ') {
-
-        console.log("space clicked"); 
+ 
         if (detailsPlaying == true) {
             stopSpeech();
             detailsPlaying = false;
             buttonDown = false;
-            console.log("stopping"); 
 
         } else if (detailsPlaying == false) {   
             
             detailsPlaying = true;
-            console.log("making details true: " + detailsPlaying); 
             buttonDown = false;
-            console.log("playing"); 
 
             textToSpeech.speak(data[loc].date);
 
@@ -551,14 +541,12 @@ function playValue() {
 }
 
 function resetDetails() {
-    console.log("this has been started"); 
     detailsPlaying = false;
     monthPlaying = false; 
     textToSpeech.stop(); 
 }
 
 function stopSpeech() {
-    console.log("Hello World"); 
     textToSpeech.stop();
 }
 
