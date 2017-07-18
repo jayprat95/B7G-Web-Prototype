@@ -40,6 +40,7 @@ var currentGraph = 1;
 var buttonDown = false;
 
 var textToSpeech = new p5.Speech();
+textToSpeech.onEnd = resetDetails; 
 
 var detailsPlaying = false;
 
@@ -149,7 +150,7 @@ $(document).ready(function() {
             $(this).attr("value",on);
             currentGraph = 1;
         }
-        
+      
     });
 });
 
@@ -406,7 +407,6 @@ function setup() {
     osc.amp(0);
 
     textToSpeech.setRate(rate);
-    textToSpeech.onEnd = resetDetails;
 
     updateRate();
 
@@ -500,14 +500,18 @@ function isInside() {
 function mousePressed() {
     if (isInside()) {
         loc = Math.floor(map(mouseX, 0, width, 0, data.length - 1));
+
         playNote(map(data[loc].close, localLow, localHigh, lowmap, highmap), durationLeng);
+
     }
 }
 
 function mouseDragged() {
     if (isInside()) {
         loc = Math.floor(map(mouseX, 0, width, 0, data.length - 1));
+
         playNote(map(data[loc].close, localLow, localHigh, lowmap, highmap), durationLeng);
+
     }
 }
 
@@ -533,7 +537,7 @@ function changeTicker() {
 function playValue() {
 
     if (key == ' ') {
-
+ 
         if (detailsPlaying == true) {
             stopSpeech();
             detailsPlaying = false;
@@ -563,7 +567,6 @@ function playValue() {
             } else {
 
                 textToSpeech.speak("Neutral Trend " + high + open + low);
-                textToSpeech.onEnd(function() { detailsPlaying = false; });
 
             }
 
@@ -575,13 +578,12 @@ function playValue() {
 }
 
 function resetDetails() {
-
     detailsPlaying = false;
-
+    monthPlaying = false; 
+    textToSpeech.stop(); 
 }
 
 function stopSpeech() {
-
     textToSpeech.stop();
 }
 
@@ -702,21 +704,15 @@ function checkMonth() {
         var currentDate = new Date(data[loc].date);
         var previousDate = new Date(data[loc - 1].date);
 
-        if (currentDate.getMonth() != previousDate.getMonth()) {
+        if ((currentDate.getMonth() != previousDate.getMonth()) && !monthPlaying) {
             monthPlaying = true;
-        
-
             if(currentDate.getMonth() == 0) {
                 textToSpeech.speak(currentDate.getFullYear()+" "+months[currentDate.getMonth()]);
-                textToSpeech.onEnd(function() { monthPlaying = false; })
             } else {
                 textToSpeech.speak(months[currentDate.getMonth()]);
-                textToSpeech.onEnd(function() { monthPlaying = false; })
-            }
-            
+            }    
         }
     }
-
 }
 
 
@@ -800,6 +796,7 @@ function drawVisGraphA() {
 
         var lastY = map(data[0].close, localLow,localHigh, newLow, newHigh);
 
+
         for (var i in data) {
 
 
@@ -829,6 +826,7 @@ function drawVisGraphA() {
 }
 
 function drawVisGraphB() {
+
 
     strokeWeight(1);
 
@@ -880,13 +878,13 @@ function drawVisGraphB() {
 
             lastY = map(data[i].close, localLow,localHigh, newLow, newHigh);
             lastS = map(data[i].sma50, localLow,localHigh, newLow, newHigh);
+
         }
 
         stroke(255, 0, 0);
         var curMapped = map(loc, 0, data.length - 1, 0, width);
         line(curMapped, 0, curMapped, canvasHeight);
         fill(255, 0, 0);
-        // ellipse(curMapped, map(data[loc].close, localLow,localHigh, newLow, newHigh), 5, 5);
         strokeWeight(2);
         stroke(0);
         line(curMapped, map(data[loc].close, localLow,localHigh, newLow, newHigh), curMapped, map(data[loc].sma50, localLow,localHigh, newLow, newHigh));
