@@ -193,7 +193,14 @@ class Day {
     }
 }
 
+function setToBeg(time){
 
+    if(loc > time.length) {
+        loc = 0;
+        textToSpeech.speak("Beginning");
+    }
+    
+}
 
 function setData() {
 
@@ -202,29 +209,19 @@ function setData() {
     //TODO: add notification so users know that the location changed
     if (timerange == "onemonth") {
         dataset = lastMonth;
-        if (loc > lastMonth.length) {
-            loc = 0;
-        }
+        setToBeg(lastMonth);
     } else if (timerange == "threemonths") {
         dataset = lastThreeMonths;
-        if (loc > lastThreeMonths.length) {
-            loc = 0;
-        }
+        setToBeg(lastThreeMonths);
     } else if (timerange == "sixmonths") {
         dataset = lastSixMonths;
-        if (loc > lastSixMonths.length) {
-            loc = 0;
-        }
+        setToBeg(lastSixMonths);
     } else if (timerange == "oneyear") {
         dataset = lastOneYear;
-        if (loc > lastOneYear.length) {
-            loc = 0;
-        }
+        setToBeg(lastOneYear);
     } else if (timerange == "fiveyears") {
         dataset = lastFiveYears;
-        if (loc > lastFiveYears.length) {
-            loc = 0;
-        }
+        setToBeg(lastFiveYears);
     }
 
     localHigh = getHighLow(dataset)[0];
@@ -503,14 +500,14 @@ function isInside() {
 function mousePressed() {
     if (isInside()) {
         loc = Math.floor(map(mouseX, 0, width, 0, data.length - 1));
-        playNote(map(data[loc].close, setlow, sethigh, lowmap, highmap), durationLeng);
+        playNote(map(data[loc].close, localLow, localHigh, lowmap, highmap), durationLeng);
     }
 }
 
 function mouseDragged() {
     if (isInside()) {
         loc = Math.floor(map(mouseX, 0, width, 0, data.length - 1));
-        playNote(map(data[loc].close, setlow, sethigh, lowmap, highmap), durationLeng);
+        playNote(map(data[loc].close, localLow, localHigh, lowmap, highmap), durationLeng);
     }
 }
 
@@ -734,6 +731,7 @@ function checkBegEnd() {
 
 
         loc = data.length - 1;
+        // textToSpeech.speak("End");
 
         if(stopTime == 0){
             playNote(map(data[loc].close, setlow, sethigh, lowmap, highmap), durationLeng);
@@ -748,6 +746,7 @@ function checkBegEnd() {
         }
 
         loc = 0;
+        // textToSpeech.speak("Beginning");
 
         if(stopTime == 0){
             playNote(map(data[loc].close, setlow, sethigh, lowmap, highmap), durationLeng);
