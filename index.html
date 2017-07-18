@@ -32,12 +32,18 @@
 <body>
 
     <div id="content">
-            <h1 id="tickerName"></h1>
+            
             <div aria-label="Change Company" class="row">
                 <input id="input" aria-label="New Ticker Input" type="text" name="tickername" class="tickerfield">
                 <input id="submit" aria-label="New Ticker Submit" type="submit" value="Submit" onclick="changeTicker()">
             </div>
-
+            <span id="tickerName"></span> <span id="currentGraph"></span>
+            <div aria-label="Ticker Details" class="row">
+                <span id="current-price"></span>
+                <span id="percent-change"></span>
+                <span id="point-change"></span>
+                <span id="date-range"></span>
+            </div>
             <div aria-label="Change Date Range" class="row">
                 <input id="onemonth" aria-label="Change to One Month" type="submit" value="1 Month">
                 <input id="threemonths"aria-label="Change to Three Months" type="submit" value="3 Months">
@@ -45,6 +51,8 @@
                 <input id="oneyear"aria-label="Change to One Year" type="submit" value="1 Year">
                 <input id="fiveyears"aria-label="Change to Five Years" type="submit" value="5 Years">
             <div>
+
+            <input id="graphView" aria-label="Change to Study View" type="submit" value="Study View">
     </div>
 </body>
 
