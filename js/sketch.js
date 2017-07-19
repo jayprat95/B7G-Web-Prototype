@@ -67,6 +67,7 @@ var lastThreeMonths = [];
 var lastSixMonths = [];
 var lastOneYear = [];
 var lastFiveYears = [];
+var skips = [];
 
 var localHigh;
 var localLow;
@@ -286,7 +287,7 @@ function getData() {
 }
 
 function afterData(thedata) {
-
+    skips = [];
     lastFiveYears = [];
     sethigh = -1;
     setlow = Number.MAX_SAFE_INTEGER;
@@ -407,8 +408,13 @@ function afterData(thedata) {
         if (thedate > lastYearDate) {
             lastOneYear.push(item);
         }
+
+        if(item.crossed) {
+            skips.push(item);
+        }
     }
 
+    console.log(skips);
     lastMonth.reverse();
     lastThreeMonths.reverse();
     lastSixMonths.reverse();
