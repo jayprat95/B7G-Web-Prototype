@@ -543,6 +543,8 @@ function draw() {
 
 }
 
+// PLAY ON CLICK
+
 function isInside() {
     if (mouseX > 0 && mouseX < width && mouseY > 0 && mouseY < height) {
         return true;
@@ -551,23 +553,23 @@ function isInside() {
     }
 }
 
-function mousePressed() {
+function playOnClick() {
     if (isInside()) {
         loc = Math.floor(map(mouseX, 0, width, 0, data.length - 1));
-
-        playNote(map(data[loc].close, localLow, localHigh, lowmap, highmap), durationLeng);
-
+        var note = midiToFreq(map(data[loc].magnitude, localMagLow, localMagHigh, lowMagmap, highMagmap));
+        playPoint(note);
     }
+}
+
+function mousePressed() {
+    playOnClick();
 }
 
 function mouseDragged() {
-    if (isInside()) {
-        loc = Math.floor(map(mouseX, 0, width, 0, data.length - 1));
-
-        playNote(map(data[loc].close, localLow, localHigh, lowmap, highmap), durationLeng);
-
-    }
+    playOnClick();
 }
+
+
 
 function changeTicker() {
     ticker = $(".tickerfield").val().toUpperCase();
