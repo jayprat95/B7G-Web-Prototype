@@ -1,64 +1,40 @@
-var osc, fft;
+
+// VARIABLE DECLARATIONS  ---------------------------------------------
+
+var osc, fft, dataset, table, monthPlaying, localHigh, localLow, localMagHigh, localMagLow;
 
 var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
 var loc = 0;
-var datasize = 0;
-
-var dataset;
-var close;
-
-var highclose;
-var lowclose;
+var data = [];
 
 var highmap = 70;
 var lowmap = 50;
-
-
 var highMagmap = 80;
 var lowMagmap = 60;
 
-var sethigh = -1;
-var setlow = Number.MAX_SAFE_INTEGER;
-
 var durationLeng = 100;
-
 var toneDuration = 1000;
 
-var holdDownDelay = 0;
-
-var index = 0;
-
-var table;
-
 var timerange = "oneyear";
-
-var monthPlaying;
-
-var stopTime = 0;
-
-var osc;
-
 var currentGraph = 1;
 
 var buttonDown = false;
+var stopTime = 0;
 
 var textToSpeech = new p5.Speech();
 textToSpeech.onEnd = resetDetails; 
 
 var detailsPlaying = false;
+var dragging = false;
+var dataReceived = false;
 
 var rate = 1.5;
 
 var canvasHeight = 500;
 
 var prevLoc = -1;
-
 var newLoc = false;
-
-var dragging = false;
-
-var dataReceived = false;
 
 var keyLength = 0;
 
@@ -69,14 +45,7 @@ var lastOneYear = [];
 var lastFiveYears = [];
 var skips = [];
 
-var localHigh;
-var localLow;
-var localMagHigh;
-var localMagLow;
-
-var controlPress = false;
-var plusPress = false;
-var minusPress = false;
+// API STUFF ---------------------------------------------
 
 //TODO: move API key out of repository 
 var quandlQ = "https://www.quandl.com/api/v3/datatables/WIKI/PRICES.json?api_key=iz12PA5nC-YLyESare9X&qopts.columns=open,high,low,close,volume,date";
@@ -88,10 +57,7 @@ var addtl = "&ticker=" + ticker + "&date.gte=" + toJSONLocal(fromDate) + "&date.
 
 var query = quandlQ + addtl;
 
-
-
-var data = [];
-
+// TIMBRE SOUNDS ---------------------------------------------
 
 var piano = new Wad({
     source : 'square', 
@@ -125,7 +91,8 @@ var bass = new Wad({
 })
 
 
-//functions that are required to run pre-startup 
+//DOM LISTENERS ---------------------------------------------
+
 $(document).ready(function() {
 
     $("#onemonth").mousedown(function() {
@@ -199,23 +166,9 @@ function deselectAll() {
     $("#fiveyears").removeClass('buttonSelected');
 }
 
+//DAY OBJECT ---------------------------------------------
 
-//functions to get date string from application 
-function toLocal(date) {
-    var local = new Date(date);
-    local.setMinutes(date.getMinutes() - date.getTimezoneOffset());
-    return local.toJSON();
-}
-
-function toJSONLocal(date) {
-    var local = new Date(date);
-    local.setMinutes(date.getMinutes() - date.getTimezoneOffset());
-    return local.toJSON().slice(0, 10);
-}
-
-//day class to get ohlc 
 class Day {
-
 
     constructor(dateStr, open, high, low, close, volume, date, sma50, magnitude, overOrUnder, crossed) {
         this.dateStr = dateStr;
@@ -232,17 +185,9 @@ class Day {
     }
 }
 
-function setToBeg(time){
-
-    if(loc > time.length) {
-        loc = 0;
-        textToSpeech.speak("Beginning");
-    }
-    
-}
+//GET DATA ---------------------------------------------
 
 function setData() {
-
 
     var dataset;
     //TODO: add notification so users know that the location changed
@@ -289,8 +234,6 @@ function getData() {
 function afterData(thedata) {
     skips = [];
     lastFiveYears = [];
-    sethigh = -1;
-    setlow = Number.MAX_SAFE_INTEGER;
     var fromDate = new Date();
     fromDate.setFullYear(new Date().getFullYear() - 5);
 
@@ -306,17 +249,6 @@ function afterData(thedata) {
             break; 
         }
     }
-
-
-    thedata['datatable']['data'].forEach(function(element) {
-
-        if (element[1] > sethigh) {
-            sethigh = element[1];
-        }
-        if (element[2] < setlow) {
-            setlow = element[2];
-        }
-    }); 
 
     thedata['datatable']['data'].forEach(function(element, i) {
         var d = new Date(element[5]);
@@ -427,31 +359,13 @@ function afterData(thedata) {
 
 }
 
-function updateRate() {
-    textToSpeech.setRate(rate);
-}
+//P5 DEFAULT FUNCTIONS ---------------------------------------------
 
 function preload() {
     table = loadTable("assets/tickers.csv", "csv", "header");
     getData();
     earcon = loadSound('assets/earcon.mp3');
-
 }
-
-function makeDistortionCurve(amount) {
-    var k = typeof amount === 'number' ? amount : 50,
-    n_samples = 44100,
-    curve = new Float32Array(n_samples),
-    deg = Math.PI / 180,
-    i = 0,
-    x;
-    for ( ; i < n_samples; ++i ) {
-        x = i * 2 / n_samples - 1;
-        curve[i] = ( 3 + k ) * x * 20 * deg / ( Math.PI + k * Math.abs(x) );
-    }
-    return curve;
-};
-
 
 function setup() {
     
@@ -477,44 +391,16 @@ function setup() {
     osc.amp(0);
 
     textToSpeech.setRate(rate);
-
-    updateRate();
-
-}
-
-
-function playNote(note, duration) {
-    osc.freq(midiToFreq(note));
-    osc.amp(1);
-    osc.setType('triangle');
-    osc.fade(1, 0.1);
-
-    if (duration) {
-        setTimeout(function() {
-            osc.fade(0, 0.2);
-        }, duration - 50);
-    }
-}
-
-function playMag(note, abovebelow) {
-
-    if(abovebelow == 1) {
-        piano.play({ pitch : note });
-    } else if(abovebelow == -1) {
-        bass.play({ pitch : note });
-    }
-    
+    playRate();
 }
 
 function draw() {
-
 
     if(keyIsPressed === false) {
         stopTime = 1;
     } else {
         stopTime = 0;
     }
-
 
     background(255);
 
@@ -528,7 +414,6 @@ function draw() {
         console.log("graph B");
     }
     
-
     if (buttonDown) {
         
         checkLeftRight();
@@ -554,22 +439,17 @@ function draw() {
 
 }
 
-// PLAY ON CLICK
+// CHECK INPUTS ---------------------------------------------
 
-function isInside() {
-    if (mouseX > 0 && mouseX < width && mouseY > 0 && mouseY < height) {
-        return true;
-    } else {
-        return false;
-    }
+function keyPressed() {
+
+    buttonDown = true;
 }
 
-function playOnClick() {
-    if (isInside()) {
-        loc = Math.floor(map(mouseX, 0, width, 0, data.length - 1));
-        var note = midiToFreq(map(data[loc].magnitude, localMagLow, localMagHigh, lowMagmap, highMagmap));
-        playPoint(note);
-    }
+function keyReleased() {
+
+    buttonDown = false;
+    keyLength = 0;
 }
 
 function mousePressed() {
@@ -580,7 +460,99 @@ function mouseDragged() {
     playOnClick();
 }
 
+function isInside() {
+    if (mouseX > 0 && mouseX < width && mouseY > 0 && mouseY < height) {
+        return true;
+    } else {
+        return false;
+    }
+}
 
+function windowResized() {
+    resizeCanvas(windowWidth, canvasHeight);
+}
+
+//PLAY SOMETHING ---------------------------------------------
+
+function playNote(note, duration) {
+    osc.freq(midiToFreq(note));
+    osc.amp(1);
+    osc.setType('triangle');
+    osc.fade(1, 0.1);
+
+    if (duration) {
+        setTimeout(function() {
+            osc.fade(0, 0.2);
+        }, duration - 50);
+    }
+}
+
+function playMag(note, abovebelow) {
+
+    if(abovebelow == 1) {
+        piano.play({ pitch : note });
+    } else if(abovebelow == -1) {
+        bass.play({ pitch : note });
+    }  
+}
+
+function playValue() {
+
+    if (key == ' ') {
+ 
+        if (detailsPlaying == true) {
+            stopSpeech();
+            detailsPlaying = false;
+            buttonDown = false;
+
+        } else if (detailsPlaying == false) {   
+
+            detailsPlaying = true;
+            buttonDown = false;
+            console.log(data[loc]);
+            textToSpeech.speak(data[loc].dateStr+" , Closing price: "+data[loc].close +" , SMA value: " + data[loc].sma50);
+        }
+    }
+}
+
+function playPoint(n) {
+    if(currentGraph == 1){
+        playNote(map(data[loc].close, localLow, localHigh, lowmap, highmap), durationLeng);
+    } else if (currentGraph == 2) {
+        playMag(n, data[loc].overOrUnder);
+    }
+}
+
+function playRate() {
+    textToSpeech.setRate(rate);
+}
+
+function playOnClick() {
+    if (isInside()) {
+        loc = Math.floor(map(mouseX, 0, width, 0, data.length - 1));
+        var note = midiToFreq(map(data[loc].magnitude, localMagLow, localMagHigh, lowMagmap, highMagmap));
+        playPoint(note);
+    }
+}
+
+function playMonth() {
+
+    if (loc - 1 >= 0) {
+        var currentDate = new Date(data[loc].date);
+        var previousDate = new Date(data[loc - 1].date);
+
+        if ((currentDate.getMonth() != previousDate.getMonth()) && !monthPlaying) {
+            monthPlaying = true;
+            if(currentDate.getMonth() == 0) {
+                textToSpeech.speak(currentDate.getFullYear()+" "+months[currentDate.getMonth()]);
+            } else {
+                textToSpeech.speak(months[currentDate.getMonth()]);
+            }    
+        }
+    }
+}
+
+// CHANGE COMPANY ---------------------------------------------
 
 function changeTicker() {
     ticker = $(".tickerfield").val().toUpperCase();
@@ -599,57 +571,6 @@ function changeTicker() {
         textToSpeech.speak(ticker + "is not a valid ticker name");
     }
 
-}
-
-function playValue() {
-
-    if (key == ' ') {
- 
-        if (detailsPlaying == true) {
-            stopSpeech();
-            detailsPlaying = false;
-            buttonDown = false;
-
-        } else if (detailsPlaying == false) {   
-
-            detailsPlaying = true;
-            buttonDown = false;
-            console.log(data[loc]);
-            textToSpeech.speak(data[loc].dateStr+" , Closing price: "+data[loc].close +" , SMA value: " + data[loc].sma50);
-
-        }
-
-    }
-
-}
-
-function resetDetails() {
-    detailsPlaying = false;
-    monthPlaying = false; 
-    textToSpeech.stop(); 
-}
-
-function stopSpeech() {
-    textToSpeech.stop();
-}
-
-function changeRate() {
-
-    if (key == '=' && rate < 1.9) {
-        rate += 0.2;
-
-        updateRate();
-
-        buttonDown = false;
-    }
-
-    if (key == '-' && rate > 0.3) {
-        rate -= 0.2;
-
-        updateRate();
-
-        buttonDown = false;
-    }
 }
 
 function setTickerDetails() {
@@ -678,25 +599,77 @@ function setTickerDetails() {
     $("#date-range").text("Date Range: " + rangeString);
 }
 
+// CHANGE VOICE SPEED ---------------------------------------------
 
-function keyPressed() {
+function changeRate() {
 
-    buttonDown = true;
+    if (key == '=' && rate < 1.9) {
+        rate += 0.2;
 
+        playRate();
+
+        buttonDown = false;
+    }
+
+    if (key == '-' && rate > 0.3) {
+        rate -= 0.2;
+
+        playRate();
+
+        buttonDown = false;
+    }
 }
 
-function keyReleased() {
+// DATE SETTERS  ---------------------------------------------
 
-    buttonDown = false;
-    keyLength = 0;
+function toLocal(date) {
+    var local = new Date(date);
+    local.setMinutes(date.getMinutes() - date.getTimezoneOffset());
+    return local.toJSON();
 }
+
+function toJSONLocal(date) {
+    var local = new Date(date);
+    local.setMinutes(date.getMinutes() - date.getTimezoneOffset());
+    return local.toJSON().slice(0, 10);
+}
+
+// AUDIO DISTORTION ---------------------------------------------
+
+function makeDistortionCurve(amount) {
+    var k = typeof amount === 'number' ? amount : 50,
+    n_samples = 44100,
+    curve = new Float32Array(n_samples),
+    deg = Math.PI / 180,
+    i = 0,
+    x;
+    for ( ; i < n_samples; ++i ) {
+        x = i * 2 / n_samples - 1;
+        curve[i] = ( 3 + k ) * x * 20 * deg / ( Math.PI + k * Math.abs(x) );
+    }
+    return curve;
+};
+
+// RESET ---------------------------------------------
+
+function resetDetails() {
+    detailsPlaying = false;
+    monthPlaying = false; 
+    textToSpeech.stop(); 
+}
+
+function stopSpeech() {
+    textToSpeech.stop();
+}
+
+// NAVIGATION ---------------------------------------------
 
 function checkLeftRight() {
 
     var note = midiToFreq(map(data[loc].magnitude, localMagLow, localMagHigh, lowMagmap, highMagmap));
 
     if (key == 'g' && loc > 0) {
-        checkMonth();
+        playMonth();
 
         if(loc < data.length - 1) {
             if(data[loc + 1].overOrUnder != data[loc].overOrUnder) {
@@ -723,7 +696,7 @@ function checkLeftRight() {
         }
 
     } else if (key == 'h' && loc < data.length - 1) {
-        checkMonth();
+        playMonth();
         if(loc > 0) {
             if(data[loc - 1].overOrUnder != data[loc].overOrUnder) {
                 earcon.setVolume(1);
@@ -752,32 +725,14 @@ function checkLeftRight() {
 
 }
 
-function playPoint(n) {
-    if(currentGraph == 1){
-        playNote(map(data[loc].close, localLow, localHigh, lowmap, highmap), durationLeng);
-    } else if (currentGraph == 2) {
-        playMag(n, data[loc].overOrUnder);
+function setToBeg(time){
+
+    if(loc > time.length) {
+        loc = 0;
+        textToSpeech.speak("Beginning");
     }
+    
 }
-
-function checkMonth() {
-
-    if (loc - 1 >= 0) {
-        var currentDate = new Date(data[loc].date);
-        var previousDate = new Date(data[loc - 1].date);
-
-        if ((currentDate.getMonth() != previousDate.getMonth()) && !monthPlaying) {
-            monthPlaying = true;
-            if(currentDate.getMonth() == 0) {
-                textToSpeech.speak(currentDate.getFullYear()+" "+months[currentDate.getMonth()]);
-            } else {
-                textToSpeech.speak(months[currentDate.getMonth()]);
-            }    
-        }
-    }
-}
-
-
 
 function checkBegEnd() {
 
@@ -792,7 +747,7 @@ function checkBegEnd() {
         // textToSpeech.speak("End");
 
         if(stopTime == 0){
-            playNote(map(data[loc].close, setlow, sethigh, lowmap, highmap), durationLeng);
+            playNote(map(data[loc].close, localLow, localHigh, lowmap, highmap), durationLeng);
         }
         
 
@@ -807,7 +762,7 @@ function checkBegEnd() {
         // textToSpeech.speak("Beginning");
 
         if(stopTime == 0){
-            playNote(map(data[loc].close, setlow, sethigh, lowmap, highmap), durationLeng);
+            playNote(map(data[loc].close, localLow, localHigh, lowmap, highmap), durationLeng);
         }
     }
 }
@@ -835,7 +790,6 @@ function skipToCrossing() {
             earcon.play();
         }
         
-
 
     } else if (key == ';') {
         //backward
@@ -892,6 +846,7 @@ function getHighLow(myArray) {
 
 }
 
+//DRAW GRAPHS ---------------------------------------------
 
 function drawVisGraphA() {
 
@@ -1017,8 +972,4 @@ function drawVisGraphB() {
 
     }
 
-}
-
-function windowResized() {
-    resizeCanvas(windowWidth, canvasHeight);
 }
