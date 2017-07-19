@@ -740,7 +740,7 @@ function checkBegEnd() {
             playNote(map(data[loc].close, localLow, localHigh, lowmap, highmap), durationLeng);
         }
 
-        textToSpeech.speak("End");
+        textToSpeech.speak("End" + " "  + data[loc].dateStr);
         
 
 
@@ -755,7 +755,7 @@ function checkBegEnd() {
         if(stopTime == 0){
             playNote(map(data[loc].close, localLow, localHigh, lowmap, highmap), durationLeng);
         }
-        textToSpeech.speak("Beginning");
+        textToSpeech.speak("Beginning" + " "  + data[loc].dateStr);
     }
 }
 
