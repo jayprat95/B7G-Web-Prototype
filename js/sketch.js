@@ -604,7 +604,7 @@ function playValue() {
             detailsPlaying = true;
             buttonDown = false;
 
-            textToSpeech.speak(data[loc].dateStr);
+            textToSpeech.speak(data[loc].dateStr+" , Closing price: "+data[loc].close +" , SMA value: " + data[loc].sma50);
 
         }
 
