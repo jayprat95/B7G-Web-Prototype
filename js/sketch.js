@@ -790,7 +790,7 @@ function skipToCrossing() {
 
 function skipToMonths() {
 
-    if (key == 'w') {
+    if (key == 'p') {
         //forward
         console.log(newmonths);
         if (detailsPlaying) {
@@ -814,7 +814,7 @@ function skipToMonths() {
         }
         playMonth();
 
-    } else if (key == 'q') {
+    } else if (key == 'o') {
         //backward
         if (detailsPlaying) {
             stopSpeech();
