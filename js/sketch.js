@@ -21,6 +21,7 @@ var currentGraph = 1;
 var buttonDown = false;
 
 var textToSpeech = new p5.Speech();
+textToSpeech.interrupt = true;
 textToSpeech.onEnd = resetDetails;
 
 var detailsPlaying = false;
@@ -42,6 +43,7 @@ var lastSixMonths = [];
 var lastOneYear = [];
 var lastFiveYears = [];
 var skips = [];
+var newmonths = [];
 
 // API STUFF ---------------------------------------------
 
@@ -169,7 +171,7 @@ function deselectAll() {
 
 class Day {
 
-    constructor(dateStr, open, high, low, close, volume, date, sma50, magnitude, overOrUnder, crossed) {
+    constructor(dateStr, open, high, low, close, volume, date, sma50, magnitude, overOrUnder, crossed, newmonth) {
         this.dateStr = dateStr;
         this.date = date;
         this.open = open;
@@ -181,6 +183,7 @@ class Day {
         this.magnitude = magnitude;
         this.overOrUnder = overOrUnder;
         this.crossed = crossed;
+        this.newmonth = newmonth;
     }
 }
 
@@ -232,6 +235,7 @@ function getData() {
 
 function afterData(thedata) {
     skips = [];
+    newmonths = [];
     lastFiveYears = [];
     var fromDate = new Date();
     fromDate.setFullYear(new Date().getFullYear() - 5);
@@ -272,6 +276,7 @@ function afterData(thedata) {
         var direction = 0;
         var prevdirection = 0;
         var crossing = false;
+        var newmonth = false;
 
         if ((sma50 - element[3]) > 0) {
             direction = 1;
@@ -286,6 +291,14 @@ function afterData(thedata) {
             } else if ((sma50 - thedata['datatable']['data'][i - 1][3]) < 0) {
                 prevdirection = -1;
             }
+
+            var currentDate = new Date(thedata['datatable']['data'][i][5]);
+            var previousDate = new Date(thedata['datatable']['data'][i - 1][5]);
+
+            if ((currentDate.getMonth() != previousDate.getMonth())) {
+                newmonth = true;
+            } 
+
         }
 
         if (prevdirection != direction) {
@@ -295,7 +308,7 @@ function afterData(thedata) {
 
         if (sma50 != 0) {
             var newDate = "" + months[d.getMonth()] + " " + d.getDate() + ", " + d.getFullYear();
-            var today = new Day(newDate, element[0], element[1], element[2], element[3], element[4], d, sma50, magnitude, direction, crossing);
+            var today = new Day(newDate, element[0], element[1], element[2], element[3], element[4], d, sma50, magnitude, direction, crossing, newmonth);
             lastFiveYears.push(today);
         }
     });
@@ -316,7 +329,7 @@ function afterData(thedata) {
     var lastYearDate = new Date();
     lastYearDate.setFullYear(new Date().getFullYear() - 1);
 
-    for (var i = lastFiveYears.length - 1; i > 0; i--) {
+    for (var i = 0; i < lastFiveYears.length - 1; i++) {
 
         var item = lastFiveYears[i];
         var thedate = new Date(item.date);
@@ -338,12 +351,11 @@ function afterData(thedata) {
         if (item.crossed) {
             skips.push(item);
         }
+
+        if (item.newmonth) {
+            newmonths.push(item);
+        }
     }
-    skips.reverse();
-    lastMonth.reverse();
-    lastThreeMonths.reverse();
-    lastSixMonths.reverse();
-    lastOneYear.reverse();
 
     data = setData();
 
@@ -410,6 +422,7 @@ function draw() {
         changeRate();
         checkBegEnd();
         skipToCrossing();
+        skipToMonths();
     }
 
     if (data[loc]) {
@@ -528,21 +541,17 @@ function playOnClick() {
 
 function playMonth() {
 
-    if (loc - 1 >= 0) {
-        var currentDate = new Date(data[loc].date);
-        var previousDate = new Date(data[loc - 1].date);
+    var currentDate = new Date(data[loc].date);
 
-
-
-        if ((currentDate.getMonth() != previousDate.getMonth()) && !monthPlaying) {
-            monthPlaying = true;
-            if (currentDate.getMonth() == 0) {
-                textToSpeech.speak(currentDate.getFullYear() + " " + months[currentDate.getMonth()]);
-            } else {
-                textToSpeech.speak(months[currentDate.getMonth()]);
-            }
+    if (data[loc].newmonth && !monthPlaying) {
+        monthPlaying = true;
+        if (currentDate.getMonth() == 0) {
+            textToSpeech.speak(currentDate.getFullYear() + " " + months[currentDate.getMonth()]);
+        } else {
+            textToSpeech.speak(months[currentDate.getMonth()]);
         }
     }
+    
 }
 
 // CHANGE COMPANY ---------------------------------------------
@@ -633,7 +642,6 @@ function toJSONLocal(date) {
 function resetDetails() {
     detailsPlaying = false;
     monthPlaying = false;
-    textToSpeech.stop();
 }
 
 function stopSpeech() {
@@ -793,6 +801,58 @@ function skipToCrossing() {
             }
         }
         earcon.play();
+    }
+}
+
+function skipToMonths() {
+
+    if (key == ']') {
+        //forward
+        console.log(newmonths);
+        if (detailsPlaying) {
+            stopSpeech();
+        }
+
+        for(i = 0; i < newmonths.length; i++ ) {
+            if(newmonths[i].date > data[loc].date) {
+                if(newmonths[i].date <= data[data.length-1].date) {
+                    for(j in data) {
+                        if(data[j].date == newmonths[i].date) {
+                            if(keyLength == 0 || keyLength > 10) {
+                               loc = j;
+                            }
+                            keyLength++; 
+                        }
+                    }
+                }
+                break;
+            }
+        }
+        playMonth();
+
+    } else if (key == '[') {
+        //backward
+        //console.log("back");
+        if (detailsPlaying) {
+            stopSpeech();
+        }
+
+        for(i = newmonths.length - 1; i > -1; i-- ) {
+            if(newmonths[i].date < data[loc].date) {
+                if(newmonths[i].date >= data[0].date) {
+                    for(j in data) {
+                        if(data[j].date == newmonths[i].date) {
+                            if(keyLength == 0 || keyLength > 10) {
+                               loc = j;
+                            }
+                            keyLength++;
+                        }
+                    }
+                }
+                break;
+            }
+        }
+        playMonth();
     }
 }
 
