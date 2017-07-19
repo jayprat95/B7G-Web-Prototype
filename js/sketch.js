@@ -469,7 +469,8 @@ function setup() {
 
     $("#currentGraph").text(graphName);
 
-    createCanvas(windowWidth, canvasHeight);
+    var canvas = createCanvas(windowWidth, canvasHeight);
+    canvas.parent('canvas-container');
 
     osc = new p5.TriOsc();
     osc.start();
@@ -534,12 +535,13 @@ function draw() {
         playValue();
         changeRate();
         checkBegEnd();
-        checkMonth();
         skipToCrossing();
     }
 
     if(data[loc]) {
-        $("#curr-date").text(data[loc]['dateStr']);    
+        $("#curr-date").text("Date: " + data[loc]['dateStr']);   
+        $("#curr-price").text("Closing Price: " + data[loc]['close']);   
+        $("#curr-sma").text("SMA50: " + data[loc]['sma50']);    
     }
 
     if (prevLoc != loc) {
@@ -694,6 +696,7 @@ function checkLeftRight() {
     var note = midiToFreq(map(data[loc].magnitude, localMagLow, localMagHigh, lowMagmap, highMagmap));
 
     if (key == 'g' && loc > 0) {
+        checkMonth();
 
         if(loc < data.length - 1) {
             if(data[loc + 1].overOrUnder != data[loc].overOrUnder) {
@@ -720,6 +723,7 @@ function checkLeftRight() {
         }
 
     } else if (key == 'h' && loc < data.length - 1) {
+        checkMonth();
         if(loc > 0) {
             if(data[loc - 1].overOrUnder != data[loc].overOrUnder) {
                 earcon.setVolume(1);
@@ -821,6 +825,7 @@ function skipToCrossing() {
             if(skips[i].date > data[loc].date) {
                 if(skips[i].date <= data[data.length-1].date) {
                     //jump to this loc
+                    console.log(skips[i].date);
                 }
                 break;
             }
@@ -843,6 +848,7 @@ function skipToCrossing() {
             if(skips[i].date < data[loc].date) {
                 if(skips[i].date >= data[0].date) {
                     //jump to this loc
+                    console.log(skips[i].date);
                 }
                 break;
             }
