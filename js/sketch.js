@@ -667,7 +667,6 @@ function checkLeftRight() {
 
             if (loc < data.length - 1) {
                 if (data[loc].crossed) {
-                    console.log(data[loc]);
                     earcon.setVolume(1);
                     earcon.play();
                 }
@@ -697,7 +696,6 @@ function checkLeftRight() {
 
             if (loc > 0) {
                 if (data[loc].crossed) {
-                    console.log(data[loc]);
                     earcon.setVolume(1);
                     earcon.play();
                 }
