@@ -420,6 +420,7 @@ function updateRate() {
 function preload() {
     table = loadTable("assets/tickers.csv", "csv", "header");
     getData();
+    earcon = loadSound('assets/earcon.mp3');
 
 }
 
@@ -677,12 +678,18 @@ function keyReleased() {
     keyLength = 0;
 }
 
-
 function checkLeftRight() {
 
     var note = midiToFreq(map(data[loc].magnitude, localMagLow, localMagHigh, lowMagmap, highMagmap));
 
     if (key == 'g' && loc > 0) {
+
+        if(loc < data.length - 1) {
+            if(data[loc + 1].overOrUnder != data[loc].overOrUnder) {
+                earcon.setVolume(1);
+                earcon.play();
+            }            
+        }
 
         if (detailsPlaying) {
             stopSpeech();
@@ -702,6 +709,12 @@ function checkLeftRight() {
         }
 
     } else if (key == 'h' && loc < data.length - 1) {
+        if(loc > 0) {
+            if(data[loc - 1].overOrUnder != data[loc].overOrUnder) {
+                earcon.setVolume(1);
+                earcon.play();
+            }
+        }
 
         if (detailsPlaying) {
             stopSpeech();
