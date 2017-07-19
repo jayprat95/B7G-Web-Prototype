@@ -509,7 +509,7 @@ function playValue() {
 }
 
 function playPoint(n) {
-    
+
     if(currentGraph == 1){
         playNote(map(data[loc].close, localLow, localHigh, lowmap, highmap), durationLeng);
     } else if (currentGraph == 2) {
@@ -630,7 +630,6 @@ function toJSONLocal(date) {
     local.setMinutes(date.getMinutes() - date.getTimezoneOffset());
     return local.toJSON().slice(0, 10);
 }
-
 
 
 // RESET ---------------------------------------------
@@ -758,7 +757,6 @@ function skipToCrossing() {
         for(i = 0; i < skips.length; i++ ) {
             if(skips[i].date > data[loc].date) {
                 if(skips[i].date <= data[data.length-1].date) {
-                    console.log(skips[i].date);
                     for(j in data) {
                         if(data[j].date == skips[i].date) {
                             if(keyLength == 0 || keyLength > 10) {
@@ -772,7 +770,6 @@ function skipToCrossing() {
                 break;
             }
         }
-
         earcon.play();
 
     } else if (key == ';') {
@@ -785,7 +782,6 @@ function skipToCrossing() {
         for(i = skips.length - 1; i > -1; i-- ) {
             if(skips[i].date < data[loc].date) {
                 if(skips[i].date >= data[0].date) {
-                    console.log(skips[i].date);
                     for(j in data) {
                         if(data[j].date == skips[i].date) {
                             if(keyLength == 0 || keyLength > 10) {
@@ -798,7 +794,6 @@ function skipToCrossing() {
                 break;
             }
         }
-
         earcon.play();
     }
 }
