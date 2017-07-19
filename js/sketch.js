@@ -387,10 +387,7 @@ function afterData(thedata) {
     var lastYearDate = new Date();
     lastYearDate.setFullYear(new Date().getFullYear() - 1);
 
-    var i = lastFiveYears.length - 1;
-    var end = i - 365;
-
-    for (i; i >= end; i--) {
+    for (var i = lastFiveYears.length - 1; i > 0; i--) {
 
         var item = lastFiveYears[i];
         var thedate = new Date(item.date);
@@ -413,7 +410,7 @@ function afterData(thedata) {
             skips.push(item);
         }
     }
-
+    skips.reverse();
     console.log(skips);
     lastMonth.reverse();
     lastThreeMonths.reverse();
@@ -538,6 +535,7 @@ function draw() {
         changeRate();
         checkBegEnd();
         checkMonth();
+        skipToCrossing();
     }
 
     if(data[loc]) {
@@ -614,7 +612,7 @@ function playValue() {
 
             detailsPlaying = true;
             buttonDown = false;
-
+            console.log(data[loc]);
             textToSpeech.speak(data[loc].dateStr+" , Closing price: "+data[loc].close +" , SMA value: " + data[loc].sma50);
 
         }
@@ -810,6 +808,52 @@ function checkBegEnd() {
     }
 }
 
+function skipToCrossing() {
+
+    if (key == '\'') {
+        //forward
+
+        if (detailsPlaying) {
+            stopSpeech();
+        }
+
+        for(i = 0; i < skips.length; i++ ) {
+            if(skips[i].date > data[loc].date) {
+                if(skips[i].date <= data[data.length-1].date) {
+                    //jump to this loc
+                }
+                break;
+            }
+        }
+
+        if(stopTime == 0){
+            earcon.play();
+        }
+        
+
+
+    } else if (key == ';') {
+        //backward
+
+        if (detailsPlaying) {
+            stopSpeech();
+        }
+
+        for(i = skips.length - 1; i > -1; i-- ) {
+            if(skips[i].date < data[loc].date) {
+                if(skips[i].date >= data[0].date) {
+                    //jump to this loc
+                }
+                break;
+            }
+        }
+
+        if(stopTime == 0){
+            earcon.play();
+        }
+    }
+}
+
 function getHighLow(myArray) {
 
     var highlow = [];
@@ -909,7 +953,6 @@ function drawVisGraphB() {
 
                 var lastxPos = map(i - 1, 0, data.length - 1, 0, width);
 
-                
 
                 if(data[i].overOrUnder == 1) {
                     strokeWeight(0.5);
@@ -933,12 +976,29 @@ function drawVisGraphB() {
 
                 stroke(1);
                 line(lastxPos, lastY, xPos, map(data[i].close, localLow,localHigh, newLow, newHigh));
+
+                
                 
             }
 
             lastY = map(data[i].close, localLow,localHigh, newLow, newHigh);
             lastS = map(data[i].sma50, localLow,localHigh, newLow, newHigh);
 
+        }
+
+        for (var i in data) {
+            if (i != 0 && i != data.length) {
+
+                var xPos = map(i, 0, data.length - 1, 0, width);
+
+                var lastxPos = map(i - 1, 0, data.length - 1, 0, width);
+
+                if(data[i].crossed) {
+                    fill(247, 166, 20);
+                    noStroke();
+                    ellipse(xPos, map(data[i].sma50, localLow,localHigh, newLow, newHigh),4,4);
+                }
+            }
         }
 
         stroke(255, 0, 0);
