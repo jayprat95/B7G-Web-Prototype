@@ -216,7 +216,7 @@ function toJSONLocal(date) {
 class Day {
 
 
-    constructor(dateStr, open, high, low, close, volume, date, sma50, magnitude, overOrUnder) {
+    constructor(dateStr, open, high, low, close, volume, date, sma50, magnitude, overOrUnder, crossed) {
         this.dateStr = dateStr;
         this.date = date;
         this.open = open;
@@ -227,6 +227,7 @@ class Day {
         this.sma50 = sma50; 
         this.magnitude = magnitude; 
         this.overOrUnder = overOrUnder; 
+        this.crossed = crossed;
     }
 }
 
@@ -337,6 +338,8 @@ function afterData(thedata) {
 
         //if it intersects then it's 0
         var direction = 0; 
+        var prevdirection = 0;
+        var crossing = false;
 
         if((sma50 - element[3]) > 0) {
             direction = 1; 
@@ -346,17 +349,26 @@ function afterData(thedata) {
         }
         sma50 = parseFloat((sma50).toFixed(4)); 
 
-        
+        if( i > 0 ) {
+            if((sma50 - thedata['datatable']['data'][i-1][3]) > 0) {
+                prevdirection = 1; 
+            }
+            else if((sma50 - thedata['datatable']['data'][i-1][3]) < 0) {
+                prevdirection = -1; 
+            }
+        }
 
+        if( prevdirection != direction) {
+            crossing = true;
+        }
+
+        
         if(sma50 != 0) {
             var newDate = "" + months[d.getMonth()] + " " + d.getDate() + ", " + d.getFullYear();
-            var today = new Day(newDate, element[0], element[1], element[2], element[3], element[4], d, sma50, magnitude, direction);
+            var today = new Day(newDate, element[0], element[1], element[2], element[3], element[4], d, sma50, magnitude, direction, crossing);
             lastFiveYears.push(today);            
         }
     });
-
-    
-
 
     lastMonth = [];
     var lastMonthDate = new Date();
@@ -410,7 +422,6 @@ function afterData(thedata) {
         setTimeout(function() { setTickerDetails(); }, 100);
     }
 
-    console.log(lastFiveYears); 
 }
 
 function updateRate() {
@@ -425,31 +436,21 @@ function preload() {
 }
 
 function makeDistortionCurve(amount) {
-      var k = typeof amount === 'number' ? amount : 50,
-        n_samples = 44100,
-        curve = new Float32Array(n_samples),
-        deg = Math.PI / 180,
-        i = 0,
-        x;
-      for ( ; i < n_samples; ++i ) {
+    var k = typeof amount === 'number' ? amount : 50,
+    n_samples = 44100,
+    curve = new Float32Array(n_samples),
+    deg = Math.PI / 180,
+    i = 0,
+    x;
+    for ( ; i < n_samples; ++i ) {
         x = i * 2 / n_samples - 1;
         curve[i] = ( 3 + k ) * x * 20 * deg / ( Math.PI + k * Math.abs(x) );
-      }
-      return curve;
-    };
+    }
+    return curve;
+};
 
 
 function setup() {
-    // var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    // var oscillator = audioCtx.createOscillator();
-    // oscillator.start(0);
-
-    // var distortion = audioCtx.createWaveShaper();
-    // distortion.curve = makeDistortionCurve(400);
-    // distortion.oversample = '2x';
-
-    // oscillator.connect(distortion);
-    // distortion.connect(audioCtx.destination);
     
     $('#submit').attr('disabled', true);
     $("#tickerName").text("Company: " + tickerCompany);
