@@ -142,8 +142,9 @@ $(document).ready(function() {
 
     $("#graphView").mousedown(function(){
 
-        var on = "Turn On Study";
-        var off = "Turn Off Study"
+        //TODO change variables 
+        var on = "Turn Off Study";
+        var off = "Turn On Study"
 
         if($( this ).attr( "value" ) ==  on){
             $(this).attr("aria-label",off);
@@ -343,7 +344,6 @@ function afterData(thedata) {
         }
     }
     skips.reverse();
-    console.log(skips);
     lastMonth.reverse();
     lastThreeMonths.reverse();
     lastSixMonths.reverse();
@@ -375,6 +375,7 @@ function setup() {
 
     var graphName;
 
+    //TODO: what's going on here 
     if(currentGraph == 1 ) {
         graphName = "Closing price view";
     } else if (currentGraph == 2) {
@@ -405,13 +406,12 @@ function draw() {
     background(255);
 
     if(currentGraph == 1) {
-        drawVisGraphA();
-        console.log("graph A");
+        drawVisGraphB();
+        
     }
 
     if(currentGraph == 2) {
-        drawVisGraphB();
-        console.log("graph B");
+        drawVisGraphA();
     }
     
     if (buttonDown) {
@@ -429,6 +429,7 @@ function draw() {
         $("#curr-sma").text("SMA50: " + data[loc]['sma50']);    
     }
 
+    //TODO see if these loc's are useful 
     if (prevLoc != loc) {
         newLoc = true;
     } else {
@@ -442,13 +443,13 @@ function draw() {
 // CHECK INPUTS ---------------------------------------------
 
 function keyPressed() {
-
     buttonDown = true;
 }
 
 function keyReleased() {
 
     buttonDown = false;
+    //TODO check what this variable does 
     keyLength = 0;
 }
 
@@ -499,7 +500,8 @@ function playMag(note, abovebelow) {
 function playValue() {
 
     if (key == ' ') {
- 
+        
+        //TODO check this logic for double spacebar 
         if (detailsPlaying == true) {
             stopSpeech();
             detailsPlaying = false;
@@ -509,7 +511,6 @@ function playValue() {
 
             detailsPlaying = true;
             buttonDown = false;
-            console.log(data[loc]);
             textToSpeech.speak(data[loc].dateStr+" , Closing price: "+data[loc].close +" , SMA value: " + data[loc].sma50);
         }
     }
@@ -540,6 +541,9 @@ function playMonth() {
     if (loc - 1 >= 0) {
         var currentDate = new Date(data[loc].date);
         var previousDate = new Date(data[loc - 1].date);
+
+        console.log(currentDate, previousDate); 
+
 
         if ((currentDate.getMonth() != previousDate.getMonth()) && !monthPlaying) {
             monthPlaying = true;
@@ -634,21 +638,7 @@ function toJSONLocal(date) {
     return local.toJSON().slice(0, 10);
 }
 
-// AUDIO DISTORTION ---------------------------------------------
 
-function makeDistortionCurve(amount) {
-    var k = typeof amount === 'number' ? amount : 50,
-    n_samples = 44100,
-    curve = new Float32Array(n_samples),
-    deg = Math.PI / 180,
-    i = 0,
-    x;
-    for ( ; i < n_samples; ++i ) {
-        x = i * 2 / n_samples - 1;
-        curve[i] = ( 3 + k ) * x * 20 * deg / ( Math.PI + k * Math.abs(x) );
-    }
-    return curve;
-};
 
 // RESET ---------------------------------------------
 
@@ -669,7 +659,6 @@ function checkLeftRight() {
     var note = midiToFreq(map(data[loc].magnitude, localMagLow, localMagHigh, lowMagmap, highMagmap));
 
     if (key == 'g' && loc > 0) {
-        playMonth();
 
         if(loc < data.length - 1) {
             if(data[loc + 1].overOrUnder != data[loc].overOrUnder) {
@@ -690,13 +679,13 @@ function checkLeftRight() {
         }
 
         keyLength++;
-
+        playMonth();
         if (loc == 0) {
             textToSpeech.speak("Beginning");
         }
+        
 
     } else if (key == 'h' && loc < data.length - 1) {
-        playMonth();
         if(loc > 0) {
             if(data[loc - 1].overOrUnder != data[loc].overOrUnder) {
                 earcon.setVolume(1);
@@ -717,9 +706,11 @@ function checkLeftRight() {
 
         keyLength++;
 
+        playMonth();
         if (loc == data.length - 1) {
             textToSpeech.speak("End");
         }
+
 
     }
 
@@ -744,11 +735,12 @@ function checkBegEnd() {
 
 
         loc = data.length - 1;
-        // textToSpeech.speak("End");
 
         if(stopTime == 0){
             playNote(map(data[loc].close, localLow, localHigh, lowmap, highmap), durationLeng);
         }
+
+        textToSpeech.speak("End");
         
 
 
@@ -759,11 +751,11 @@ function checkBegEnd() {
         }
 
         loc = 0;
-        // textToSpeech.speak("Beginning");
 
         if(stopTime == 0){
             playNote(map(data[loc].close, localLow, localHigh, lowmap, highmap), durationLeng);
         }
+        textToSpeech.speak("Beginning");
     }
 }
 
