@@ -534,6 +534,10 @@ function draw() {
         checkMonth();
     }
 
+    if(data[loc]) {
+        $("#curr-date").text(data[loc]['dateStr']);    
+    }
+
     if (prevLoc != loc) {
         newLoc = true;
     } else {
