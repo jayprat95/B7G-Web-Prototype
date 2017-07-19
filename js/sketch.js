@@ -150,10 +150,12 @@ $(document).ready(function() {
             $(this).attr("aria-label", off);
             $(this).attr("value", off);
             currentGraph = 2;
+            $("#currentGraph").text("Closing Values");
         } else if ($(this).attr("value") == off) {
             $(this).attr("aria-label", on);
             $(this).attr("value", on);
             currentGraph = 1;
+            $("#currentGraph").text("Closing Values with Study");
         }
 
     });
@@ -380,17 +382,7 @@ function setup() {
     $('#submit').attr('disabled', true);
     $("#tickerName").text("Company: " + tickerCompany);
     $("#oneyear").addClass('buttonSelected');
-
-    var graphName;
-
-    //TODO: what's going on here 
-    if (currentGraph == 1) {
-        graphName = "Closing price view";
-    } else if (currentGraph == 2) {
-        graphName = "Study view";
-    }
-
-    $("#currentGraph").text(graphName);
+    $("#currentGraph").text("Closing Values with Study");
 
     var canvas = createCanvas(windowWidth, canvasHeight);
     canvas.parent('canvas-container');
@@ -431,15 +423,7 @@ function draw() {
         $("#curr-sma").text("SMA50: " + data[loc]['sma50']);
     }
 
-    //TODO see if these loc's are useful 
-    if (prevLoc != loc) {
-        newLoc = true;
-    } else {
-        newLoc = false;
-    }
-
     prevLoc = loc;
-
 }
 
 // CHECK INPUTS ---------------------------------------------
@@ -521,9 +505,9 @@ function playValue() {
 
 function playPoint(n) {
     if (currentGraph == 1) {
-        playNote(map(data[loc].close, localLow, localHigh, lowmap, highmap), durationLeng);
-    } else if (currentGraph == 2) {
         playMag(n, data[loc].overOrUnder);
+    } else if (currentGraph == 2) {
+        playNote(map(data[loc].close, localLow, localHigh, lowmap, highmap), durationLeng);
     }
 }
 
@@ -543,7 +527,7 @@ function playMonth() {
 
     var currentDate = new Date(data[loc].date);
 
-    if (data[loc].newmonth && !monthPlaying) {
+    if (data[loc].newmonth && prevLoc != newLoc) {
         monthPlaying = true;
         if (currentDate.getMonth() == 0) {
             textToSpeech.speak(currentDate.getFullYear() + " " + months[currentDate.getMonth()]);
