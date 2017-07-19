@@ -773,6 +773,15 @@ function skipToCrossing() {
                 if(skips[i].date <= data[data.length-1].date) {
                     //jump to this loc
                     console.log(skips[i].date);
+                    for(j in data) {
+                        if(data[j].date == skips[i].date) {
+                            if(keyLength == 0 || keyLength > 10) {
+                               loc = j;
+                            }
+                            keyLength++;
+                            
+                        }
+                    }
                 }
                 break;
             }
@@ -795,6 +804,14 @@ function skipToCrossing() {
                 if(skips[i].date >= data[0].date) {
                     //jump to this loc
                     console.log(skips[i].date);
+                    for(j in data) {
+                        if(data[j].date == skips[i].date) {
+                            if(keyLength == 0 || keyLength > 10) {
+                               loc = j;
+                            }
+                            keyLength++;
+                        }
+                    }
                 }
                 break;
             }
