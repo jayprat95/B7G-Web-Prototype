@@ -62,11 +62,11 @@ var query = quandlQ + addtl;
 var piano = new Wad({
     source: 'square',
     env: {
-        attack: .015,
-        decay: .002,
+        attack: 0,
+        decay: 0,
         sustain: .1,
-        hold: .05,
-        release: .03
+        hold: 0,
+        release: 0
     },
     filter: {
         type: 'lowpass',
@@ -82,11 +82,11 @@ var piano = new Wad({
 var bass = new Wad({
     source: 'triangle',
     env: {
-        attack: .02,
-        decay: .01,
+        attack: 0,
+        decay: 0,
         sustain: .1,
-        hold: .002,
-        release: .01
+        hold: 0,
+        release: 0
     },
 })
 
@@ -142,9 +142,8 @@ $(document).ready(function() {
 
     $("#graphView").mousedown(function() {
 
-        //TODO change variables 
-        var on = "Turn Off Study";
-        var off = "Turn On Study"
+        var on = "Turn On Study";
+        var off = "Turn Off Study"
 
         if ($(this).attr("value") == on) {
             $(this).attr("aria-label", off);
@@ -384,6 +383,7 @@ function setup() {
     $("#oneyear").addClass('buttonSelected');
     $("#currentGraph").text("Closing Values with Study");
 
+
     var canvas = createCanvas(windowWidth, canvasHeight);
     canvas.parent('canvas-container');
 
@@ -397,7 +397,7 @@ function setup() {
 
 function draw() {
 
-
+    console.log(currentGraph);
     background(255);
 
     if (currentGraph == 1) {
@@ -527,8 +527,8 @@ function playMonth() {
 
     var currentDate = new Date(data[loc].date);
 
-    if (data[loc].newmonth && prevLoc != newLoc) {
-        monthPlaying = true;
+    if (data[loc].newmonth && newLoc != loc) {
+
         if (currentDate.getMonth() == 0) {
             textToSpeech.speak(currentDate.getFullYear() + " " + months[currentDate.getMonth()]);
         } else {
@@ -640,8 +640,6 @@ function checkLeftRight() {
 
     if (key == 'g' && loc > 0) {
 
-
-
         if (detailsPlaying) {
             stopSpeech();
         }
@@ -694,7 +692,6 @@ function checkLeftRight() {
         if (loc == data.length - 1) {
             textToSpeech.speak("End");
         }
-
 
     }
 
@@ -792,7 +789,6 @@ function skipToMonths() {
 
     if (key == ']') {
         //forward
-        console.log(newmonths);
         if (detailsPlaying) {
             stopSpeech();
         }
@@ -816,7 +812,6 @@ function skipToMonths() {
 
     } else if (key == '[') {
         //backward
-        //console.log("back");
         if (detailsPlaying) {
             stopSpeech();
         }
@@ -876,20 +871,16 @@ function getHighLow(myArray) {
 
 function drawVisGraphA() {
 
-
     var padding = 100;
 
     var newLow = window.height - padding;
     var newHigh = 0 + padding;
 
-
     if (data != undefined && data[0] != undefined) {
 
         var lastY = map(data[0].close, localLow, localHigh, newLow, newHigh);
 
-
         for (var i in data) {
-
 
             if (i != 0 && i != data.length) {
 
@@ -913,11 +904,9 @@ function drawVisGraphA() {
         fill(255, 0, 0);
         ellipse(curMapped, map(data[loc].close, localLow, localHigh, newLow, newHigh), 5, 5);
     }
-
 }
 
 function drawVisGraphB() {
-
 
     strokeWeight(1);
 
@@ -925,7 +914,6 @@ function drawVisGraphB() {
 
     var newLow = window.height - padding;
     var newHigh = 0 + padding;
-
 
     if (data != undefined && data[0] != undefined) {
 
@@ -940,7 +928,6 @@ function drawVisGraphB() {
 
                 var lastxPos = map(i - 1, 0, data.length - 1, 0, width);
 
-
                 if (data[i].overOrUnder == 1) {
                     strokeWeight(0.5);
                     fill(216, 25, 75);
@@ -954,7 +941,6 @@ function drawVisGraphB() {
                     quad(lastxPos, lastS, lastxPos, lastY, xPos, map(data[i].close, localLow, localHigh, newLow, newHigh), xPos, map(data[i].sma50, localLow, localHigh, newLow, newHigh));
                 }
 
-
                 if (data[i].sma50 != 0 || data[i - 1].sma50 != 0) {
                     strokeWeight(1);
                     stroke(0, 67, 234);
@@ -963,8 +949,6 @@ function drawVisGraphB() {
 
                 stroke(1);
                 line(lastxPos, lastY, xPos, map(data[i].close, localLow, localHigh, newLow, newHigh));
-
-
 
             }
 
