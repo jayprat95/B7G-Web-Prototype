@@ -142,18 +142,19 @@ $(document).ready(function() {
 
     $("#graphView").mousedown(function() {
 
-        //TODO change variables 
-        var on = "Turn Off Study";
-        var off = "Turn On Study"
+        var on = "Turn On Study";
+        var off = "Turn Off Study"
 
         if ($(this).attr("value") == on) {
             $(this).attr("aria-label", off);
             $(this).attr("value", off);
             currentGraph = 2;
+            $("#currentGraph").text("Closing Price View");
         } else if ($(this).attr("value") == off) {
             $(this).attr("aria-label", on);
             $(this).attr("value", on);
             currentGraph = 1;
+            $("#currentGraph").text("Study View");
         }
 
     });
@@ -381,13 +382,10 @@ function setup() {
     $("#tickerName").text("Company: " + tickerCompany);
     $("#oneyear").addClass('buttonSelected');
 
-    var graphName;
-
-    //TODO: what's going on here 
     if (currentGraph == 1) {
-        graphName = "Closing price view";
-    } else if (currentGraph == 2) {
         graphName = "Study view";
+    } else if (currentGraph == 2) {
+        graphName = "Closing price view";
     }
 
     $("#currentGraph").text(graphName);
@@ -404,7 +402,6 @@ function setup() {
 }
 
 function draw() {
-
 
     background(255);
 
@@ -425,17 +422,12 @@ function draw() {
         skipToMonths();
     }
 
+    console.log("Previous " + prevLoc + " Current " + loc);
+
     if (data[loc]) {
         $("#curr-date").text("Date: " + data[loc]['dateStr']);
         $("#curr-price").text("Closing Price: " + data[loc]['close']);
         $("#curr-sma").text("SMA50: " + data[loc]['sma50']);
-    }
-
-    //TODO see if these loc's are useful 
-    if (prevLoc != loc) {
-        newLoc = true;
-    } else {
-        newLoc = false;
     }
 
     prevLoc = loc;
@@ -543,8 +535,8 @@ function playMonth() {
 
     var currentDate = new Date(data[loc].date);
 
-    if (data[loc].newmonth && !monthPlaying) {
-        monthPlaying = true;
+    if (data[loc].newmonth && newLoc != loc) {
+        //monthPlaying = true;
         if (currentDate.getMonth() == 0) {
             textToSpeech.speak(currentDate.getFullYear() + " " + months[currentDate.getMonth()]);
         } else {
@@ -656,8 +648,6 @@ function checkLeftRight() {
 
     if (key == 'g' && loc > 0) {
 
-
-
         if (detailsPlaying) {
             stopSpeech();
         }
@@ -710,7 +700,6 @@ function checkLeftRight() {
         if (loc == data.length - 1) {
             textToSpeech.speak("End");
         }
-
 
     }
 
@@ -832,7 +821,6 @@ function skipToMonths() {
 
     } else if (key == '[') {
         //backward
-        //console.log("back");
         if (detailsPlaying) {
             stopSpeech();
         }
