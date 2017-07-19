@@ -20,7 +20,6 @@ var timerange = "oneyear";
 var currentGraph = 1;
 
 var buttonDown = false;
-var stopTime = 0;
 
 var textToSpeech = new p5.Speech();
 textToSpeech.onEnd = resetDetails; 
@@ -397,17 +396,10 @@ function setup() {
 
 function draw() {
 
-    if(keyIsPressed === false) {
-        stopTime = 1;
-    } else {
-        stopTime = 0;
-    }
-
     background(255);
 
     if(currentGraph == 1) {
         drawVisGraphB();
-        
     }
 
     if(currentGraph == 2) {
@@ -415,7 +407,6 @@ function draw() {
     }
     
     if (buttonDown) {
-        
         checkLeftRight();
         playValue();
         changeRate();
@@ -503,6 +494,7 @@ function playValue() {
         
         //TODO check this logic for double spacebar 
         if (detailsPlaying == true) {
+
             stopSpeech();
             detailsPlaying = false;
             buttonDown = false;
@@ -517,6 +509,7 @@ function playValue() {
 }
 
 function playPoint(n) {
+    
     if(currentGraph == 1){
         playNote(map(data[loc].close, localLow, localHigh, lowmap, highmap), durationLeng);
     } else if (currentGraph == 2) {
@@ -733,17 +726,12 @@ function checkBegEnd() {
             stopSpeech();
         }
 
-
         loc = data.length - 1;
 
-        if(stopTime == 0){
-            playNote(map(data[loc].close, localLow, localHigh, lowmap, highmap), durationLeng);
-        }
+        playNote(map(data[loc].close, localLow, localHigh, lowmap, highmap), durationLeng);
 
         textToSpeech.speak("End" + " "  + data[loc].dateStr);
         
-
-
     } else if (key == ',') {
 
         if (detailsPlaying) {
@@ -752,9 +740,8 @@ function checkBegEnd() {
 
         loc = 0;
 
-        if(stopTime == 0){
-            playNote(map(data[loc].close, localLow, localHigh, lowmap, highmap), durationLeng);
-        }
+        playNote(map(data[loc].close, localLow, localHigh, lowmap, highmap), durationLeng);
+
         textToSpeech.speak("Beginning" + " "  + data[loc].dateStr);
     }
 }
@@ -771,7 +758,6 @@ function skipToCrossing() {
         for(i = 0; i < skips.length; i++ ) {
             if(skips[i].date > data[loc].date) {
                 if(skips[i].date <= data[data.length-1].date) {
-                    //jump to this loc
                     console.log(skips[i].date);
                     for(j in data) {
                         if(data[j].date == skips[i].date) {
@@ -787,10 +773,7 @@ function skipToCrossing() {
             }
         }
 
-        if(stopTime == 0){
-            earcon.play();
-        }
-        
+        earcon.play();
 
     } else if (key == ';') {
         //backward
@@ -802,7 +785,6 @@ function skipToCrossing() {
         for(i = skips.length - 1; i > -1; i-- ) {
             if(skips[i].date < data[loc].date) {
                 if(skips[i].date >= data[0].date) {
-                    //jump to this loc
                     console.log(skips[i].date);
                     for(j in data) {
                         if(data[j].date == skips[i].date) {
@@ -817,9 +799,7 @@ function skipToCrossing() {
             }
         }
 
-        if(stopTime == 0){
-            earcon.play();
-        }
+        earcon.play();
     }
 }
 
