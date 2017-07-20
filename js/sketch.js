@@ -498,7 +498,22 @@ function playValue() {
 
             detailsPlaying = true;
             buttonDown = false;
-            textToSpeech.speak(data[loc].dateStr + " , Closing price: " + data[loc].close + " , SMA value: " + data[loc].sma50);
+
+
+
+            //play value 
+            var note = midiToFreq(map(data[loc].magnitude, localMagLow, localMagHigh, lowMagmap, highMagmap));
+            //can't use playPoint here 
+            
+            playPoint(note); 
+            //calculate items at this time 
+            var percentChange = ((data[loc].close - data[loc].sma50)/data[loc].sma50); 
+            percentChange *= 100; 
+            percentChange = parseFloat((percentChange).toFixed(4));
+
+
+
+            textToSpeech.speak(data[loc].dateStr + " , percent change: " + percentChange + " , Closing price: " + data[loc].close + " , SMA value: " + data[loc].sma50);
         }
     }
 }
@@ -651,8 +666,10 @@ function checkLeftRight() {
 
             if (loc < data.length - 1) {
                 if (data[loc].crossed) {
-                    earcon.setVolume(1);
-                    earcon.play();
+                    if(currentGraph == 1) {
+                        earcon.setVolume(1);
+                        earcon.play();                        
+                    }
                 }
             }
 
@@ -680,8 +697,10 @@ function checkLeftRight() {
 
             if (loc > 0) {
                 if (data[loc].crossed) {
-                    earcon.setVolume(1);
-                    earcon.play();
+                    if(currentGraph == 1) {
+                        earcon.setVolume(1);
+                        earcon.play();                        
+                    }
                 }
             }
 
