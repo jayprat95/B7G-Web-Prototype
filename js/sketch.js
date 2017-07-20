@@ -489,6 +489,8 @@ function playValue() {
 
     if (key == ' ') {
 
+        console.log(detailsPlaying); 
+
         //TODO check this logic for double spacebar 
         if (detailsPlaying == true) {
 
@@ -506,13 +508,10 @@ function playValue() {
             //play value 
             var note = midiToFreq(map(data[loc].magnitude, localMagLow, localMagHigh, lowMagmap, highMagmap));
             playPoint(note, true); 
-
             //calculate items at this time 
             var percentChange = ((data[loc].close - data[loc].sma50)/data[loc].sma50); 
             percentChange *= 100; 
             percentChange = parseFloat((percentChange).toFixed(4));
-
-
 
             textToSpeech.speak(data[loc].dateStr + " , percent change: " + percentChange + " , Closing price: " + data[loc].close + " , SMA value: " + data[loc].sma50);
         }
@@ -640,6 +639,7 @@ function toJSONLocal(date) {
 // RESET ---------------------------------------------
 
 function resetDetails() {
+    console.log("called"); 
     detailsPlaying = false;
     monthPlaying = false;
 }
