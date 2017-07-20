@@ -61,14 +61,14 @@ var query = quandlQ + addtl;
 
 var piano = new Wad({
     source: 'square',
-    env: { attack: 0.05, decay: 0.0, sustain: 1, hold: .01, release: 0.0 },
+    env: { attack: 0.05, decay: 0.005, sustain: 1, hold: .01, release: 0.005 },
     filter: { type: 'lowpass', frequency: 600, q: 7, env: { attack: .07,frequency: 1600 }
     }
 });
 
 var bass = new Wad({
     source: 'triangle',
-    env: { attack: 0.05, decay: 0.0, sustain: 1, hold: .01, release: 0.0 },
+    env: { attack: 0.05, decay: 0.02, sustain: 1, hold: .01, release: 0.02 },
 });
 
 var pianoLong = new Wad({
