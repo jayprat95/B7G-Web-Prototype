@@ -61,34 +61,27 @@ var query = quandlQ + addtl;
 
 var piano = new Wad({
     source: 'square',
-    env: {
-        attack: .015,
-        decay: .002,
-        sustain: .1,
-        hold: .05,
-        release: .03
-    },
-    filter: {
-        type: 'lowpass',
-        frequency: 600,
-        q: 7,
-        env: {
-            attack: .07,
-            frequency: 1600
-        }
+    env: { attack: 0.05, decay: 0.0, sustain: 1, hold: .01, release: 0.0 },
+    filter: { type: 'lowpass', frequency: 600, q: 7, env: { attack: .07,frequency: 1600 }
     }
-})
+});
 
 var bass = new Wad({
     source: 'triangle',
-    env: {
-        attack: .02,
-        decay: .01,
-        sustain: .1,
-        hold: .002,
-        release: .01
-    },
-})
+    env: { attack: 0.05, decay: 0.0, sustain: 1, hold: .01, release: 0.0 },
+});
+
+var pianoLong = new Wad({
+    source: 'square',
+    env: { attack: 0.05, decay: 0.0, sustain: 1, hold: 4, release: 0.0 },
+    filter: { type: 'lowpass', frequency: 600, q: 7, env: { attack: .07,frequency: 1600 }
+    }
+});
+
+var bassLong = new Wad({
+    source: 'triangle',
+    env: { attack: 0.05, decay: 0.0, sustain: 1, hold: 4, release: 0.0},
+});
 
 
 //DOM LISTENERS ---------------------------------------------
@@ -474,13 +467,22 @@ function playNote(note, duration) {
     }
 }
 
-function playMag(note, abovebelow) {
+function playMag(note, abovebelow, long) {
 
-    if (abovebelow == 1) {
-        piano.play({ pitch: note });
-    } else if (abovebelow == -1) {
-        bass.play({ pitch: note });
+    if(long) {
+        if (abovebelow == 1) {
+            piano.play({ pitch: note });
+        } else if (abovebelow == -1) {
+            bass.play({ pitch: note });
+        }
+    } else {
+        if (abovebelow == 1) {
+            piano.play({ pitch: note });
+        } else if (abovebelow == -1) {
+            bass.play({ pitch: note });
+        }
     }
+    
 }
 
 function playValue() {
@@ -503,9 +505,8 @@ function playValue() {
 
             //play value 
             var note = midiToFreq(map(data[loc].magnitude, localMagLow, localMagHigh, lowMagmap, highMagmap));
-            //can't use playPoint here 
-            
-            playPoint(note); 
+            playPoint(note, true); 
+
             //calculate items at this time 
             var percentChange = ((data[loc].close - data[loc].sma50)/data[loc].sma50); 
             percentChange *= 100; 
@@ -518,9 +519,9 @@ function playValue() {
     }
 }
 
-function playPoint(n) {
+function playPoint(n, l) {
     if (currentGraph == 1) {
-        playMag(n, data[loc].overOrUnder);
+        playMag(n, data[loc].overOrUnder, l);
     } else if (currentGraph == 2) {
         playNote(map(data[loc].close, localLow, localHigh, lowmap, highmap), durationLeng);
     }
@@ -534,7 +535,7 @@ function playOnClick() {
     if (isInside()) {
         loc = Math.floor(map(mouseX, 0, width, 0, data.length - 1));
         var note = midiToFreq(map(data[loc].magnitude, localMagLow, localMagHigh, lowMagmap, highMagmap));
-        playPoint(note);
+        playPoint(note, false);
     }
 }
 
@@ -673,7 +674,7 @@ function checkLeftRight() {
                 }
             }
 
-            playPoint(note);
+            playPoint(note, false);
 
         }
 
@@ -704,7 +705,7 @@ function checkLeftRight() {
                 }
             }
 
-            playPoint(note);
+            playPoint(note, false);
         }
 
         keyLength++;
