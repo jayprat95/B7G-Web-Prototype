@@ -489,7 +489,6 @@ function playValue() {
 
     if (key == ' ') {
 
-        console.log(detailsPlaying); 
 
         //TODO check this logic for double spacebar 
         if (detailsPlaying == true) {
@@ -532,6 +531,10 @@ function playRate() {
 
 function playOnClick() {
     if (isInside()) {
+        if(detailsPlaying) {
+            stopSpeech(); 
+            detailsPlaying = false; 
+        }
         loc = Math.floor(map(mouseX, 0, width, 0, data.length - 1));
         var note = midiToFreq(map(data[loc].magnitude, localMagLow, localMagHigh, lowMagmap, highMagmap));
         playPoint(note, false);
@@ -639,8 +642,7 @@ function toJSONLocal(date) {
 // RESET ---------------------------------------------
 
 function resetDetails() {
-    console.log("called"); 
-    detailsPlaying = false;
+    // detailsPlaying = false;
     monthPlaying = false;
 }
 
@@ -660,6 +662,7 @@ function checkLeftRight() {
 
         if (detailsPlaying) {
             stopSpeech();
+            detailsPlaying = false; 
         }
 
         if (keyLength == 0 || keyLength > 10) {
@@ -690,6 +693,7 @@ function checkLeftRight() {
 
         if (detailsPlaying) {
             stopSpeech();
+            detailsPlaying = false; 
         }
 
 
@@ -812,7 +816,6 @@ function skipToMonths() {
 
     if (key == 'p') {
         //forward
-        console.log(newmonths);
         if (detailsPlaying) {
             stopSpeech();
         }
