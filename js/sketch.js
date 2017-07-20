@@ -651,8 +651,10 @@ function checkLeftRight() {
 
             if (loc < data.length - 1) {
                 if (data[loc].crossed) {
-                    earcon.setVolume(1);
-                    earcon.play();
+                    if(currentGraph == 1) {
+                        earcon.setVolume(1);
+                        earcon.play();
+                    }
                 }
             }
 
@@ -680,8 +682,10 @@ function checkLeftRight() {
 
             if (loc > 0) {
                 if (data[loc].crossed) {
-                    earcon.setVolume(1);
-                    earcon.play();
+                    if(currentGraph == 1) {
+                        earcon.setVolume(1);
+                        earcon.play();
+                    }
                 }
             }
 
