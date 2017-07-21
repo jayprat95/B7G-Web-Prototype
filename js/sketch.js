@@ -387,10 +387,13 @@ function afterData(thedata) {
 
     data = setData();
 
+
+    //
     if (data != undefined && data[0] != undefined) {
         setTickerDetails();
     } else {
-        setTimeout(function() { setTickerDetails(); }, 100);
+        setTimeout(function() { 
+            setTickerDetails(); }, 100);
     }
 
 }
@@ -430,6 +433,7 @@ function setup() {
 }
 
 function draw() {
+    console.log(timerange);
 
     background(darkblue);
 
@@ -474,6 +478,7 @@ function keyReleased() {
 
 function mousePressed() {
     playOnClick();
+    setTickerDetails();
 }
 
 function mouseDragged() {
@@ -615,6 +620,7 @@ function changeTicker() {
 }
 
 function setTickerDetails() {
+    console.log("inside");
     var rangeString;
 
     if (timerange == "onemonth") {
@@ -631,8 +637,6 @@ function setTickerDetails() {
 
     var pt = (data[data.length - 1].close - data[data.length - 1].open).toFixed(4);
     var pcnt = (pt / data[data.length - 1].open * 100).toFixed(4);
-
-    //textToSpeech.speak("Changed to" + tickerCompany + ". Current price: " + data[data.length - 1].close + ". Percent Change. " + pcnt + " Point Change. " + pt + " Date Range " + rangeString + "");
 
     $("#current-price").text("Most Recent Price: " + data[data.length - 1].close);
     $("#percent-change").text("Percent Change: " + pcnt);
