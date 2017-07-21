@@ -85,3 +85,13 @@
     box-sizing: border-box;
   }
 
+  .sightedValues {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .val {
+    flex: 1;
+  }
+
