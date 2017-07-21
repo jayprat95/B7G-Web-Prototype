@@ -154,19 +154,19 @@ $(document).ready(function() {
     $("#graphView").mousedown(function() {
 
         //TODO change variables 
-        var on = "Turn Off Study";
-        var off = "Turn On Study"
+        var on = "Turn Off Indicator";
+        var off = "Turn On Indicator"
 
         if ($(this).attr("value") == on) {
             $(this).attr("aria-label", off);
             $(this).attr("value", off);
             currentGraph = 2;
-            $("#currentGraph").text("Closing Values");
+            $("#currentGraph").text("(Closing Values)");
         } else if ($(this).attr("value") == off) {
             $(this).attr("aria-label", on);
             $(this).attr("value", on);
             currentGraph = 1;
-            $("#currentGraph").text("Closing Values with Study");
+            $("#currentGraph").text("(Closing Values with Indicator)");
         }
 
     });
@@ -416,7 +416,7 @@ function setup() {
     $('#submit').attr('disabled', true);
     $("#tickerName").text("Company: " + tickerCompany);
     $("#oneyear").addClass('buttonSelected');
-    $("#currentGraph").text("Closing Values with Study");
+    $("#currentGraph").text("(Closing Values with Indicator)");
 
     var canvas = createCanvas(windowWidth - rightpadding, canvasHeight);
     canvas.parent('canvas-container');
