@@ -1,8 +1,11 @@
-<style> 
+
 
   body {
   	padding: 0; 
   	margin: 0;
+    background: rgb(40, 59, 74);
+    color: white;
+    font-family: 'Rubik', sans-serif;
   } 
 
   canvas {
@@ -10,8 +13,8 @@
   	top: 0; 
   	left: 0; 
   	z-index: 1;
-  	border:1px solid #000000;
   	margin: 0;
+    background: rgb(40, 59, 74);
   }
 
   #content {
@@ -24,9 +27,19 @@
   }
 
   .buttonSelected {
-    background-color: green; 
+    background-color: white !important; 
+    color: black !important;
   }
 
+  .button {
+    background-color: rgb(87,132,150);
+    border: none;
+    color: white;
+    padding: 6px 12px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 10px;
+    text-transform: uppercase;
+  }
 
-
-</style>
