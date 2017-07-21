@@ -618,15 +618,15 @@ function setTickerDetails() {
     var rangeString;
 
     if (timerange == "onemonth") {
-        rangeString = "One month prior to today";
+        rangeString = "Last One Month";
     } else if (timerange == "threemonths") {
-        rangeString = "Three months prior to today";
+        rangeString = "Last Three Months";
     } else if (timerange == "sixmonths") {
-        rangeString = "Six months prior to today";
+        rangeString = "Last Six Months";
     } else if (timerange == "oneyear") {
-        rangeString = "One year prior to today";
+        rangeString = "Last One Year";
     } else if (timerange == "fiveyears") {
-        rangeString = "Five years prior to today";
+        rangeString = "Last Five Years";
     }
 
     var pt = (data[data.length - 1].close - data[data.length - 1].open).toFixed(4);
@@ -634,7 +634,7 @@ function setTickerDetails() {
 
     //textToSpeech.speak("Changed to" + tickerCompany + ". Current price: " + data[data.length - 1].close + ". Percent Change. " + pcnt + " Point Change. " + pt + " Date Range " + rangeString + "");
 
-    $("#current-price").text("Current Price: " + data[data.length - 1].close);
+    $("#current-price").text("Most Recent Price: " + data[data.length - 1].close);
     $("#percent-change").text("Percent Change: " + pcnt);
     $("#point-change").text("Point Change: " + pt);
     $("#date-range").text("Date Range: " + rangeString);
