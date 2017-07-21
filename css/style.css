@@ -53,12 +53,35 @@
     display: inline-block;
   }
 
+  .tickerName {
+    font-size: 16px;
+  }
+
+  .changeCompany {
+    background-color: rgb(93,116,132);
+  }
+
+  .changeCompany .button {
+    background-color: rgb(40,59,74);
+    padding: 9px 14px;
+  }
+
   .detail {
     flex: 1;
+    font-size: 12px;
   }
 
   .row{
     padding-left: 50px;
     padding-right: 50px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+
+  .tickerfield {
+    width: 25%;
+    padding: 6px 12px;
+    margin: 8px 0;
+    box-sizing: border-box;
   }
 

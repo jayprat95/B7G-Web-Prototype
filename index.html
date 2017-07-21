@@ -20,11 +20,11 @@
 
     <div id="content">
             
-            <div aria-label="Change Company" class="row">
-                <input id="input" aria-label="New Ticker Input" type="text" name="tickername" class="tickerfield">
+            <div aria-label="Change Company" class="row changeCompany">
+                <input id="input" placeholder="New Ticker Name" aria-label="New Ticker Input" type="text" name="tickername" class="tickerfield">
                 <input class="button" id="submit" aria-label="New Ticker Submit" type="submit" value="Submit" onclick="changeTicker()">
             </div>
-            <div class="row">
+            <div class="row tickerName">
                 <span id="tickerName"></span> <span id="currentGraph"></span>
             </div>
             <div class="row tickerDetails" aria-label="Ticker Details" class="row">
