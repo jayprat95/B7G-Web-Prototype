@@ -43,3 +43,22 @@
     text-transform: uppercase;
   }
 
+  .tickerDetails {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .changeDateRange {
+    display: inline-block;
+  }
+
+  .detail {
+    flex: 1;
+  }
+
+  .row{
+    padding-left: 50px;
+    padding-right: 50px;
+  }
+
