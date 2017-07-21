@@ -392,8 +392,7 @@ function afterData(thedata) {
     if (data != undefined && data[0] != undefined) {
         setTickerDetails();
     } else {
-        setTimeout(function() { 
-            setTickerDetails(); }, 100);
+        setTimeout(function() { setTickerDetails(); }, 100);
     }
 
 }
@@ -433,7 +432,6 @@ function setup() {
 }
 
 function draw() {
-    console.log(timerange);
 
     background(darkblue);
 
@@ -470,9 +468,7 @@ function keyPressed() {
 }
 
 function keyReleased() {
-
-    buttonDown = false;
-    //TODO check what this variable does 
+    buttonDown = false; 
     keyLength = 0;
 }
 
@@ -620,7 +616,6 @@ function changeTicker() {
 }
 
 function setTickerDetails() {
-    console.log("inside");
     var rangeString;
 
     if (timerange == "onemonth") {
