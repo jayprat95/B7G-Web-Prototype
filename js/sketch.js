@@ -497,7 +497,7 @@ function playValue() {
     if (key == ' ') {
 
 
-        //TODO check this logic for double bar 
+        //TODO check this logic for double space bar 
         if (detailsPlaying == true) {
 
             stopSpeech();
@@ -519,7 +519,7 @@ function playValue() {
             percentChange *= 100; 
             percentChange = parseFloat((percentChange).toFixed(4));
 
-            textToSpeech.speak(data[loc].dateStr + " , percent change: " + percentChange + " , Closing price: " + data[loc].close + " , fifty day simple moving average value: " + data[loc].sma50);
+            textToSpeech.speak(data[loc].dateStr + " , percent change: " + percentChange + " , Closing price: " + data[loc].close + " , Fifty Day Simple Moving Average: " + data[loc].sma50);
         }
     }
 }
