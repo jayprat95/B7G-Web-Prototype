@@ -441,7 +441,7 @@ function setup() {
     gradhigh = color(73,99,117);
     gradlow = color(26,41,51);
     transWhite = color(255,0.5);
-    lineColor = color(0);
+    lineColor = color(12,26,35);
     lineFill = color(229,75,75);
 
     $('#submit').attr('disabled', true);
