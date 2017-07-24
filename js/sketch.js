@@ -57,6 +57,8 @@ var newHigh = ystart;
 var mappedLow;
 var mappedHigh;
 
+var fontsize = 11;
+
 // COLORS ---------------------------------------------
 
 var darkblue;
@@ -66,6 +68,8 @@ var lightblue;
 var gradhigh;
 var gradlow;
 var transWhite;
+var lineColor;
+var lineFill;
 
 // API STUFF ---------------------------------------------
 
@@ -115,6 +119,7 @@ $(document).ready(function() {
         data = setData();
         deselectAll();
         $(this).addClass('buttonSelected');
+        $("#onemonth").attr('aria-label', 'Change to One Month, Selected');
     });
 
     $("#threemonths").mousedown(function() {
@@ -122,6 +127,7 @@ $(document).ready(function() {
         data = setData();
         deselectAll();
         $(this).addClass('buttonSelected');
+        $("#threemonths").attr('aria-label', 'Change to Three Months, Selected');
     });
 
     $("#sixmonths").mousedown(function() {
@@ -129,6 +135,7 @@ $(document).ready(function() {
         data = setData();
         deselectAll();
         $(this).addClass('buttonSelected');
+        $("#sixmonths").attr('aria-label', 'Change to Six Months, Selected');
     });
 
     $("#oneyear").mousedown(function() {
@@ -136,6 +143,7 @@ $(document).ready(function() {
         data = setData();
         deselectAll();
         $(this).addClass('buttonSelected');
+        $("#oneyear").attr('aria-label', 'Change to One Year, Selected');
     });
 
     $("#fiveyears").mousedown(function() {
@@ -143,6 +151,7 @@ $(document).ready(function() {
         data = setData();
         deselectAll();
         $(this).addClass('buttonSelected');
+        $("#fiveyears").attr('aria-label', 'Change to Five Years, Selected');
     });
 
     $('#input').keyup(function() {
@@ -182,6 +191,13 @@ function deselectAll() {
     $("#sixmonths").removeClass('buttonSelected');
     $("#oneyear").removeClass('buttonSelected');
     $("#fiveyears").removeClass('buttonSelected');
+
+    $("#onemonth").attr('aria-label', 'Change to One Month');
+    $("#threemonths").attr('aria-label', 'Change to Three Months');
+    $("#sixmonths").attr('aria-label', 'Change to Six Months');
+    $("#oneyear").attr('aria-label', 'Change to One Year');
+    $("#fiveyears").attr('aria-label', 'Change to Five Years');
+
 }
 
 //DAY OBJECT ---------------------------------------------
@@ -414,10 +430,12 @@ function setup() {
     darkblue = color(40, 59, 74);
     white = color(255);
     borderblue = color(93,116,132);
-    lightblue = color(47,139,203);
+    lightblue = color(67,146,241);
     gradhigh = color(73,99,117);
     gradlow = color(26,41,51);
     transWhite = color(255,0.5);
+    lineColor = color(229,75,75);
+    lineFill = color(255,191,0);
 
     $('#submit').attr('disabled', true);
     $("#tickerName").text("Company: " + tickerCompany);
@@ -1009,13 +1027,15 @@ function drawYAxis(yaxis) {
         line(xshift-6, yPos, xshift+1, yPos);
         textAlign(RIGHT);
         fill(255);
+        textFont("Rubik");
+        textSize(fontsize);
         text(i, xshift - 15, yPos + 4);
     }
 }
 
 function getInitalTick(num, units) {
 
-    var newnum = Math.floor( num );
+    var newnum = Math.ceil( num );
 
     while ( newnum % units != 0) {
         newnum++;
@@ -1037,6 +1057,8 @@ function drawXAxis(i, xPos){
 
         textAlign(CENTER);
         fill(255);
+        textFont("Rubik");
+        textSize(fontsize);
         if(timerange == "fiveyears") {
             if(data[i].date.getMonth() == 0 || data[i].date.getMonth() == 6) {
                 text(monthsAbbv[data[i].date.getMonth()], xPos, graphHeight+40);
@@ -1061,9 +1083,6 @@ function drawXAxis(i, xPos){
 }
 
 function drawVisGraphA() {
-
-    // var newLow = graphHeight;
-    // var newHigh = ystart;
 
     setGradient(xshift, ystart, width, graphHeight, gradhigh, gradlow, "Y_AXIS");
 
@@ -1102,11 +1121,11 @@ function drawVisGraphA() {
 
         drawAxis();
 
-        stroke(255, 0, 0);
+        stroke(lineColor);
         strokeWeight(2);
         var curMapped = map(loc, 0, data.length - 1, xshift, width);
         line(curMapped, 0, curMapped, canvasHeight - yshift);
-        fill(255, 0, 0);
+        fill(lineColor);
         ellipse(curMapped, map(data[loc].close, absLow, absHigh, newLow, newHigh), 5, 5);
     }
 
@@ -1193,30 +1212,30 @@ function drawVisGraphB() {
 
         drawAxis();
 
-        for (var i in data) {
-            if (i != 0 && i != data.length) {
+        // for (var i in data) {
+        //     if (i != 0 && i != data.length) {
 
-                var xPos = map(i, 0, data.length - 1, 0, width - xshift) + xshift;
+        //         var xPos = map(i, 0, data.length - 1, 0, width - xshift) + xshift;
 
-                if (data[i].crossed) {
-                    fill(247, 166, 20);
-                    noStroke();
-                    ellipse(xPos, map(data[i].sma50, absLow, absHigh, newLow, newHigh), 4, 4);
-                }
+        //         if (data[i].crossed) {
+        //             fill(247, 166, 20);
+        //             noStroke();
+        //             ellipse(xPos, map(data[i].sma50, absLow, absHigh, newLow, newHigh), 4, 4);
+        //         }
 
-            }
-        }
-
-        
+        //     }
+        // }
 
         
 
-        stroke(255, 0, 0);
+        
+
+        stroke(lineColor);
+        strokeWeight(2);
         var curMapped = map(loc, 0, data.length - 1, 0, width - xshift) + xshift;
         line(curMapped, 0, curMapped, canvasHeight - yshift);
-        fill(255, 0, 0);
-        strokeWeight(2);
-        stroke(0);
+        fill(lineColor);
+        stroke(lineFill);
         line(curMapped, map(data[loc].close, absLow, absHigh, newLow, newHigh), curMapped, map(data[loc].sma50, absLow, absHigh, newLow, newHigh));
 
     }

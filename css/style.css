@@ -1,4 +1,5 @@
 
+  textarea, input, button { outline: none; }
 
   body {
   	padding: 0; 
@@ -6,6 +7,8 @@
     background: rgb(40, 59, 74);
     color: white;
     font-family: 'Rubik', sans-serif;
+    font-weight: 300;
+    letter-spacing: 1px;
   } 
 
   canvas {
@@ -15,6 +18,7 @@
   	z-index: 1;
   	margin: 0;
     background: rgb(40, 59, 74);
+    font-weight: 300 !important;
   }
 
   #content {
@@ -33,7 +37,7 @@
   }
 
   .button {
-    background-color: rgb(87,132,150);
+    background-color: rgb(93,116,132);
     border: none;
     color: white;
     padding: 6px 12px;
@@ -56,6 +60,7 @@
 
   .tickerName {
     font-size: 20px;
+    font-weight: 400;
   }
 
   .changeCompany {
@@ -94,5 +99,6 @@
 
   .val {
     flex: 1;
+    font-size: 12px;
   }
 

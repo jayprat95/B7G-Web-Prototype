@@ -12,7 +12,7 @@
     <script src="js/sketch.js"></script>
 
     <link rel="stylesheet" type="text/css" href="css/style.css">
-    <link href="https://fonts.googleapis.com/css?family=Rubik:300,400,500,700" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Rubik:300,400" rel="stylesheet">
 
 </head>
 
@@ -37,7 +37,7 @@
                 <input class="button" id="onemonth" aria-label="Change to One Month" type="submit" value="1 Month">
                 <input class="button"  id="threemonths"aria-label="Change to Three Months" type="submit" value="3 Months">
                 <input class="button"  id="sixmonths"aria-label="Change to Six Months" type="submit" value="6 Months">
-                <input class="button"  id="oneyear"aria-label="Change to One Year" type="submit" value="1 Year">
+                <input class="button"  id="oneyear"aria-label="Change to One Year, Selected" type="submit" value="1 Year">
                 <input class="button"  id="fiveyears"aria-label="Change to Five Years" type="submit" value="5 Years">
             </div>
             <input class="button"  id="graphView" aria-label="Turn Off Indicator" type="submit" value="Turn Off Indicator">
@@ -47,7 +47,10 @@
     <div id="canvas-container" aria-hidden="true"> </div>
 
     <div class="row sightedValues" id="sighted-vals" aria-hidden="true"> 
-        <span class="val" id="curr-date"></span><span class="val" id="curr-price"></span><span class="val" id="curr-sma"></span>
+        <span class="val" id="curr-date"></span>
+        <span class="val" id="curr-price"></span>
+        <span class="val" id="curr-sma"></span>
+        <span class="val"></span>
     </div>
 </body>
 
