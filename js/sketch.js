@@ -519,7 +519,7 @@ function playValue() {
             percentChange *= 100; 
             percentChange = parseFloat((percentChange).toFixed(4));
 
-            textToSpeech.speak(data[loc].dateStr + " , percent change: " + percentChange + " , Closing price: " + data[loc].close + " , SMA value: " + data[loc].sma50);
+            textToSpeech.speak(data[loc].dateStr + " , percent change: " + percentChange + " , Closing price: " + data[loc].close + " , fifty day simple moving average value: " + data[loc].sma50);
         }
     }
 }
