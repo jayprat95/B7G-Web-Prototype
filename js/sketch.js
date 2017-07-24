@@ -13,9 +13,9 @@ var lowmap = 50;
 var highMagmap = 80;
 var lowMagmap = 60;
 
-var xshift = 50;
+var xshift = 75;
 var ystart = 10;
-var yshift = 100;
+var yshift = 60;
 
 var durationLeng = 100;
 var toneDuration = 1000;
@@ -35,9 +35,9 @@ var dataReceived = false;
 
 var rate = 1.5;
 
-var canvasHeight = 500;
+var canvasHeight = 400;
 var graphHeight = canvasHeight - yshift - ystart;
-var rightpadding = 50;
+var rightpadding = 73;
 
 var prevLoc = -1;
 var newLoc = false;
@@ -52,6 +52,10 @@ var lastFiveYears = [];
 var skips = [];
 var newmonths = [];
 
+var newLow = graphHeight;
+var newHigh = ystart;
+var mappedLow;
+var mappedHigh;
 
 // COLORS ---------------------------------------------
 
@@ -949,6 +953,9 @@ function drawAxis() {
     var xaxispos = xshift - 2;
     var yaxispos = canvasHeight - yshift + 2;
 
+    mappedLow = map(localLow, absLow, absHigh, newLow, newHigh);
+    mappedHigh = map(localHigh, absLow, absHigh, newLow, newHigh);
+
     strokeWeight(2);
     stroke(darkblue);
     line(xaxispos, 0, width, 0);
@@ -957,12 +964,90 @@ function drawAxis() {
     stroke(borderblue);
     line(xaxispos, yaxispos, xaxispos, 0);
     line(xaxispos, yaxispos, width, yaxispos);
+
+    drawYAxis(yaxispos);
+
+    for (var i in data) {
+        if (i != 0 && i != data.length) {
+            var xAxis = map(i, 0, data.length - 1, 0, width - xshift) + xshift;
+            drawXAxis(i, xAxis);
+        }
+    }
+}
+
+function drawYAxis(yaxis) {
+    var range = (absHigh-absLow)/100;
+    var units = 1;
+
+    if(range >= 0 && range <= 0.1){
+        units = 2;
+    } else if(range > 0.1 && range <= 0.5){
+        units = 5;
+    } else if(range > 0.5 && range <= 1){
+        units = 10;
+    } else if(range > 1 && range <= 2.5){
+        units = 25;
+    } else if(range > 2.5 && range <= 5){
+        units = 50;
+    } else if(range > 5 && range <= 10){
+        units = 100;
+    } else if(range > 10 && range <= 50){
+        units = 250;
+    } else if(range > 50 && range <= 100){
+        units = 500;
+    } else {
+        units = 1000;
+    }
+
+    var initialTick = getInitalTick(absLow, units);
+
+    for( i = initialTick; i < absHigh; i += units) {
+        //console.log(absHigh);
+        strokeWeight(1);
+        stroke(255);
+        var yPos = map(i, absLow, absHigh, newLow, newHigh);
+        line(xshift-6, yPos, xshift+1, yPos);
+        textAlign(RIGHT);
+        fill(255);
+        text(i, xshift - 15, yPos + 4);
+    }
+}
+
+function getInitalTick(num, units) {
+
+    var newnum = Math.floor( num );
+
+    while ( newnum % units != 0) {
+        newnum++;
+    } 
+
+    return newnum;
+}
+
+function drawXAxis(i, xPos){
+    //factor in page width and data range
+    if(data[i].newmonth) {
+        strokeWeight(0.5);
+        stroke(255, 50);
+        dottedLine(xPos, newHigh, newLow, 2.5, 6);
+
+        strokeWeight(1);
+        stroke(255);
+        line(xPos, graphHeight+8, xPos, graphHeight+15);
+
+        textAlign(CENTER);
+        fill(255);
+        text(monthsAbbv[data[i].date.getMonth()], xPos, graphHeight+40);
+        if(data[i].date.getMonth() == 0) {
+            text(data[i].date.getFullYear(), xPos, graphHeight+60);
+        }
+    }
 }
 
 function drawVisGraphA() {
 
-    var newLow = graphHeight;
-    var newHigh = ystart;
+    // var newLow = graphHeight;
+    // var newHigh = ystart;
 
     setGradient(xshift, ystart, width, graphHeight, gradhigh, gradlow, "Y_AXIS");
 
@@ -1001,31 +1086,6 @@ function drawVisGraphA() {
 
         drawAxis();
 
-        for (var i in data) {
-            if (i != 0 && i != data.length) {
-
-                var xPos = map(i, 0, data.length - 1, 0, width - xshift) + xshift;
-
-                if(data[i].newmonth) {
-                    strokeWeight(0.5);
-                    stroke(255, 50);
-                    dottedLine(xPos, newHigh, newLow, 2.5, 6);
-
-                    strokeWeight(1);
-                    stroke(255);
-                    line(xPos, graphHeight+8, xPos, graphHeight+15);
-
-                    textAlign(CENTER);
-                    fill(255);
-                    text(monthsAbbv[data[i].date.getMonth()], xPos, graphHeight+40);
-                    if(data[i].date.getMonth() == 0) {
-                        text(data[i].date.getFullYear(), xPos, graphHeight+60);
-                    }
-                }
-
-            }
-        }
-
         stroke(255, 0, 0);
         strokeWeight(2);
         var curMapped = map(loc, 0, data.length - 1, xshift, width);
@@ -1038,14 +1098,15 @@ function drawVisGraphA() {
 
 function drawVisGraphB() {
 
-    strokeWeight(1);
-
-    var newLow = graphHeight;
-    var newHigh = ystart;
+    // strokeWeight(1);   
 
     // stroke(0,255,0);
     // line(0, newLow, width, newLow);
     // line(0, newHigh, width, newHigh);
+
+    // stroke(0,255,255);
+    // line(0, mappedLow, width, mappedLow);
+    // line(0, mappedHigh, width, mappedHigh);
 
     setGradient(xshift, ystart, width, graphHeight, gradhigh, gradlow, "Y_AXIS");
 
@@ -1125,23 +1186,6 @@ function drawVisGraphB() {
                     fill(247, 166, 20);
                     noStroke();
                     ellipse(xPos, map(data[i].sma50, absLow, absHigh, newLow, newHigh), 4, 4);
-                }
-
-                if(data[i].newmonth) {
-                    strokeWeight(0.5);
-                    stroke(255, 50);
-                    dottedLine(xPos, newHigh, newLow, 2.5, 6);
-
-                    strokeWeight(1);
-                    stroke(255);
-                    line(xPos, graphHeight+8, xPos, graphHeight+15);
-
-                    textAlign(CENTER);
-                    fill(255);
-                    text(monthsAbbv[data[i].date.getMonth()], xPos, graphHeight+40);
-                    if(data[i].date.getMonth() == 0) {
-                        text(data[i].date.getFullYear(), xPos, graphHeight+60);
-                    }
                 }
 
             }
