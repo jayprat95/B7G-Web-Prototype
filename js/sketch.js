@@ -60,7 +60,7 @@ var query = quandlQ + addtl;
 // TIMBRE SOUNDS ---------------------------------------------
 
 var piano = new Wad({
-    source: 'square',
+    source: 'sine',
     env: { attack: 0.05, decay: 0.005, sustain: 1, hold: .01, release: 0.005 },
     filter: { type: 'lowpass', frequency: 600, q: 7, env: { attack: .07,frequency: 1600 }
     }
@@ -70,6 +70,9 @@ var bass = new Wad({
     source: 'triangle',
     env: { attack: 0.05, decay: 0.02, sustain: 1, hold: .01, release: 0.02 },
 });
+
+
+
 
 var pianoLong = new Wad({
     source: 'square',
@@ -288,7 +291,10 @@ function afterData(thedata) {
             }
 
             var currentDate = new Date(thedata['datatable']['data'][i][5]);
+            currentDate.setDate(currentDate.getDate() + 1);
             var previousDate = new Date(thedata['datatable']['data'][i - 1][5]);
+            previousDate.setDate(previousDate.getDate() + 1);
+
 
             if ((currentDate.getMonth() != previousDate.getMonth())) {
                 newmonth = true;
@@ -300,9 +306,10 @@ function afterData(thedata) {
             crossing = true;
         }
 
-
         if (sma50 != 0) {
             var newDate = "" + months[d.getMonth()] + " " + d.getDate() + ", " + d.getFullYear();
+
+            
             var today = new Day(newDate, element[0], element[1], element[2], element[3], element[4], d, sma50, magnitude, direction, crossing, newmonth);
             lastFiveYears.push(today);
         }
@@ -490,7 +497,7 @@ function playValue() {
     if (key == ' ') {
 
 
-        //TODO check this logic for double spacebar 
+        //TODO check this logic for double bar 
         if (detailsPlaying == true) {
 
             stopSpeech();
@@ -667,6 +674,7 @@ function checkLeftRight() {
 
         if (keyLength == 0 || keyLength > 10) {
             loc--;
+            note = midiToFreq(map(data[loc].magnitude, localMagLow, localMagHigh, lowMagmap, highMagmap));
 
             if (loc < data.length - 1) {
                 if (data[loc].crossed) {
@@ -699,6 +707,7 @@ function checkLeftRight() {
 
         if (keyLength == 0 || keyLength > 10) {
             loc++;
+            note = midiToFreq(map(data[loc].magnitude, localMagLow, localMagHigh, lowMagmap, highMagmap));
 
             if (loc > 0) {
                 if (data[loc].crossed) {
@@ -713,7 +722,6 @@ function checkLeftRight() {
         }
 
         keyLength++;
-
         playMonth();
         if (loc == data.length - 1) {
             textToSpeech.speak("End");
