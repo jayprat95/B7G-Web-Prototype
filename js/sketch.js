@@ -1037,9 +1037,25 @@ function drawXAxis(i, xPos){
 
         textAlign(CENTER);
         fill(255);
-        text(monthsAbbv[data[i].date.getMonth()], xPos, graphHeight+40);
-        if(data[i].date.getMonth() == 0) {
-            text(data[i].date.getFullYear(), xPos, graphHeight+60);
+        if(timerange == "fiveyears") {
+            if(data[i].date.getMonth() == 0 || data[i].date.getMonth() == 6) {
+                text(monthsAbbv[data[i].date.getMonth()], xPos, graphHeight+40);
+            }
+            if(data[i].date.getMonth() == 0) {
+                text(data[i].date.getFullYear(), xPos, graphHeight+60);
+            }
+        } else if(timerange == "oneyear") {
+            if(data[i].date.getMonth() == 0 || data[i].date.getMonth() == 2 || data[i].date.getMonth() == 4 || data[i].date.getMonth() == 6 || data[i].date.getMonth() == 8 || data[i].date.getMonth() == 10) {
+                text(monthsAbbv[data[i].date.getMonth()], xPos, graphHeight+40);
+            }
+            if(data[i].date.getMonth() == 0) {
+                text(data[i].date.getFullYear(), xPos, graphHeight+60);
+            }
+        } else {
+            text(monthsAbbv[data[i].date.getMonth()], xPos, graphHeight+40);
+            if(data[i].date.getMonth() == 0) {
+                text(data[i].date.getFullYear(), xPos, graphHeight+60);
+            }
         }
     }
 }
