@@ -723,6 +723,16 @@ function checkLeftRight() {
 
     var note = midiToFreq(map(data[loc].magnitude, localMagLow, localMagHigh, lowMagmap, highMagmap));
 
+
+    if(loc == 0 && key == 'g') {
+        textToSpeech.speak("Beginning");
+    }
+    else if(key == 'h' && loc == data.length - 1) {
+        textToSpeech.speak("End");
+    }
+
+
+
     if (key == 'g' && loc > 0) {
 
 
