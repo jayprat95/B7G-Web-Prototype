@@ -12,7 +12,8 @@
     <script src="js/sketch.js"></script>
 
     <link rel="stylesheet" type="text/css" href="css/style.css">
-    <link href="https://fonts.googleapis.com/css?family=Rubik:300,400" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="css/style-responsive.css">
+    <link href="https://fonts.googleapis.com/css?family=Rubik:300,400,500" rel="stylesheet">
 
 </head>
 
@@ -25,22 +26,24 @@
                 <input class="button" id="submit" aria-label="New Ticker Submit" type="submit" value="Submit" onclick="changeTicker()">
             </div>
             <div class="row tickerName">
-                <span id="tickerName"></span> <span id="currentGraph"></span>
+                <div id="tickerName"></div> <div id="currentGraph"></div>
             </div>
             <div class="row tickerDetails" aria-label="Ticker Details" class="row">
-                <span class="detail" id="current-price"></span>
-                <span class="detail" id="percent-change"></span>
-                <span class="detail" id="point-change"></span>
-                <span class="detail" id="date-range"></span>
+                <div class="detail" id="current-price"></div>
+                <div class="detail" id="percent-change"></div>
+                <div class="detail" id="point-change"></div>
+                <div class="detail" id="date-range"></div>
             </div>
             <div class="row changeDateRange" aria-label="Change Date Range" class="row">
-                <input class="button" id="onemonth" aria-label="Change to One Month" type="submit" value="1 Month">
-                <input class="button"  id="threemonths"aria-label="Change to Three Months" type="submit" value="3 Months">
-                <input class="button"  id="sixmonths"aria-label="Change to Six Months" type="submit" value="6 Months">
-                <input class="button"  id="oneyear"aria-label="Change to One Year, Selected" type="submit" value="1 Year">
                 <input class="button"  id="fiveyears"aria-label="Change to Five Years" type="submit" value="5 Years">
+                <input class="button"  id="oneyear"aria-label="Change to One Year, Selected" type="submit" value="1 Year">
+                <input class="button"  id="sixmonths"aria-label="Change to Six Months" type="submit" value="6 Months">
+                <input class="button"  id="threemonths"aria-label="Change to Three Months" type="submit" value="3 Months">
+                <input class="button" id="onemonth" aria-label="Change to One Month" type="submit" value="1 Month">
             </div>
-            <input class="button"  id="graphView" aria-label="Turn Off Indicator" type="submit" value="Turn Off Indicator">
+            <div class="row">
+                <input class="button"  id="graphView" aria-label="Turn Off Indicator" type="submit" value="Turn Off Indicator">
+            </div>
 
     </div>
 
@@ -50,6 +53,7 @@
         <span class="val" id="curr-date"></span>
         <span class="val" id="curr-price"></span>
         <span class="val" id="curr-sma"></span>
+        <span class="val"></span>
         <span class="val"></span>
     </div>
 </body>

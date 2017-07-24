@@ -650,19 +650,29 @@ function setTickerDetails() {
     var rangeString;
 
     if (timerange == "onemonth") {
-        rangeString = "Last One Month";
+        rangeString = "Last Month";
     } else if (timerange == "threemonths") {
         rangeString = "Last Three Months";
     } else if (timerange == "sixmonths") {
         rangeString = "Last Six Months";
     } else if (timerange == "oneyear") {
-        rangeString = "Last One Year";
+        rangeString = "Last Year";
     } else if (timerange == "fiveyears") {
         rangeString = "Last Five Years";
     }
 
     var pt = (data[data.length - 1].close - data[data.length - 1].open).toFixed(4);
     var pcnt = (pt / data[data.length - 1].open * 100).toFixed(4);
+
+    var minusSign = "\u2212";
+
+    if (pt < 0) {
+        pt = minusSign + (pt * -1);
+    }
+
+    if (pcnt < 0) {
+        pcnt = minusSign + (pcnt * -1);
+    }
 
     $("#current-price").text("Most Recent Price: " + data[data.length - 1].close);
     $("#percent-change").text("Percent Change: " + pcnt);

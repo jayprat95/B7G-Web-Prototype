@@ -1,0 +1,124 @@
+
+/* Custom, iPhone Retina */ 
+@media only screen and (min-width : 320px) {
+
+    #tickerName {
+        min-width: 100%;
+    }
+
+    #currentGraph {
+        min-width: 100%;
+    }
+
+    .changeDateRange {
+        display: inline-block;
+        display: flex;
+        flex-direction: column;
+        flex-wrap: wrap;
+    }
+
+    .changeDateRange .button {
+        margin-bottom: 5px;
+        margin-right: 0;
+    }
+}
+
+
+/* Extra Small Devices, Phones */ 
+@media only screen and (min-width : 480px) {
+
+    #tickerName {
+        min-width: 100%;
+    }
+
+    #currentGraph {
+        min-width: 100%;
+    }
+
+    .changeDateRange {
+        display: inline-block;
+        display: flex;
+        flex-direction: column;
+        flex-wrap: wrap;
+    }
+
+    .changeDateRange .button {
+        margin-bottom: 5px;
+        margin-right: 0;
+    }
+}
+
+@media only screen and (min-width : 500px) {
+
+    .changeDateRange {
+        justify-content: flex-start;
+        display: inline-block;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+
+
+    .changeDateRange .button {
+        margin-right: 1px;
+        flex: 1;
+    }
+
+}
+
+/* Small Devices, Other */
+@media only screen and (min-width : 650px) {
+
+    #tickerName {
+        min-width: 0%;
+    }
+
+    #currentGraph {
+        min-width: 0%;
+    }
+
+    .changeDateRange {
+        justify-content: flex-start;
+        display: inline-block;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+
+    .changeDateRange .button {
+        margin-right: 10px;
+    }
+
+
+}
+
+/* Small Devices, Tablets */
+@media only screen and (min-width : 768px) {
+
+    #tickerName {
+        min-width: 0;
+    }
+
+    #currentGraph {
+        min-width: 0;
+    }
+
+    .changeDateRange {
+        justify-content: flex-start;
+    }
+
+}
+
+/* Medium Devices, Desktops */
+@media only screen and (min-width : 992px) {
+
+    .changeDateRange {
+        justify-content: flex-start;
+    }
+}
+
+/* Large Devices, Wide Screens */
+@media only screen and (min-width : 1200px) {
+
+}
