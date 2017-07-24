@@ -1,8 +1,9 @@
 // VARIABLE DECLARATIONS  ---------------------------------------------
 
-var osc, fft, dataset, table, monthPlaying, localHigh, localLow, localMagHigh, localMagLow;
+var osc, fft, dataset, table, monthPlaying, localHigh, localLow, localMagHigh, localMagLow, absLow, absHigh, localSMAHigh, localSMALow;
 
 var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+var monthsAbbv = ["Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec"];
 
 var loc = 0;
 var data = [];
@@ -11,6 +12,10 @@ var highmap = 70;
 var lowmap = 50;
 var highMagmap = 80;
 var lowMagmap = 60;
+
+var xshift = 75;
+var ystart = 10;
+var yshift = 60;
 
 var durationLeng = 100;
 var toneDuration = 1000;
@@ -30,7 +35,9 @@ var dataReceived = false;
 
 var rate = 1.5;
 
-var canvasHeight = 500;
+var canvasHeight = 400;
+var graphHeight = canvasHeight - yshift - ystart;
+var rightpadding = 73;
 
 var prevLoc = -1;
 var newLoc = false;
@@ -44,6 +51,25 @@ var lastOneYear = [];
 var lastFiveYears = [];
 var skips = [];
 var newmonths = [];
+
+var newLow = graphHeight;
+var newHigh = ystart;
+var mappedLow;
+var mappedHigh;
+
+var fontsize = 11;
+
+// COLORS ---------------------------------------------
+
+var darkblue;
+var white;
+var borderblue;
+var lightblue;
+var gradhigh;
+var gradlow;
+var transWhite;
+var lineColor;
+var lineFill;
 
 // API STUFF ---------------------------------------------
 
@@ -96,6 +122,7 @@ $(document).ready(function() {
         data = setData();
         deselectAll();
         $(this).addClass('buttonSelected');
+        $("#onemonth").attr('aria-label', 'Change to One Month, Selected');
     });
 
     $("#threemonths").mousedown(function() {
@@ -103,6 +130,7 @@ $(document).ready(function() {
         data = setData();
         deselectAll();
         $(this).addClass('buttonSelected');
+        $("#threemonths").attr('aria-label', 'Change to Three Months, Selected');
     });
 
     $("#sixmonths").mousedown(function() {
@@ -110,6 +138,7 @@ $(document).ready(function() {
         data = setData();
         deselectAll();
         $(this).addClass('buttonSelected');
+        $("#sixmonths").attr('aria-label', 'Change to Six Months, Selected');
     });
 
     $("#oneyear").mousedown(function() {
@@ -117,6 +146,7 @@ $(document).ready(function() {
         data = setData();
         deselectAll();
         $(this).addClass('buttonSelected');
+        $("#oneyear").attr('aria-label', 'Change to One Year, Selected');
     });
 
     $("#fiveyears").mousedown(function() {
@@ -124,6 +154,7 @@ $(document).ready(function() {
         data = setData();
         deselectAll();
         $(this).addClass('buttonSelected');
+        $("#fiveyears").attr('aria-label', 'Change to Five Years, Selected');
     });
 
     $('#input').keyup(function() {
@@ -139,19 +170,19 @@ $(document).ready(function() {
     $("#graphView").mousedown(function() {
 
         //TODO change variables 
-        var on = "Turn Off Study";
-        var off = "Turn On Study"
+        var on = "Turn Off Indicator";
+        var off = "Turn On Indicator"
 
         if ($(this).attr("value") == on) {
             $(this).attr("aria-label", off);
             $(this).attr("value", off);
             currentGraph = 2;
-            $("#currentGraph").text("Closing Values");
+            $("#currentGraph").text("(Closing Values)");
         } else if ($(this).attr("value") == off) {
             $(this).attr("aria-label", on);
             $(this).attr("value", on);
             currentGraph = 1;
-            $("#currentGraph").text("Closing Values with Study");
+            $("#currentGraph").text("(Closing Values with Indicator)");
         }
 
     });
@@ -163,6 +194,13 @@ function deselectAll() {
     $("#sixmonths").removeClass('buttonSelected');
     $("#oneyear").removeClass('buttonSelected');
     $("#fiveyears").removeClass('buttonSelected');
+
+    $("#onemonth").attr('aria-label', 'Change to One Month');
+    $("#threemonths").attr('aria-label', 'Change to Three Months');
+    $("#sixmonths").attr('aria-label', 'Change to Six Months');
+    $("#oneyear").attr('aria-label', 'Change to One Year');
+    $("#fiveyears").attr('aria-label', 'Change to Five Years');
+
 }
 
 //DAY OBJECT ---------------------------------------------
@@ -208,10 +246,25 @@ function setData() {
         setToBeg(lastFiveYears);
     }
 
-    localHigh = getHighLow(dataset)[0];
-    localLow = getHighLow(dataset)[1];
-    localMagHigh = getHighLow(dataset)[2];
-    localMagLow = getHighLow(dataset)[3];
+    var highslows = getHighLow(dataset);
+    localHigh = highslows[0];
+    localLow = highslows[1];
+    localMagHigh = highslows[2];
+    localMagLow = highslows[3];
+    localSMAHigh = highslows[4];
+    localSMALow = highslows[5];
+
+    if( localHigh > localSMAHigh) {
+        absHigh = localHigh;
+    } else {
+        absHigh = localSMAHigh;
+    }
+
+    if( localLow < localSMALow) {
+        absLow = localLow;
+    } else {
+        absLow = localSMALow;
+    }
 
     return dataset;
 }
@@ -361,6 +414,8 @@ function afterData(thedata) {
 
     data = setData();
 
+
+    //
     if (data != undefined && data[0] != undefined) {
         setTickerDetails();
     } else {
@@ -379,12 +434,22 @@ function preload() {
 
 function setup() {
 
+    darkblue = color(40, 59, 74);
+    white = color(255);
+    borderblue = color(93,116,132);
+    lightblue = color(67,146,241);
+    gradhigh = color(73,99,117);
+    gradlow = color(26,41,51);
+    transWhite = color(255,0.5);
+    lineColor = color(229,75,75);
+    lineFill = color(255,191,0);
+
     $('#submit').attr('disabled', true);
     $("#tickerName").text("Company: " + tickerCompany);
     $("#oneyear").addClass('buttonSelected');
-    $("#currentGraph").text("Closing Values with Study");
+    $("#currentGraph").text("(Closing Values with Indicator)");
 
-    var canvas = createCanvas(windowWidth, canvasHeight);
+    var canvas = createCanvas(windowWidth - rightpadding, canvasHeight);
     canvas.parent('canvas-container');
 
     osc = new p5.TriOsc();
@@ -397,8 +462,7 @@ function setup() {
 
 function draw() {
 
-
-    background(255);
+    background(darkblue);
 
     if (currentGraph == 1) {
         drawVisGraphB();
@@ -433,14 +497,13 @@ function keyPressed() {
 }
 
 function keyReleased() {
-
-    buttonDown = false;
-    //TODO check what this variable does 
+    buttonDown = false; 
     keyLength = 0;
 }
 
 function mousePressed() {
     playOnClick();
+    setTickerDetails();
 }
 
 function mouseDragged() {
@@ -448,7 +511,7 @@ function mouseDragged() {
 }
 
 function isInside() {
-    if (mouseX > 0 && mouseX < width && mouseY > 0 && mouseY < height) {
+    if (mouseX > xshift && mouseX < width && mouseY > 0 && mouseY < height) {
         return true;
     } else {
         return false;
@@ -456,7 +519,7 @@ function isInside() {
 }
 
 function windowResized() {
-    resizeCanvas(windowWidth, canvasHeight);
+    resizeCanvas(windowWidth - rightpadding, canvasHeight);
 }
 
 //PLAY SOMETHING ---------------------------------------------
@@ -497,7 +560,8 @@ function playValue() {
     if (key == ' ') {
 
 
-        //TODO check this logic for double space bar 
+        //TODO check this logic for double spacebar 
+
         if (detailsPlaying == true) {
 
             stopSpeech();
@@ -508,8 +572,6 @@ function playValue() {
 
             detailsPlaying = true;
             buttonDown = false;
-
-
 
             //play value 
             var note = midiToFreq(map(data[loc].magnitude, localMagLow, localMagHigh, lowMagmap, highMagmap));
@@ -542,7 +604,7 @@ function playOnClick() {
             stopSpeech(); 
             detailsPlaying = false; 
         }
-        loc = Math.floor(map(mouseX, 0, width, 0, data.length - 1));
+        loc = Math.floor(map(mouseX, xshift, width, 0, data.length - 1));
         var note = midiToFreq(map(data[loc].magnitude, localMagLow, localMagHigh, lowMagmap, highMagmap));
         playPoint(note, false);
     }
@@ -588,23 +650,21 @@ function setTickerDetails() {
     var rangeString;
 
     if (timerange == "onemonth") {
-        rangeString = "One month prior to today";
+        rangeString = "Last One Month";
     } else if (timerange == "threemonths") {
-        rangeString = "Three months prior to today";
+        rangeString = "Last Three Months";
     } else if (timerange == "sixmonths") {
-        rangeString = "Six months prior to today";
+        rangeString = "Last Six Months";
     } else if (timerange == "oneyear") {
-        rangeString = "One year prior to today";
+        rangeString = "Last One Year";
     } else if (timerange == "fiveyears") {
-        rangeString = "Five years prior to today";
+        rangeString = "Last Five Years";
     }
 
     var pt = (data[data.length - 1].close - data[data.length - 1].open).toFixed(4);
     var pcnt = (pt / data[data.length - 1].open * 100).toFixed(4);
 
-    //textToSpeech.speak("Changed to" + tickerCompany + ". Current price: " + data[data.length - 1].close + ". Percent Change. " + pcnt + " Point Change. " + pt + " Date Range " + rangeString + "");
-
-    $("#current-price").text("Current Price: " + data[data.length - 1].close);
+    $("#current-price").text("Most Recent Price: " + data[data.length - 1].close);
     $("#percent-change").text("Percent Change: " + pcnt);
     $("#point-change").text("Point Change: " + pt);
     $("#date-range").text("Date Range: " + rangeString);
@@ -880,6 +940,9 @@ function getHighLow(myArray) {
     var maglow = myArray[0].magnitude;
     var maghigh = myArray[0].magnitude;
 
+    var smalow = myArray[0].sma50;
+    var smahigh = myArray[0].sma50;
+
     for (var i = 0; i < myArray.length; i++) {
         if (myArray[i].close > high) {
             high = myArray[i].close;
@@ -892,11 +955,19 @@ function getHighLow(myArray) {
         } else if (myArray[i].magnitude < maglow) {
             maglow = myArray[i].magnitude;
         }
+
+        if (myArray[i].sma50 > smahigh) {
+            smahigh = myArray[i].sma50;
+        } else if (myArray[i].sma50 < smalow) {
+            smalow = myArray[i].sma50;
+        }
     }
     highlow.push(high);
     highlow.push(low);
     highlow.push(maghigh);
     highlow.push(maglow);
+    highlow.push(smahigh);
+    highlow.push(smalow);
 
     return highlow;
 
@@ -904,128 +975,307 @@ function getHighLow(myArray) {
 
 //DRAW GRAPHS ---------------------------------------------
 
+
+function drawAxis() {
+
+    var xaxispos = xshift - 2;
+    var yaxispos = canvasHeight - yshift + 2;
+
+    mappedLow = map(localLow, absLow, absHigh, newLow, newHigh);
+    mappedHigh = map(localHigh, absLow, absHigh, newLow, newHigh);
+
+    strokeWeight(2);
+    stroke(darkblue);
+    line(xaxispos, 0, width, 0);
+    line(width, yaxispos, width, 0);
+
+    stroke(borderblue);
+    line(xaxispos, yaxispos, xaxispos, 0);
+    line(xaxispos, yaxispos, width, yaxispos);
+
+    drawYAxis(yaxispos);
+
+    for (var i in data) {
+        if (i != 0 && i != data.length) {
+            var xAxis = map(i, 0, data.length - 1, 0, width - xshift) + xshift;
+            drawXAxis(i, xAxis);
+        }
+    }
+}
+
+function drawYAxis(yaxis) {
+    var range = (absHigh-absLow)/100;
+    var units = 1;
+
+    if(range >= 0 && range <= 0.1){
+        units = 2;
+    } else if(range > 0.1 && range <= 0.5){
+        units = 5;
+    } else if(range > 0.5 && range <= 1){
+        units = 10;
+    } else if(range > 1 && range <= 2.5){
+        units = 25;
+    } else if(range > 2.5 && range <= 5){
+        units = 50;
+    } else if(range > 5 && range <= 10){
+        units = 100;
+    } else if(range > 10 && range <= 50){
+        units = 250;
+    } else if(range > 50 && range <= 100){
+        units = 500;
+    } else {
+        units = 1000;
+    }
+
+    var initialTick = getInitalTick(absLow, units);
+
+    for( i = initialTick; i < absHigh; i += units) {
+        //console.log(absHigh);
+        strokeWeight(1);
+        stroke(255);
+        var yPos = map(i, absLow, absHigh, newLow, newHigh);
+        line(xshift-6, yPos, xshift+1, yPos);
+        textAlign(RIGHT);
+        fill(255);
+        textFont("Rubik");
+        textSize(fontsize);
+        text(i, xshift - 15, yPos + 4);
+    }
+}
+
+function getInitalTick(num, units) {
+
+    var newnum = Math.ceil( num );
+
+    while ( newnum % units != 0) {
+        newnum++;
+    } 
+
+    return newnum;
+}
+
+function drawXAxis(i, xPos){
+    //factor in page width and data range
+    if(data[i].newmonth) {
+        strokeWeight(0.5);
+        stroke(255, 50);
+        dottedLine(xPos, newHigh, newLow, 2.5, 6);
+
+        strokeWeight(1);
+        stroke(255);
+        line(xPos, graphHeight+8, xPos, graphHeight+15);
+
+        textAlign(CENTER);
+        fill(255);
+        textFont("Rubik");
+        textSize(fontsize);
+        if(timerange == "fiveyears") {
+            if(data[i].date.getMonth() == 0 || data[i].date.getMonth() == 6) {
+                text(monthsAbbv[data[i].date.getMonth()], xPos, graphHeight+40);
+            }
+            if(data[i].date.getMonth() == 0) {
+                text(data[i].date.getFullYear(), xPos, graphHeight+60);
+            }
+        } else if(timerange == "oneyear") {
+            if(data[i].date.getMonth() == 0 || data[i].date.getMonth() == 2 || data[i].date.getMonth() == 4 || data[i].date.getMonth() == 6 || data[i].date.getMonth() == 8 || data[i].date.getMonth() == 10) {
+                text(monthsAbbv[data[i].date.getMonth()], xPos, graphHeight+40);
+            }
+            if(data[i].date.getMonth() == 0) {
+                text(data[i].date.getFullYear(), xPos, graphHeight+60);
+            }
+        } else {
+            text(monthsAbbv[data[i].date.getMonth()], xPos, graphHeight+40);
+            if(data[i].date.getMonth() == 0) {
+                text(data[i].date.getFullYear(), xPos, graphHeight+60);
+            }
+        }
+    }
+}
+
 function drawVisGraphA() {
 
-
-    var padding = 100;
-
-    var newLow = window.height - padding;
-    var newHigh = 0 + padding;
-
+    setGradient(xshift, ystart, width, graphHeight, gradhigh, gradlow, "Y_AXIS");
 
     if (data != undefined && data[0] != undefined) {
 
-        var lastY = map(data[0].close, localLow, localHigh, newLow, newHigh);
-
+        var lastY = map(data[0].close, absLow, absHigh, newLow, newHigh);
+        
+        beginShape();
+        vertex(xshift- 2, 0);
+        vertex(xshift- 2, lastY);
 
         for (var i in data) {
 
-
             if (i != 0 && i != data.length) {
 
-                var xPos = map(i, 0, data.length - 1, 0, width);
+                var xPos = map(i, 0, data.length - 1, 0, width - xshift) + xshift;
 
-                var lastxPos = map(i - 1, 0, data.length - 1, 0, width);
+                var lastxPos = map(i - 1, 0, data.length - 1, 0, width - xshift) + xshift;
 
                 stroke(0);
                 strokeWeight(1);
 
-                line(lastxPos, lastY, xPos, map(data[i].close, localLow, localHigh, newLow, newHigh));
+                line(lastxPos, lastY, xPos, map(data[i].close, absLow, absHigh, newLow, newHigh));
+                vertex(xPos, map(data[i].close, absLow, absHigh, newLow, newHigh));
             }
 
-            lastY = map(data[i].close, localLow, localHigh, newLow, newHigh);
+            lastY = map(data[i].close, absLow, absHigh, newLow, newHigh);
         }
 
-        stroke(255, 0, 0);
-        strokeWeight(1);
-        var curMapped = map(loc, 0, data.length - 1, 0, width);
-        line(curMapped, 0, curMapped, canvasHeight);
-        fill(255, 0, 0);
-        ellipse(curMapped, map(data[loc].close, localLow, localHigh, newLow, newHigh), 5, 5);
+        noStroke();
+        vertex(width, 0);
+        fill(darkblue);
+        stroke(lightblue);
+        strokeWeight(2);
+        endShape(CLOSE);
+
+        drawAxis();
+
+        stroke(lineColor);
+        strokeWeight(2);
+        var curMapped = map(loc, 0, data.length - 1, xshift, width);
+        line(curMapped, 0, curMapped, canvasHeight - yshift);
+        fill(lineColor);
+        ellipse(curMapped, map(data[loc].close, absLow, absHigh, newLow, newHigh), 5, 5);
     }
 
 }
 
 function drawVisGraphB() {
 
+    // strokeWeight(1);   
 
-    strokeWeight(1);
+    // stroke(0,255,0);
+    // line(0, newLow, width, newLow);
+    // line(0, newHigh, width, newHigh);
 
-    var padding = 100;
+    // stroke(0,255,255);
+    // line(0, mappedLow, width, mappedLow);
+    // line(0, mappedHigh, width, mappedHigh);
 
-    var newLow = window.height - padding;
-    var newHigh = 0 + padding;
-
+    setGradient(xshift, ystart, width, graphHeight, gradhigh, gradlow, "Y_AXIS");
 
     if (data != undefined && data[0] != undefined) {
 
-        var lastY = map(data[0].close, localLow, localHigh, newLow, newHigh);
-        var lastS = map(data[0].sma50, localLow, localHigh, newLow, newHigh);
+        var lastY = map(data[0].close, absLow, absHigh, newLow, newHigh);
+        var lastS = map(data[0].sma50, absLow, absHigh, newLow, newHigh);
+
+        beginShape();
+        vertex(xshift - 2, 0);
+        vertex(xshift - 2, lastY);
 
         for (var i in data) {
 
             if (i != 0 && i != data.length) {
 
-                var xPos = map(i, 0, data.length - 1, 0, width);
+                var xPos = map(i, 0, data.length - 1, 0, width - xshift) + xshift;
 
-                var lastxPos = map(i - 1, 0, data.length - 1, 0, width);
-
+                var lastxPos = map(i - 1, 0, data.length - 1, 0, width - xshift) + xshift;
 
                 if (data[i].overOrUnder == 1) {
                     strokeWeight(0.5);
-                    fill(216, 25, 75);
                     stroke(216, 25, 75);
-                    quad(lastxPos, lastS, lastxPos, lastY, xPos, map(data[i].close, localLow, localHigh, newLow, newHigh), xPos, map(data[i].sma50, localLow, localHigh, newLow, newHigh));
 
                 } else if (data[i].overOrUnder == -1) {
                     strokeWeight(0.5);
-                    fill(60, 173, 23);
                     stroke(60, 173, 23);
-                    quad(lastxPos, lastS, lastxPos, lastY, xPos, map(data[i].close, localLow, localHigh, newLow, newHigh), xPos, map(data[i].sma50, localLow, localHigh, newLow, newHigh));
                 }
 
-
-                if (data[i].sma50 != 0 || data[i - 1].sma50 != 0) {
-                    strokeWeight(1);
-                    stroke(0, 67, 234);
-                    line(lastxPos, lastS, xPos, map(data[i].sma50, localLow, localHigh, newLow, newHigh));
-                }
-
-                stroke(1);
-                line(lastxPos, lastY, xPos, map(data[i].close, localLow, localHigh, newLow, newHigh));
-
-
+                stroke(lightblue);
+                line(lastxPos, lastY, xPos, map(data[i].close, absLow, absHigh, newLow, newHigh));
+                vertex(xPos, map(data[i].close, absLow, absHigh, newLow, newHigh));
 
             }
 
-            lastY = map(data[i].close, localLow, localHigh, newLow, newHigh);
-            lastS = map(data[i].sma50, localLow, localHigh, newLow, newHigh);
+            lastY = map(data[i].close, absLow, absHigh, newLow, newHigh);
+            lastS = map(data[i].sma50, absLow, absHigh, newLow, newHigh);
 
         }
+
+        noStroke();
+        vertex(width, 0);
+        fill(darkblue);
+        stroke(lightblue);
+        strokeWeight(2);
+        endShape(CLOSE);
+
+        lastY = map(data[0].close, absLow, absHigh, newLow, newHigh);
+        lastS = map(data[0].sma50, absLow, absHigh, newLow, newHigh);
 
         for (var i in data) {
             if (i != 0 && i != data.length) {
 
-                var xPos = map(i, 0, data.length - 1, 0, width);
+                var xPos = map(i, 0, data.length - 1, 0, width - xshift) + xshift;
+                var lastxPos = map(i - 1, 0, data.length - 1, 0, width - xshift) + xshift;
 
-                var lastxPos = map(i - 1, 0, data.length - 1, 0, width);
-
-                if (data[i].crossed) {
-                    fill(247, 166, 20);
-                    noStroke();
-                    ellipse(xPos, map(data[i].sma50, localLow, localHigh, newLow, newHigh), 4, 4);
+                if (data[i].sma50 != 0 || data[i - 1].sma50 != 0) {
+                    strokeWeight(2);
+                    stroke(white);
+                    line(lastxPos, lastS, xPos, map(data[i].sma50, absLow, absHigh, newLow, newHigh));
                 }
+
             }
+
+            lastY = map(data[i].close, absLow, absHigh, newLow, newHigh);
+            lastS = map(data[i].sma50, absLow, absHigh, newLow, newHigh);
         }
 
-        stroke(255, 0, 0);
-        var curMapped = map(loc, 0, data.length - 1, 0, width);
-        line(curMapped, 0, curMapped, canvasHeight);
-        fill(255, 0, 0);
+        drawAxis();
+
+        // for (var i in data) {
+        //     if (i != 0 && i != data.length) {
+
+        //         var xPos = map(i, 0, data.length - 1, 0, width - xshift) + xshift;
+
+        //         if (data[i].crossed) {
+        //             fill(247, 166, 20);
+        //             noStroke();
+        //             ellipse(xPos, map(data[i].sma50, absLow, absHigh, newLow, newHigh), 4, 4);
+        //         }
+
+        //     }
+        // }
+
+        
+
+        
+
+        stroke(lineColor);
         strokeWeight(2);
-        stroke(0);
-        line(curMapped, map(data[loc].close, localLow, localHigh, newLow, newHigh), curMapped, map(data[loc].sma50, localLow, localHigh, newLow, newHigh));
+        var curMapped = map(loc, 0, data.length - 1, 0, width - xshift) + xshift;
+        line(curMapped, 0, curMapped, canvasHeight - yshift);
+        fill(lineColor);
+        stroke(lineFill);
+        line(curMapped, map(data[loc].close, absLow, absHigh, newLow, newHigh), curMapped, map(data[loc].sma50, absLow, absHigh, newLow, newHigh));
 
     }
 
+}
+
+function setGradient(x, y, w, h, c1, c2, axis) {
+
+  noFill();
+
+  if (axis == "Y_AXIS") {  // Top to bottom gradient
+    for (var i = y; i <= y+h; i++) {
+      var inter = map(i, y, y+h, 0, 1);
+      var c = lerpColor(c1, c2, inter);
+      stroke(c);
+      line(x, i, x+w, i);
+    }
+  }  
+  else if (axis == "X_AXIS") {  // Left to right gradient
+    for (var i = x; i <= x+w; i++) {
+      var inter = map(i, x, x+w, 0, 1);
+      var c = lerpColor(c1, c2, inter);
+      stroke(c);
+      line(i, y, i, y+h);
+    }
+  }
+}
+
+function dottedLine(x, ylownum, yhighnum, segLeng, spaceLeng) {
+    for(i = ylownum; i+segLeng < yhighnum; i+=segLeng+spaceLeng) {
+        line(x, i, x, i+segLeng);
+    }
 }

@@ -12,58 +12,45 @@
     <script src="js/sketch.js"></script>
 
     <link rel="stylesheet" type="text/css" href="css/style.css">
-    <style>
-    body {
-        padding: 0;
-        margin: 0;
-    }
-    
-    canvas {
-        position: relative;
-        top: 0;
-        left: 0;
-        z-index: 1;
-    }
-    
-    #content {
-        position: relative;
-        z-index: 2;
-    }
-    </style>
+    <link href="https://fonts.googleapis.com/css?family=Rubik:300,400" rel="stylesheet">
+
 </head>
 
 <body>
 
     <div id="content">
             
-            <div aria-label="Change Company" class="row">
-                <input id="input" aria-label="New Ticker Input" type="text" name="tickername" class="tickerfield">
-                <input id="submit" aria-label="New Ticker Submit" type="submit" value="Submit" onclick="changeTicker()">
+            <div aria-label="Change Company" class="row changeCompany">
+                <input id="input" placeholder="New Ticker Name, Ex. AAPL" aria-label="New Ticker Input" type="text" name="tickername" class="tickerfield">
+                <input class="button" id="submit" aria-label="New Ticker Submit" type="submit" value="Submit" onclick="changeTicker()">
             </div>
-            <span id="tickerName"></span> <span id="currentGraph"></span>
-            <div aria-label="Ticker Details" class="row">
-                <span id="current-price"></span>
-                <span id="percent-change"></span>
-                <span id="point-change"></span>
-                <span id="date-range"></span>
+            <div class="row tickerName">
+                <span id="tickerName"></span> <span id="currentGraph"></span>
             </div>
-            <div aria-label="Change Date Range" class="row">
-                <input id="onemonth" aria-label="Change to One Month" type="submit" value="1 Month">
-                <input id="threemonths"aria-label="Change to Three Months" type="submit" value="3 Months">
-                <input id="sixmonths"aria-label="Change to Six Months" type="submit" value="6 Months">
-                <input id="oneyear"aria-label="Change to One Year" type="submit" value="1 Year">
-                <input id="fiveyears"aria-label="Change to Five Years" type="submit" value="5 Years">
+            <div class="row tickerDetails" aria-label="Ticker Details" class="row">
+                <span class="detail" id="current-price"></span>
+                <span class="detail" id="percent-change"></span>
+                <span class="detail" id="point-change"></span>
+                <span class="detail" id="date-range"></span>
             </div>
-            <!-- <div aria-label="Toggle Study" class="row"> -->
-                <input id="graphView" aria-label="Turn Off Study" type="submit" value="Turn Off Study">
-           <!--  </div> -->
+            <div class="row changeDateRange" aria-label="Change Date Range" class="row">
+                <input class="button" id="onemonth" aria-label="Change to One Month" type="submit" value="1 Month">
+                <input class="button"  id="threemonths"aria-label="Change to Three Months" type="submit" value="3 Months">
+                <input class="button"  id="sixmonths"aria-label="Change to Six Months" type="submit" value="6 Months">
+                <input class="button"  id="oneyear"aria-label="Change to One Year, Selected" type="submit" value="1 Year">
+                <input class="button"  id="fiveyears"aria-label="Change to Five Years" type="submit" value="5 Years">
+            </div>
+            <input class="button"  id="graphView" aria-label="Turn Off Indicator" type="submit" value="Turn Off Indicator">
 
     </div>
 
     <div id="canvas-container" aria-hidden="true"> </div>
 
-    <div id="sighted-vals" aria-hidden="true"> 
-        <span id="curr-date"></span><br><span id="curr-price"></span><br><span id="curr-sma"></span>
+    <div class="row sightedValues" id="sighted-vals" aria-hidden="true"> 
+        <span class="val" id="curr-date"></span>
+        <span class="val" id="curr-price"></span>
+        <span class="val" id="curr-sma"></span>
+        <span class="val"></span>
     </div>
 </body>
 
