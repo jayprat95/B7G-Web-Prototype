@@ -117,6 +117,12 @@ var bassLong = new Wad({
 
 $(document).ready(function() {
 
+    $('#input').keydown(function(e) {
+    if (e.keyCode == 13) {
+        changeTicker(); 
+    }
+});
+
     $("#onemonth").mousedown(function() {
         timerange = "onemonth";
         data = setData();
