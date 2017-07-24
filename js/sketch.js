@@ -441,8 +441,8 @@ function setup() {
     gradhigh = color(73,99,117);
     gradlow = color(26,41,51);
     transWhite = color(255,0.5);
-    lineColor = color(229,75,75);
-    lineFill = color(255,191,0);
+    lineColor = color(0);
+    lineFill = color(229,75,75);
 
     $('#submit').attr('disabled', true);
     $("#tickerName").text("Company: " + tickerCompany);
@@ -1146,7 +1146,8 @@ function drawVisGraphA() {
         strokeWeight(2);
         var curMapped = map(loc, 0, data.length - 1, xshift, width);
         line(curMapped, 0, curMapped, canvasHeight - yshift);
-        fill(lineColor);
+        fill(lineFill);
+        stroke(lineFill);
         ellipse(curMapped, map(data[loc].close, absLow, absHigh, newLow, newHigh), 5, 5);
     }
 
