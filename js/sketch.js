@@ -15,7 +15,7 @@ var lowMagmap = 60;
 
 var xshift = 75;
 var ystart = 10;
-var yshift = 80;
+var yshift = 75;
 
 var durationLeng = 100;
 var toneDuration = 1000;
@@ -1277,5 +1277,9 @@ function dottedLine(x, ylownum, yhighnum, segLeng, spaceLeng) {
 function drawTriangle(loc) {
     fill(borderblue);
     noStroke();
-    triangle(loc-8, canvasHeight, loc, canvasHeight-10, loc+8,canvasHeight);
+    triangle(loc-10, canvasHeight, loc, canvasHeight-12, loc+10,canvasHeight);
+
+    fill(darkblue);
+    rect(xshift-10, canvasHeight-15, 10, 20);
+    rect(width-2, canvasHeight-15, 10, 20);
 }

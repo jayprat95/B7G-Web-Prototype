@@ -108,8 +108,8 @@
     flex: 1;
     font-size: 12px;
     display: inline-block;
-    padding-top: 30px;
-    padding-bottom: 30px;
+/*    padding-top: 30px;
+    padding-bottom: 30px;*/
     margin-left: 10px;
   }
 
@@ -157,6 +157,10 @@
 
   #sighted-vals {
     background-color: rgb(93,116,132);
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    margin-right: 75px;
+    margin-left: 75px;
   }
 
   .val {
