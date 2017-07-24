@@ -62,12 +62,6 @@
     padding-bottom: 0 !important;
   }
 
-  .changeDateRange {
-    /*display: inline-block;
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;*/
-  }
 
   .changeDateRange .button {
       margin-right: 10px;
@@ -94,9 +88,6 @@
 
   .changeCompany {
     background-color: rgb(93,116,132);
-  /*  display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;*/
   }
 
   .changeCompany .button {
@@ -124,6 +115,15 @@
 
   #current-price {
     margin-left: 0;
+
+  }
+
+  #percent-change {
+
+  }
+
+  #point-change {
+
   }
 
   #date-range {
@@ -141,6 +141,13 @@
     flex-wrap: wrap;
   }
 
+  .subrow{
+    display: inline-block;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
   .tickerfield {
     width: 25%;
     padding: 6px 12px;
@@ -148,10 +155,8 @@
     box-sizing: border-box;
   }
 
-  .sightedValues {
-/*    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;*/
+  #sighted-vals {
+    background-color: rgb(93,116,132);
   }
 
   .val {

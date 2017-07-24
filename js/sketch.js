@@ -15,7 +15,7 @@ var lowMagmap = 60;
 
 var xshift = 75;
 var ystart = 10;
-var yshift = 60;
+var yshift = 80;
 
 var durationLeng = 100;
 var toneDuration = 1000;
@@ -451,6 +451,7 @@ function setup() {
 
     var canvas = createCanvas(windowWidth - rightpadding, canvasHeight);
     canvas.parent('canvas-container');
+    $('#canvas-container').height(canvasHeight);
 
     osc = new p5.TriOsc();
     osc.start();
@@ -1232,24 +1233,6 @@ function drawVisGraphB() {
 
         drawAxis();
 
-        // for (var i in data) {
-        //     if (i != 0 && i != data.length) {
-
-        //         var xPos = map(i, 0, data.length - 1, 0, width - xshift) + xshift;
-
-        //         if (data[i].crossed) {
-        //             fill(247, 166, 20);
-        //             noStroke();
-        //             ellipse(xPos, map(data[i].sma50, absLow, absHigh, newLow, newHigh), 4, 4);
-        //         }
-
-        //     }
-        // }
-
-        
-
-        
-
         stroke(lineColor);
         strokeWeight(2);
         var curMapped = map(loc, 0, data.length - 1, 0, width - xshift) + xshift;
@@ -1258,6 +1241,7 @@ function drawVisGraphB() {
         stroke(lineFill);
         line(curMapped, map(data[loc].close, absLow, absHigh, newLow, newHigh), curMapped, map(data[loc].sma50, absLow, absHigh, newLow, newHigh));
 
+        drawTriangle(curMapped);
     }
 
 }
@@ -1288,4 +1272,10 @@ function dottedLine(x, ylownum, yhighnum, segLeng, spaceLeng) {
     for(i = ylownum; i+segLeng < yhighnum; i+=segLeng+spaceLeng) {
         line(x, i, x, i+segLeng);
     }
+}
+
+function drawTriangle(loc) {
+    fill(borderblue);
+    noStroke();
+    triangle(loc-8, canvasHeight, loc, canvasHeight-10, loc+8,canvasHeight);
 }
