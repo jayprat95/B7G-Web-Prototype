@@ -68,8 +68,9 @@ var lightblue;
 var gradhigh;
 var gradlow;
 var transWhite;
-var lineColor;
-var lineFill;
+var aboveColor;
+var belowColor;
+var dotColor;
 
 // API STUFF ---------------------------------------------
 
@@ -465,7 +466,9 @@ function setup() {
     gradlow = color(26,41,51);
     transWhite = color(255,0.5);
     lineColor = color(12,26,35);
-    lineFill = color(229,75,75);
+    aboveColor = color(214, 227, 119);
+    belowColor = color(229,75,75);
+    dotColor = color(21, 102, 177);
 
     $('#submit').attr('disabled', true);
     $("#tickerName").text("Company: " + tickerCompany + ", (Closing Values with Indicator)");
@@ -1168,9 +1171,10 @@ function drawVisGraphA() {
         strokeWeight(2);
         var curMapped = map(loc, 0, data.length - 1, xshift, width);
         line(curMapped, 0, curMapped, canvasHeight - yshift);
-        fill(lineFill);
-        stroke(lineFill);
-        ellipse(curMapped, map(data[loc].close, absLow, absHigh, newLow, newHigh), 5, 5);
+        fill(white);
+        stroke(0);
+        strokeWeight(2.5);
+        ellipse(curMapped, map(data[loc].close, absLow, absHigh, newLow, newHigh), 8, 8);
     }
 
 }
@@ -1260,8 +1264,12 @@ function drawVisGraphB() {
         strokeWeight(2);
         var curMapped = map(loc, 0, data.length - 1, 0, width - xshift) + xshift;
         line(curMapped, 0, curMapped, canvasHeight - yshift);
-        fill(lineColor);
-        stroke(lineFill);
+        if(data[loc].overOrUnder == -1) {
+            stroke(aboveColor);
+        } else {
+            stroke(belowColor);
+        }
+        
         line(curMapped, map(data[loc].close, absLow, absHigh, newLow, newHigh), curMapped, map(data[loc].sma50, absLow, absHigh, newLow, newHigh));
 
         drawTriangle(curMapped);
