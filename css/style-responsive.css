@@ -21,6 +21,35 @@
         margin-bottom: 5px;
         margin-right: 0;
     }
+
+    #current-price {
+        flex: 2;
+        margin-left: 0;
+    }
+    
+    #percent-change {
+        flex: 3;
+        margin-left: 0;
+        margin-top: 8px;
+    }
+    
+    #point-change {
+        flex: 2;
+        margin-left: 0;
+    }
+    
+    #date-range {
+        flex: 3;
+        margin-left: 0;
+    }
+
+    .linebreak{
+        width: 100%;
+    }
+
+    .linebreak2{
+        width: 100%;
+    }
 }
 
 
@@ -46,6 +75,35 @@
         margin-bottom: 5px;
         margin-right: 0;
     }
+
+    #current-price {
+        flex: 2;
+        margin-left: 0;
+    }
+    
+    #percent-change {
+        flex: 3;
+        margin-left: 0;
+        margin-top: 8px;
+    }
+    
+    #point-change {
+        flex: 2;
+        margin-left: 0;
+    }
+    
+    #date-range {
+        flex: 3;
+        margin-left: 0;
+    }
+
+    .linebreak{
+        width: 100%;
+    }
+
+    .linebreak2{
+        width: 100%;
+    }
 }
 
 @media only screen and (min-width : 500px) {
@@ -65,6 +123,35 @@
         flex: 1;
     }
 
+    #current-price {
+        flex: 2;
+        margin-left: 0;
+    }
+    
+    #percent-change {
+        flex: 3;
+        margin-left: 0;
+        margin-top: 8px;
+    }
+    
+    #point-change {
+        flex: 2;
+        margin-left: 0;
+    }
+    
+    #date-range {
+        flex: 3;
+        margin-left: 0;
+    }
+
+    .linebreak{
+        width: 100%;
+    }
+
+    .linebreak2{
+        width: 100%;
+    }
+
 }
 
 /* Small Devices, Other */
@@ -78,6 +165,10 @@
         min-width: 0%;
     }
 
+    #percent-change {
+        margin-top: 0px;
+    }
+
     .changeDateRange {
         justify-content: flex-start;
         display: inline-block;
@@ -88,6 +179,10 @@
 
     .changeDateRange .button {
         margin-right: 10px;
+    }
+
+    .linebreak2{
+        width: 0%;
     }
 
 
@@ -104,18 +199,92 @@
         min-width: 0;
     }
 
-    .changeDateRange {
-        justify-content: flex-start;
-    }
 
 }
 
+@media only screen and (max-width : 839px) {
+
+    #tickerName{
+        min-width: 100%;
+    }
+
+    #toggle{
+        margin-top: 10px;
+    }
+}
+
+@media only screen and (max-width : 915px) {
+
+    .sightedValues {
+        flex-direction: column !important;
+        padding-top: 10px !important;
+        padding-bottom: 10px !important;
+    }
+
+    .val {
+        padding-top: 2px;
+        padding-bottom: 2px;
+    }
+}
+
 /* Medium Devices, Desktops */
-@media only screen and (min-width : 992px) {
+@media only screen and (max-width : 1065px) {
 
     .changeDateRange {
         justify-content: flex-start;
     }
+
+    #current-price {
+        flex: 2;
+    }
+    
+    #percent-change {
+        flex: 3;
+    }
+    
+    #point-change {
+        flex: 2;
+        margin-left: 0;
+        margin-top: 8px;
+    }
+    
+    #date-range {
+        flex: 3;
+        margin-top: 8px;
+    }
+
+    .linebreak{
+        width: 100%;
+    }
+}
+
+@media only screen and (min-width : 1065px) {
+    
+    #current-price {
+        flex: 1;
+    }
+    
+    #percent-change {
+        flex: 1;
+        min-width: 0%;
+        margin-left: 8px;
+    }
+    
+    #point-change {
+        flex: 1;
+        margin-left: 8px;
+    }
+    
+    #date-range {
+        flex: 2;
+        min-width: 0%;
+        margin-left: 8px;
+    }
+
+    .linebreak{
+        width: 0%;
+    }
+
 }
 
 /* Large Devices, Wide Screens */
