@@ -177,12 +177,35 @@ $(document).ready(function() {
             $(this).attr("aria-label", off);
             $(this).attr("value", off);
             currentGraph = 2;
-            $("#currentGraph").text("(Closing Values)");
+            $("#tickerName").text("Company: " + tickerCompany + ", (Closing Values)");
+            $('#checkbox').attr('checked', false);
         } else if ($(this).attr("value") == off) {
             $(this).attr("aria-label", on);
             $(this).attr("value", on);
             currentGraph = 1;
-            $("#currentGraph").text("(Closing Values with Indicator)");
+            $("#tickerName").text("Company: " + tickerCompany + ", (Closing Values with Indicator)");
+            $('#checkbox').attr('checked', true);
+        }
+
+    });
+
+    $(".switch").mousedown(function() {
+        console.log("clicked");
+
+        //TODO change variables 
+        var on = "Turn Off Indicator";
+        var off = "Turn On Indicator"
+
+        if ($("#graphView").attr("value") == on) {
+            $("#graphView").attr("aria-label", off);
+            $("#graphView").attr("value", off);
+            currentGraph = 2;
+            $("#tickerName").text("Company: " + tickerCompany + ", (Closing Values)");
+        } else if ($("#graphView").attr("value") == off) {
+            $("#graphView").attr("aria-label", on);
+            $("#graphView").attr("value", on);
+            currentGraph = 1;
+            $("#tickerName").text("Company: " + tickerCompany + ", (Closing Values with Indicator)");
         }
 
     });
@@ -445,9 +468,8 @@ function setup() {
     lineFill = color(229,75,75);
 
     $('#submit').attr('disabled', true);
-    $("#tickerName").text("Company: " + tickerCompany);
+    $("#tickerName").text("Company: " + tickerCompany + ", (Closing Values with Indicator)");
     $("#oneyear").addClass('buttonSelected');
-    $("#currentGraph").text("(Closing Values with Indicator)");
 
     var canvas = createCanvas(windowWidth - rightpadding, canvasHeight);
     canvas.parent('canvas-container');

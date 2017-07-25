@@ -73,17 +73,33 @@
 
   .tickerName {
     padding-top: 20px !important;
+    justify-content: space-between;
+    
   }
 
   #tickerName {
     font-size: 20px;
     margin-right: 10px;
-    display: inline-block;
+    align-self: flex-start;
   }
 
   #currentGraph {
     font-size: 20px;
-    display: inline-block;
+    align-self: flex-start;
+  }
+
+  #toggle {
+    align-self: flex-end;
+    justify-content: flex-end;
+    display:table;
+  }
+
+  #indicator-label {
+    display:table-cell;
+    vertical-align:middle;
+    padding-right: 15px;
+    font-size: 12px;
+    text-transform: uppercase;
   }
 
   .changeCompany {
@@ -135,7 +151,6 @@
     padding-right: 75px;
     padding-top: 10px;
     padding-bottom: 10px;
-    display: inline-block;
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
@@ -166,6 +181,7 @@
   .val {
     flex: 1;
     font-size: 12px;
+    text-align: center;
   }
 
   /* The switch - the box around the slider */
@@ -188,8 +204,8 @@
   right: 0;
   bottom: 0;
   background-color: #ccc;
-  -webkit-transition: .4s;
-  transition: .4s;
+  -webkit-transition: .1s;
+  transition: .1s;
 }
 
 .slider:before {
@@ -200,8 +216,8 @@
   left: 4px;
   bottom: 4px;
   background-color: white;
-  -webkit-transition: .4s;
-  transition: .4s;
+  -webkit-transition: .1s;
+  transition: .1s;
 }
 
 input:checked + .slider {
@@ -225,5 +241,14 @@ input:checked + .slider:before {
 
 .slider.round:before {
   border-radius: 50%;
+}
+
+.hidden {
+  position:absolute;
+  left:-10000px;
+  top:auto;
+  width:1px;
+  height:1px;
+  overflow:hidden;
 }
 
