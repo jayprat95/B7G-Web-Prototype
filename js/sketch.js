@@ -118,6 +118,8 @@ var bassLong = new Wad({
 
 $(document).ready(function() {
 
+    showModal($('#modal'));
+
     $("#onemonth").mousedown(function() {
         timerange = "onemonth";
         data = setData();
@@ -1095,6 +1097,18 @@ function getInitalTick(num, units) {
 
 function drawXAxis(i, xPos){
     //factor in page width and data range
+
+    if(timerange == "onemonth") {
+        strokeWeight(0.5);
+        stroke(255, 50);
+        dottedLine(xPos, newHigh, newLow, 2.5, 6);
+
+        strokeWeight(1);
+        stroke(255);
+        line(xPos, graphHeight+8, xPos, graphHeight+15);
+
+    }
+
     if(data[i].newmonth) {
         strokeWeight(0.5);
         stroke(255, 50);

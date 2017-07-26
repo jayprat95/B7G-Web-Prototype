@@ -11,6 +11,12 @@
     letter-spacing: 1px;
   } 
 
+  body ::focus {
+    outline-style:none;
+    box-shadow:none;
+    border-color:transparent;
+  }
+
   b {
     font-family: 'Rubik', sans-serif;
     font-weight: 500;
@@ -272,5 +278,22 @@ input:checked + .slider:before {
   width:1px;
   height:1px;
   overflow:hidden;
+}
+
+.about {
+  justify-content: center;
+}
+
+#about-project {
+  margin-bottom: 30px;
+}
+
+#modalbutton {
+  text-align: center;
+  flex: 1;
+}
+
+#modal {
+  font-size: 12px;
 }
 
