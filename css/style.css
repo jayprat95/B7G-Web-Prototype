@@ -112,8 +112,29 @@
     margin-right: 0;
   }
 
+  .changeCompany .button:disabled {
+    background-color: #CED5D8;
+  }
+
   #input {
       flex: 8;
+  }
+
+  #input::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+    color: #CED5D8;
+    font-style: italic;
+  }
+  #input::-moz-placeholder { /* Firefox 19+ */
+    color: #CED5D8;
+    font-style: italic;
+  }
+  #input:-ms-input-placeholder { /* IE 10+ */
+    color: #CED5D8;
+    font-style: italic;
+  }
+  #input:-moz-placeholder { /* Firefox 18- */
+    color: #CED5D8;
+    font-style: italic;
   }
 
   #submit {
@@ -204,7 +225,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: #ccc;
+  background-color: #CED5D8;
   -webkit-transition: .1s;
   transition: .1s;
 }

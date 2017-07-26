@@ -659,7 +659,11 @@ function changeTicker() {
     try {
         tickerCompany = row.getString("Description");
 
-        $("#tickerName").text("Company: " + tickerCompany + ", ");
+        if(currentGraph == 2) {
+            $("#tickerName").text("Company: " + tickerCompany + ", (Closing Values)");
+        } else {
+            $("#tickerName").text("Company: " + tickerCompany + ", (Closing Values width Indicator)");
+        }
         $(".tickerfield").val("");
         dataReceived = false;
 
