@@ -773,16 +773,16 @@ function checkLeftRight() {
 
     var note = midiToFreq(map(data[loc].magnitude, localMagLow, localMagHigh, lowMagmap, highMagmap));
 
-    if(loc == 0 && key == 'g') {
+    if(loc == 0 && (key == 'g' || key == 'G')) {
         textToSpeech.speak("Beginning");
     }
-    else if(key == 'h' && loc == data.length - 1) {
+    else if((key == 'h' || key == 'H') && loc == data.length - 1) {
         textToSpeech.speak("End");
     }
 
 
 
-    if (key == 'g' && loc > 0 && $("#input").is(":focus") == false ) {
+    if ((key == 'g' || key == 'G') && loc > 0 && $("#input").is(":focus") == false ) {
 
         if (detailsPlaying) {
             stopSpeech();
@@ -813,7 +813,7 @@ function checkLeftRight() {
         }
 
 
-    } else if (key == 'h' && loc < data.length - 1 && $("#input").is(":focus") == false) {
+    } else if ((key == 'h' || key == 'H') && loc < data.length - 1 && $("#input").is(":focus") == false) {
 
 
         if (detailsPlaying) {
