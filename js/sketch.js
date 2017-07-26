@@ -664,6 +664,7 @@ function changeTicker() {
         } else {
             $("#tickerName").text("Company: " + tickerCompany + ", (Closing Values width Indicator)");
         }
+
         $(".tickerfield").val("");
         dataReceived = false;
 
@@ -763,9 +764,7 @@ function checkLeftRight() {
 
     var note = midiToFreq(map(data[loc].magnitude, localMagLow, localMagHigh, lowMagmap, highMagmap));
 
-    if (key == 'g' && loc > 0) {
-
-
+    if (key == 'g' && loc > 0 && $("#input").is(":focus") == false ) {
 
         if (detailsPlaying) {
             stopSpeech();
@@ -796,7 +795,7 @@ function checkLeftRight() {
         }
 
 
-    } else if (key == 'h' && loc < data.length - 1) {
+    } else if (key == 'h' && loc < data.length - 1 && $("#input").is(":focus") == false) {
 
 
         if (detailsPlaying) {
