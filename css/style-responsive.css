@@ -1,0 +1,301 @@
+
+/* Custom, iPhone Retina */ 
+@media only screen and (min-width : 320px) {
+
+    #tickerName {
+        min-width: 100%;
+    }
+
+    #currentGraph {
+        min-width: 100%;
+    }
+
+    .changeDateRange {
+        display: inline-block;
+        display: flex;
+        flex-direction: column;
+        flex-wrap: wrap;
+    }
+
+    .changeDateRange .button {
+        margin-bottom: 5px;
+        margin-right: 0;
+    }
+
+    #current-price {
+        flex: 2;
+        margin-left: 0;
+    }
+    
+    #percent-change {
+        flex: 3;
+        margin-left: 0;
+        margin-top: 8px;
+    }
+    
+    #point-change {
+        flex: 2;
+        margin-left: 0;
+    }
+    
+    #date-range {
+        flex: 3;
+        margin-left: 0;
+    }
+
+    .linebreak{
+        width: 100%;
+    }
+
+    .linebreak2{
+        width: 100%;
+    }
+}
+
+
+/* Extra Small Devices, Phones */ 
+@media only screen and (min-width : 480px) {
+
+    #tickerName {
+        min-width: 100%;
+    }
+
+    #currentGraph {
+        min-width: 100%;
+    }
+
+    .changeDateRange {
+        display: inline-block;
+        display: flex;
+        flex-direction: column;
+        flex-wrap: wrap;
+    }
+
+    .changeDateRange .button {
+        margin-bottom: 5px;
+        margin-right: 0;
+    }
+
+    #current-price {
+        flex: 2;
+        margin-left: 0;
+    }
+    
+    #percent-change {
+        flex: 3;
+        margin-left: 0;
+        margin-top: 8px;
+    }
+    
+    #point-change {
+        flex: 2;
+        margin-left: 0;
+    }
+    
+    #date-range {
+        flex: 3;
+        margin-left: 0;
+    }
+
+    .linebreak{
+        width: 100%;
+    }
+
+    .linebreak2{
+        width: 100%;
+    }
+}
+
+@media only screen and (min-width : 500px) {
+
+    .changeDateRange {
+        justify-content: flex-start;
+        display: inline-block;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+
+
+    .changeDateRange .button {
+        margin-right: 1px;
+        flex: 1;
+    }
+
+    #current-price {
+        flex: 2;
+        margin-left: 0;
+    }
+    
+    #percent-change {
+        flex: 3;
+        margin-left: 0;
+        margin-top: 8px;
+    }
+    
+    #point-change {
+        flex: 2;
+        margin-left: 0;
+    }
+    
+    #date-range {
+        flex: 3;
+        margin-left: 0;
+    }
+
+    .linebreak{
+        width: 100%;
+    }
+
+    .linebreak2{
+        width: 100%;
+    }
+
+}
+
+/* Small Devices, Other */
+@media only screen and (min-width : 650px) {
+
+    #tickerName {
+        min-width: 0%;
+    }
+
+    #currentGraph {
+        min-width: 0%;
+    }
+
+    #percent-change {
+        margin-top: 0px;
+    }
+
+    .changeDateRange {
+        justify-content: flex-start;
+        display: inline-block;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+
+    .changeDateRange .button {
+        margin-right: 10px;
+    }
+
+    .linebreak2{
+        width: 0%;
+    }
+
+
+}
+
+/* Small Devices, Tablets */
+@media only screen and (min-width : 768px) {
+
+    #tickerName {
+        min-width: 0;
+    }
+
+    #currentGraph {
+        min-width: 0;
+    }
+
+
+}
+
+/*@media only screen and (max-width : 839px) {
+
+    #tickerName{
+        min-width: 100%;
+    }
+
+    #toggle{
+        margin-top: 10px;
+    }
+}
+*/
+@media only screen and (max-width : 915px) {
+
+    .sightedValues {
+        flex-direction: column !important;
+        padding-top: 10px !important;
+        padding-bottom: 10px !important;
+    }
+
+    .val {
+        padding-top: 2px;
+        padding-bottom: 2px;
+    }
+}
+
+/* Medium Devices, Desktops */
+@media only screen and (max-width : 1065px) {
+
+    .changeDateRange {
+        justify-content: flex-start;
+    }
+
+    #current-price {
+        flex: 2;
+    }
+    
+    #percent-change {
+        flex: 3;
+    }
+    
+    #point-change {
+        flex: 2;
+        margin-left: 0;
+        margin-top: 8px;
+    }
+    
+    #date-range {
+        flex: 3;
+        margin-top: 8px;
+    }
+
+    .linebreak{
+        width: 100%;
+    }
+
+    #tickerName{
+        min-width: 100%;
+    }
+
+    #toggle{
+        margin-top: 10px;
+    }
+}
+
+@media only screen and (min-width : 1065px) {
+    
+    #current-price {
+        flex: 1;
+    }
+    
+    #percent-change {
+        flex: 1;
+        min-width: 0%;
+        margin-left: 8px;
+    }
+    
+    #point-change {
+        flex: 1;
+        margin-left: 8px;
+    }
+    
+    #date-range {
+        flex: 2;
+        min-width: 0%;
+        margin-left: 8px;
+    }
+
+    .linebreak{
+        width: 0%;
+    }
+
+}
+
+/* Large Devices, Wide Screens */
+@media only screen and (min-width : 1200px) {
+
+}

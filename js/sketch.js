@@ -15,7 +15,7 @@ var lowMagmap = 60;
 
 var xshift = 75;
 var ystart = 10;
-var yshift = 60;
+var yshift = 75;
 
 var durationLeng = 100;
 var toneDuration = 1000;
@@ -68,8 +68,9 @@ var lightblue;
 var gradhigh;
 var gradlow;
 var transWhite;
-var lineColor;
-var lineFill;
+var aboveColor;
+var belowColor;
+var dotColor;
 
 // API STUFF ---------------------------------------------
 
@@ -117,11 +118,14 @@ var bassLong = new Wad({
 
 $(document).ready(function() {
 
+    showModal($('#modal'));
+
     $('#input').keydown(function(e) {
     if (e.keyCode == 13) {
         changeTicker(); 
     }
 });
+
 
     $("#onemonth").mousedown(function() {
         timerange = "onemonth";
@@ -183,12 +187,35 @@ $(document).ready(function() {
             $(this).attr("aria-label", off);
             $(this).attr("value", off);
             currentGraph = 2;
-            $("#currentGraph").text("(Closing Values)");
+            $("#tickerName").text("Company: " + tickerCompany + ", (Closing Values)");
+            $('#checkbox').attr('checked', false);
         } else if ($(this).attr("value") == off) {
             $(this).attr("aria-label", on);
             $(this).attr("value", on);
             currentGraph = 1;
-            $("#currentGraph").text("(Closing Values with Indicator)");
+            $("#tickerName").text("Company: " + tickerCompany + ", (Closing Values with 50 Day Simple Moving Average)");
+            $('#checkbox').attr('checked', true);
+        }
+
+    });
+
+    $(".switch").mousedown(function() {
+        console.log("clicked");
+
+        //TODO change variables 
+        var on = "Turn Off Indicator";
+        var off = "Turn On Indicator"
+
+        if ($("#graphView").attr("value") == on) {
+            $("#graphView").attr("aria-label", off);
+            $("#graphView").attr("value", off);
+            currentGraph = 2;
+            $("#tickerName").text("Company: " + tickerCompany + ", (Closing Values)");
+        } else if ($("#graphView").attr("value") == off) {
+            $("#graphView").attr("aria-label", on);
+            $("#graphView").attr("value", on);
+            currentGraph = 1;
+            $("#tickerName").text("Company: " + tickerCompany + ", (Closing Values with Indicator)");
         }
 
     });
@@ -447,16 +474,18 @@ function setup() {
     gradhigh = color(73,99,117);
     gradlow = color(26,41,51);
     transWhite = color(255,0.5);
-    lineColor = color(229,75,75);
-    lineFill = color(255,191,0);
+    lineColor = color(12,26,35);
+    aboveColor = color(214, 227, 119);
+    belowColor = color(229,75,75);
+    dotColor = color(21, 102, 177);
 
     $('#submit').attr('disabled', true);
-    $("#tickerName").text("Company: " + tickerCompany);
+    $("#tickerName").text("Company: " + tickerCompany + ", (Closing Values with 50 Day Simple Moving Average)");
     $("#oneyear").addClass('buttonSelected');
-    $("#currentGraph").text("(Closing Values with Indicator)");
 
     var canvas = createCanvas(windowWidth - rightpadding, canvasHeight);
     canvas.parent('canvas-container');
+    $('#canvas-container').height(canvasHeight);
 
     osc = new p5.TriOsc();
     osc.start();
@@ -639,7 +668,12 @@ function changeTicker() {
     try {
         tickerCompany = row.getString("Description");
 
-        $("#tickerName").text("Company: " + tickerCompany + ", ");
+        if(currentGraph == 2) {
+            $("#tickerName").text("Company: " + tickerCompany + ", (Closing Values)");
+        } else {
+            $("#tickerName").text("Company: " + tickerCompany + ", (Closing Values with 50 Day Simple Moving Average)");
+        }
+
         $(".tickerfield").val("");
         dataReceived = false;
 
@@ -656,19 +690,29 @@ function setTickerDetails() {
     var rangeString;
 
     if (timerange == "onemonth") {
-        rangeString = "Last One Month";
+        rangeString = "Last Month";
     } else if (timerange == "threemonths") {
         rangeString = "Last Three Months";
     } else if (timerange == "sixmonths") {
         rangeString = "Last Six Months";
     } else if (timerange == "oneyear") {
-        rangeString = "Last One Year";
+        rangeString = "Last Year";
     } else if (timerange == "fiveyears") {
         rangeString = "Last Five Years";
     }
 
     var pt = (data[data.length - 1].close - data[data.length - 1].open).toFixed(4);
     var pcnt = (pt / data[data.length - 1].open * 100).toFixed(4);
+
+    var minusSign = "\u2212";
+
+    if (pt < 0) {
+        pt = minusSign + (pt * -1);
+    }
+
+    if (pcnt < 0) {
+        pcnt = minusSign + (pcnt * -1);
+    }
 
     $("#current-price").text("Most Recent Price: " + data[data.length - 1].close);
     $("#percent-change").text("Percent Change: " + pcnt);
@@ -729,7 +773,6 @@ function checkLeftRight() {
 
     var note = midiToFreq(map(data[loc].magnitude, localMagLow, localMagHigh, lowMagmap, highMagmap));
 
-
     if(loc == 0 && key == 'g') {
         textToSpeech.speak("Beginning");
     }
@@ -739,9 +782,7 @@ function checkLeftRight() {
 
 
 
-    if (key == 'g' && loc > 0) {
-
-
+    if (key == 'g' && loc > 0 && $("#input").is(":focus") == false ) {
 
         if (detailsPlaying) {
             stopSpeech();
@@ -772,7 +813,7 @@ function checkLeftRight() {
         }
 
 
-    } else if (key == 'h' && loc < data.length - 1) {
+    } else if (key == 'h' && loc < data.length - 1 && $("#input").is(":focus") == false) {
 
 
         if (detailsPlaying) {
@@ -1072,6 +1113,18 @@ function getInitalTick(num, units) {
 
 function drawXAxis(i, xPos){
     //factor in page width and data range
+
+    if(timerange == "onemonth") {
+        strokeWeight(0.5);
+        stroke(255, 50);
+        dottedLine(xPos, newHigh, newLow, 2.5, 6);
+
+        strokeWeight(1);
+        stroke(255);
+        line(xPos, graphHeight+8, xPos, graphHeight+15);
+
+    }
+
     if(data[i].newmonth) {
         strokeWeight(0.5);
         stroke(255, 50);
@@ -1151,8 +1204,12 @@ function drawVisGraphA() {
         strokeWeight(2);
         var curMapped = map(loc, 0, data.length - 1, xshift, width);
         line(curMapped, 0, curMapped, canvasHeight - yshift);
-        fill(lineColor);
-        ellipse(curMapped, map(data[loc].close, absLow, absHigh, newLow, newHigh), 5, 5);
+        fill(white);
+        stroke(0);
+        strokeWeight(2.5);
+        ellipse(curMapped, map(data[loc].close, absLow, absHigh, newLow, newHigh), 8, 8);
+
+        drawTriangle(curMapped);
     }
 
 }
@@ -1238,32 +1295,19 @@ function drawVisGraphB() {
 
         drawAxis();
 
-        // for (var i in data) {
-        //     if (i != 0 && i != data.length) {
-
-        //         var xPos = map(i, 0, data.length - 1, 0, width - xshift) + xshift;
-
-        //         if (data[i].crossed) {
-        //             fill(247, 166, 20);
-        //             noStroke();
-        //             ellipse(xPos, map(data[i].sma50, absLow, absHigh, newLow, newHigh), 4, 4);
-        //         }
-
-        //     }
-        // }
-
-        
-
-        
-
         stroke(lineColor);
         strokeWeight(2);
         var curMapped = map(loc, 0, data.length - 1, 0, width - xshift) + xshift;
         line(curMapped, 0, curMapped, canvasHeight - yshift);
-        fill(lineColor);
-        stroke(lineFill);
+        if(data[loc].overOrUnder == -1) {
+            stroke(aboveColor);
+        } else {
+            stroke(belowColor);
+        }
+        
         line(curMapped, map(data[loc].close, absLow, absHigh, newLow, newHigh), curMapped, map(data[loc].sma50, absLow, absHigh, newLow, newHigh));
 
+        drawTriangle(curMapped);
     }
 
 }
@@ -1294,4 +1338,14 @@ function dottedLine(x, ylownum, yhighnum, segLeng, spaceLeng) {
     for(i = ylownum; i+segLeng < yhighnum; i+=segLeng+spaceLeng) {
         line(x, i, x, i+segLeng);
     }
+}
+
+function drawTriangle(loc) {
+    fill(borderblue);
+    noStroke();
+    triangle(loc-10, canvasHeight, loc, canvasHeight-12, loc+10,canvasHeight);
+
+    fill(darkblue);
+    rect(xshift-10, canvasHeight-15, 10, 20);
+    rect(width-2, canvasHeight-15, 10, 20);
 }
