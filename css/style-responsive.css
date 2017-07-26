@@ -202,7 +202,7 @@
 
 }
 
-@media only screen and (max-width : 839px) {
+/*@media only screen and (max-width : 839px) {
 
     #tickerName{
         min-width: 100%;
@@ -212,7 +212,7 @@
         margin-top: 10px;
     }
 }
-
+*/
 @media only screen and (max-width : 915px) {
 
     .sightedValues {
@@ -255,6 +255,14 @@
 
     .linebreak{
         width: 100%;
+    }
+
+    #tickerName{
+        min-width: 100%;
+    }
+
+    #toggle{
+        margin-top: 10px;
     }
 }
 
