@@ -186,7 +186,7 @@ $(document).ready(function() {
             $(this).attr("aria-label", on);
             $(this).attr("value", on);
             currentGraph = 1;
-            $("#tickerName").text("Company: " + tickerCompany + ", (Closing Values with Indicator)");
+            $("#tickerName").text("Company: " + tickerCompany + ", (Closing Values with 50 Day Simple Moving Average)");
             $('#checkbox').attr('checked', true);
         }
 
@@ -473,7 +473,7 @@ function setup() {
     dotColor = color(21, 102, 177);
 
     $('#submit').attr('disabled', true);
-    $("#tickerName").text("Company: " + tickerCompany + ", (Closing Values with Indicator)");
+    $("#tickerName").text("Company: " + tickerCompany + ", (Closing Values with 50 Day Simple Moving Average)");
     $("#oneyear").addClass('buttonSelected');
 
     var canvas = createCanvas(windowWidth - rightpadding, canvasHeight);
@@ -664,7 +664,7 @@ function changeTicker() {
         if(currentGraph == 2) {
             $("#tickerName").text("Company: " + tickerCompany + ", (Closing Values)");
         } else {
-            $("#tickerName").text("Company: " + tickerCompany + ", (Closing Values width Indicator)");
+            $("#tickerName").text("Company: " + tickerCompany + ", (Closing Values with 50 Day Simple Moving Average)");
         }
 
         $(".tickerfield").val("");

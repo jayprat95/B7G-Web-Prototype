@@ -297,3 +297,11 @@ input:checked + .slider:before {
   font-size: 12px;
 }
 
+#startModal {
+  font-style: italic;
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.42);
+  cursor: pointer;
+}
+
