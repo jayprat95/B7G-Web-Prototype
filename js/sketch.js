@@ -120,6 +120,13 @@ $(document).ready(function() {
 
     showModal($('#modal'));
 
+    $('#input').keydown(function(e) {
+    if (e.keyCode == 13) {
+        changeTicker(); 
+    }
+});
+
+
     $("#onemonth").mousedown(function() {
         timerange = "onemonth";
         data = setData();
@@ -765,6 +772,15 @@ function stopSpeech() {
 function checkLeftRight() {
 
     var note = midiToFreq(map(data[loc].magnitude, localMagLow, localMagHigh, lowMagmap, highMagmap));
+
+    if(loc == 0 && key == 'g') {
+        textToSpeech.speak("Beginning");
+    }
+    else if(key == 'h' && loc == data.length - 1) {
+        textToSpeech.speak("End");
+    }
+
+
 
     if (key == 'g' && loc > 0 && $("#input").is(":focus") == false ) {
 
