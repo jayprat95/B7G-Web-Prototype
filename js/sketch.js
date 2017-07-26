@@ -1175,6 +1175,8 @@ function drawVisGraphA() {
         stroke(0);
         strokeWeight(2.5);
         ellipse(curMapped, map(data[loc].close, absLow, absHigh, newLow, newHigh), 8, 8);
+
+        drawTriangle(curMapped);
     }
 
 }
