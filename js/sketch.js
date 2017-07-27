@@ -1194,8 +1194,8 @@ function drawVisGraphA() {
         noStroke();
         vertex(width, 0);
         fill(darkblue);
-        stroke(lightblue);
-        strokeWeight(2);
+        stroke(white);
+        strokeWeight(1);
         endShape(CLOSE);
 
         drawAxis();
@@ -1268,8 +1268,8 @@ function drawVisGraphB() {
         noStroke();
         vertex(width, 0);
         fill(darkblue);
-        stroke(lightblue);
-        strokeWeight(2);
+        stroke(white);
+        strokeWeight(1);
         endShape(CLOSE);
 
         lastY = map(data[0].close, absLow, absHigh, newLow, newHigh);
@@ -1283,7 +1283,7 @@ function drawVisGraphB() {
 
                 if (data[i].sma50 != 0 || data[i - 1].sma50 != 0) {
                     strokeWeight(2);
-                    stroke(white);
+                    stroke(lightblue);
                     line(lastxPos, lastS, xPos, map(data[i].sma50, absLow, absHigh, newLow, newHigh));
                 }
 
