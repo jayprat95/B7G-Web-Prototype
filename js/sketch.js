@@ -180,8 +180,8 @@ $(document).ready(function() {
     $("#graphView").mousedown(function() {
 
         //TODO change variables 
-        var on = "Turn Off Indicator";
-        var off = "Turn On Indicator"
+        var on = "Turn Off 50 Day Simple Moving Average";
+        var off = "Turn On 50 Day Simple Moving Average"
 
         if ($(this).attr("value") == on) {
             $(this).attr("aria-label", off);
@@ -203,8 +203,8 @@ $(document).ready(function() {
         console.log("clicked");
 
         //TODO change variables 
-        var on = "Turn Off Indicator";
-        var off = "Turn On Indicator"
+        var on = "Turn Off 50 Day Simple Moving Average";
+        var off = "Turn On 50 Day Simple Moving Average"
 
         if ($("#graphView").attr("value") == on) {
             $("#graphView").attr("aria-label", off);
@@ -616,7 +616,7 @@ function playValue() {
             percentChange *= 100; 
             percentChange = parseFloat((percentChange).toFixed(4));
 
-            textToSpeech.speak(data[loc].dateStr + " , percent change: " + percentChange + " , Closing price: " + data[loc].close + " , Fifty Day Simple Moving Average: " + data[loc].sma50);
+            textToSpeech.speak(data[loc].dateStr + " , Percent Difference: " + percentChange + " , Closing Price: " + data[loc].close + " , Fifty Day Simple Moving Average: " + data[loc].sma50);
         }
     }
 }
