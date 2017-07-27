@@ -123,10 +123,10 @@ var bassLong = new Wad({
 $(document).ready(function() {
 
     $('#input').keydown(function(e) {
-    if (e.keyCode == 13) {
-        changeTicker(); 
-    }
-});
+        if (e.keyCode == 13) {
+            changeTicker(); 
+        }
+    });
 
 
     $("#onemonth").mousedown(function() {
@@ -303,6 +303,8 @@ function setData() {
         absLow = localSMALow;
     }
 
+    setHightLow();
+
     return dataset;
 }
 
@@ -459,6 +461,11 @@ function afterData(thedata) {
         setTimeout(function() { setTickerDetails(); }, 100);
     }
 
+}
+
+function setHightLow() {
+    $("#localhigh").text("High of Current View: " + absHigh);
+    $("#locallow").text("Low of Current View: " + absLow);
 }
 
 //P5 DEFAULT FUNCTIONS ---------------------------------------------

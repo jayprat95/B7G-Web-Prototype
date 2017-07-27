@@ -317,3 +317,7 @@ input:checked + .slider:before {
   text-decoration: none;
 }
 
+.highlow {
+    font-size: 12px;
+}
+

@@ -32,6 +32,10 @@
         margin-left: 0;
         margin-top: 8px;
     }
+
+    #locallow {
+        margin-top: 8px;
+    }
     
     #point-change {
         flex: 2;
@@ -86,6 +90,10 @@
         margin-left: 0;
         margin-top: 8px;
     }
+
+    #locallow {
+        margin-top: 8px;
+    }
     
     #point-change {
         flex: 2;
@@ -133,6 +141,10 @@
         margin-left: 0;
         margin-top: 8px;
     }
+
+    #locallow {
+        margin-top: 8px;
+    }
     
     #point-change {
         flex: 2;
@@ -166,6 +178,10 @@
     }
 
     #percent-change {
+        margin-top: 0px;
+    }
+
+    #locallow {
         margin-top: 0px;
     }
 
@@ -243,7 +259,7 @@
 }
 
 /* Medium Devices, Desktops */
-@media only screen and (max-width : 1170px) {
+@media only screen and (max-width : 1200px) {
 
     .changeDateRange {
         justify-content: flex-start;
@@ -271,9 +287,18 @@
     .linebreak{
         width: 100%;
     }
+
+    #localhigh {
+      flex: 2;
+    }
+
+    #locallow {
+      flex: 3;
+      margin-left: 0px;
+    }
 }
 
-@media only screen and (min-width : 1170px) {
+@media only screen and (min-width : 1200px) {
     
     #current-price {
         flex: 1;
@@ -300,9 +325,13 @@
         width: 0%;
     }
 
-}
+    #localhigh {
+      flex: 1;
+    }
 
-/* Large Devices, Wide Screens */
-@media only screen and (min-width : 1200px) {
+    #locallow {
+      flex: 4;
+      margin-left: 4px;
+    }
 
 }
