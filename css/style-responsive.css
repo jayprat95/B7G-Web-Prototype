@@ -188,6 +188,21 @@
 
 }
 
+@media only screen and (max-width : 768px) {
+
+    #tickerName{
+        min-width: 100%;
+    }
+
+    #toggle{
+        margin-top: 15px;
+    }
+
+    #indicator-label { 
+        text-align: left;
+    }
+}
+
 /* Small Devices, Tablets */
 @media only screen and (min-width : 768px) {
 
@@ -213,7 +228,7 @@
     }
 }
 */
-@media only screen and (max-width : 915px) {
+@media only screen and (max-width : 930px) {
 
     .sightedValues {
         flex-direction: column !important;
@@ -228,7 +243,7 @@
 }
 
 /* Medium Devices, Desktops */
-@media only screen and (max-width : 1065px) {
+@media only screen and (max-width : 1170px) {
 
     .changeDateRange {
         justify-content: flex-start;
@@ -256,17 +271,9 @@
     .linebreak{
         width: 100%;
     }
-
-    #tickerName{
-        min-width: 100%;
-    }
-
-    #toggle{
-        margin-top: 10px;
-    }
 }
 
-@media only screen and (min-width : 1065px) {
+@media only screen and (min-width : 1170px) {
     
     #current-price {
         flex: 1;

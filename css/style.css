@@ -19,7 +19,7 @@
 
   b {
     font-family: 'Rubik', sans-serif;
-    font-weight: 500;
+    font-weight: 400;
   }
 
   canvas {
@@ -30,6 +30,8 @@
   	margin: 0;
     background: rgb(40, 59, 74);
     font-weight: 300 !important;
+    letter-spacing: 2px;
+    text-transform: uppercase;
   }
 
   #content {
@@ -84,9 +86,10 @@
   }
 
   #tickerName {
-    font-size: 20px;
+    font-size: 22px;
     margin-right: 10px;
     align-self: flex-start;
+    font-weight: 400;
   }
 
   #currentGraph {
@@ -104,8 +107,10 @@
     display:table-cell;
     vertical-align:middle;
     padding-right: 15px;
-    font-size: 11px;
+    font-size: 10px;
     text-transform: uppercase;
+    line-height: 15px;
+    text-align: right;
   }
 
   .changeCompany {
@@ -149,7 +154,7 @@
 
   .detail {
     flex: 1;
-    font-size: 12px;
+    font-size: 14px;
     display: inline-block;
 /*    min-width: 180px;*/
     margin-left: 10px;
@@ -176,7 +181,7 @@
     padding-left: 75px;
     padding-right: 75px;
     padding-top: 10px;
-    padding-bottom: 10px;
+    padding-bottom: 15px;
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
@@ -208,7 +213,7 @@
 
   .val {
     flex: 1;
-    font-size: 12px;
+    font-size: 14px;
     text-align: center;
   }
 
@@ -216,8 +221,8 @@
 .switch {
   position: relative;
   display: inline-block;
-  width: 40px;
-  height: 24px;
+  width: 44px;
+  height: 28px;
 }
 
 /* Hide default HTML checkbox */
@@ -239,8 +244,8 @@
 .slider:before {
   position: absolute;
   content: "";
-  height: 16px;
-  width: 16px;
+  height: 20px;
+  width: 20px;
   left: 4px;
   bottom: 4px;
   background-color: white;
@@ -303,5 +308,6 @@ input:checked + .slider:before {
   border: none;
   color: rgba(255, 255, 255, 0.42);
   cursor: pointer;
+  font-size: 12px;
 }
 

@@ -3,7 +3,7 @@
 var osc, fft, dataset, table, monthPlaying, localHigh, localLow, localMagHigh, localMagLow, absLow, absHigh, localSMAHigh, localSMALow;
 
 var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-var monthsAbbv = ["Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec"];
+var monthsAbbv = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
 
 var loc = 0;
 var data = [];
@@ -187,13 +187,13 @@ $(document).ready(function() {
             $(this).attr("aria-label", off);
             $(this).attr("value", off);
             currentGraph = 2;
-            $("#tickerName").text("Company: " + tickerCompany + ", (Closing Values)");
+            $("#tickerName").text("Company: " + tickerCompany + " (" +ticker+ ")"); //+ ", (Closing Values)"
             $('#checkbox').attr('checked', false);
         } else if ($(this).attr("value") == off) {
             $(this).attr("aria-label", on);
             $(this).attr("value", on);
             currentGraph = 1;
-            $("#tickerName").text("Company: " + tickerCompany + ", (Closing Values with 50 Day Simple Moving Average)");
+            $("#tickerName").text("Company: " + tickerCompany + " (" +ticker+ ")"); //+ ", (Closing Values with 50 Day Simple Moving Average)"
             $('#checkbox').attr('checked', true);
         }
 
@@ -210,12 +210,12 @@ $(document).ready(function() {
             $("#graphView").attr("aria-label", off);
             $("#graphView").attr("value", off);
             currentGraph = 2;
-            $("#tickerName").text("Company: " + tickerCompany + ", (Closing Values)");
+            $("#tickerName").text("Company: " + tickerCompany + " (" +ticker+ ")"); //+ ", (Closing Values)"
         } else if ($("#graphView").attr("value") == off) {
             $("#graphView").attr("aria-label", on);
             $("#graphView").attr("value", on);
             currentGraph = 1;
-            $("#tickerName").text("Company: " + tickerCompany + ", (Closing Values with Indicator)");
+            $("#tickerName").text("Company: " + tickerCompany + " (" +ticker+ ")"); //+ ", (Closing Values with Indicator)"
         }
 
     });
@@ -480,7 +480,7 @@ function setup() {
     dotColor = color(21, 102, 177);
 
     $('#submit').attr('disabled', true);
-    $("#tickerName").text("Company: " + tickerCompany + ", (Closing Values with 50 Day Simple Moving Average)");
+    $("#tickerName").text("Company: " + tickerCompany + " (" +ticker+ ")"); //+ ", (Closing Values with 50 Day Simple Moving Average)"
     $("#oneyear").addClass('buttonSelected');
 
     var canvas = createCanvas(windowWidth - rightpadding, canvasHeight);
@@ -669,9 +669,9 @@ function changeTicker() {
         tickerCompany = row.getString("Description");
 
         if(currentGraph == 2) {
-            $("#tickerName").text("Company: " + tickerCompany + ", (Closing Values)");
+            $("#tickerName").text("Company: " + tickerCompany + " (" +ticker+ ")"); //+ ", (Closing Values)"
         } else {
-            $("#tickerName").text("Company: " + tickerCompany + ", (Closing Values with 50 Day Simple Moving Average)");
+            $("#tickerName").text("Company: " + tickerCompany + " (" +ticker+ ")"); //+ ", (Closing Values with 50 Day Simple Moving Average)"
         }
 
         $(".tickerfield").val("");
