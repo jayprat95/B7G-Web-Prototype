@@ -6,15 +6,15 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.11/addons/p5.dom.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.11/addons/p5.sound.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
-    <script src="js/modal-window.js"></script>
     <script src="js/p5.speech.js"></script>
     <script src="js/wad.min.js"></script>
     <script src="js/config.js"></script>
+    <script src="js/modaal.min.js"></script>
     <script src="js/sketch.js"></script>
 
     <link rel="stylesheet" type="text/css" href="css/style.css">
     <link rel="stylesheet" type="text/css" href="css/style-responsive.css">
-    <link rel="stylesheet" type="text/css" href="css/modal-window.css">
+    <link rel="stylesheet" type="text/css" href="css/modaal.min.css">
     <link href="https://fonts.googleapis.com/css?family=Rubik:300,400,500" rel="stylesheet">
 
 </head>
@@ -69,59 +69,42 @@
     </div>
 
     <div class="row about" aria-label="Help">
-        <button id="startModal2">Keyboard Shortcuts</button>
-        <button id="startModal">What is this?</button>
+        <a href="#help-modal" class="help-button help-modal">Keyboard Shortcuts</a>
+        <a href="#about-modal" class="help-button about-modal">What is this?</a>
     </div>
 </div>
 
-<div class="modalWrap">
-        <div id="modal" aria-hidden="true">
 
-             <div id="modalDescription" class="screen-reader-offscreen">Beginning of dialog window. Escape will cancel and close the window.</div>
-             <h1 id="modalTitle" tabindex="-1" aria-describedby="modalDescription">Title of Applicaton</h1>
-             <div id="about-project" aria-label="About the Project">Say something about the project here?</div>
+<div id="about-modal" style="display:none;">
+    <h1 id="modalTitle" tabindex="-1">Title of Applicaton</h1>
+    <div id="about-project" aria-label="About the Project">Say something about the project here?</div>
+</div>
 
-            <button id="modalCloseButton" class="modalCloseButton" title="Close dialog"><img id="cancel" src="x.png" alt="close the dialog"></button>
-
-        </div>
-
-        <div id="modal2" aria-hidden="true">
-            <div id="modalDescription" class="screen-reader-offscreen">Beginning of dialog window. Escape will cancel and close the window.</div>
-            <h1 id="modalTitle" tabindex="-1" aria-describedby="modalDescription">Keyboard Shortcuts</h1>
-
-             <div aria-label="Keyboard Shortcuts">
-                <p class="hidden">G - Traverse left</p>
-                <p aria-hidden="true"><b>g</b> - Traverse left</p>
-                <p class="hidden">H - Traverse right</p>
-                <p aria-hidden="true"><b>h</b> - Traverse right</p>
-                <p class="hidden">Comma - Jump to beginning</p>
-                <p aria-hidden="true"><b>,</b> - Jump to beginning</p>
-                <p class="hidden">Period - Jump to end</p>
-                <p aria-hidden="true"><b>.</b> - Jump to end</p>
-                <p class="hidden">L - Skip to previous intersection point</p>
-                <p aria-hidden="true"><b>l</b> - Skip to previous intersection point</p>
-                <p class="hidden">Semicolon - Skip to next intersection point</p>
-                <p aria-hidden="true"><b>;</b> - Skip to next intersection point</p>
-                <p class="hidden">O - Jump to previous month</p>
-                <p aria-hidden="true"><b>o</b> - Jump to previous month</p>
-                <p class="hidden">P - Jump to next month</p>
-                <p aria-hidden="true"><b>p</b> - Jump to next month</p>
-                <p class="hidden">Dash - Decrease screen reader speed</p>
-                <p aria-hidden="true"><b>-</b> - Decrease screen reader speed</p>
-                <p class="hidden">Equals - Increase screen reader speed</p>
-                <p aria-hidden="true"><b>=</b> - Increase screen reader speed</p>
-            </div>
-
-        <button id="modalCloseButton2" class="modalCloseButton2" title="Close dialog"><img id="cancel2" src="x.png" alt="close the dialog"></button>
-
-        </div>
-        </div>
-
-
-
-        <div id="modalOverlay" tabindex="-1" style="display: block;"></div>
-
-<div>
+<div id="help-modal" style="display:none;">
+    <h1 id="modalTitle" tabindex="-1">Keyboard Shortcuts</h1>
+    <div aria-label="Keyboard Shortcuts">
+        <p class="hidden">G - Traverse left</p>
+        <p aria-hidden="true"><b>g</b> - Traverse left</p>
+        <p class="hidden">H - Traverse right</p>
+        <p aria-hidden="true"><b>h</b> - Traverse right</p>
+        <p class="hidden">Comma - Jump to beginning</p>
+        <p aria-hidden="true"><b>,</b> - Jump to beginning</p>
+        <p class="hidden">Period - Jump to end</p>
+        <p aria-hidden="true"><b>.</b> - Jump to end</p>
+        <p class="hidden">L - Skip to previous intersection point</p>
+        <p aria-hidden="true"><b>l</b> - Skip to previous intersection point</p>
+        <p class="hidden">Semicolon - Skip to next intersection point</p>
+        <p aria-hidden="true"><b>;</b> - Skip to next intersection point</p>
+        <p class="hidden">O - Jump to previous month</p>
+        <p aria-hidden="true"><b>o</b> - Jump to previous month</p>
+        <p class="hidden">P - Jump to next month</p>
+        <p aria-hidden="true"><b>p</b> - Jump to next month</p>
+        <p class="hidden">Dash - Decrease screen reader speed</p>
+        <p aria-hidden="true"><b>-</b> - Decrease screen reader speed</p>
+        <p class="hidden">Equals - Increase screen reader speed</p>
+        <p aria-hidden="true"><b>=</b> - Increase screen reader speed</p>
+    </div>
+</div>
     
 </body>
 

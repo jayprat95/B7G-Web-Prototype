@@ -302,12 +302,18 @@ input:checked + .slider:before {
   font-size: 12px;
 }
 
-#startModal, #startModal2 {
+.help-button {
   font-style: italic;
   background: none;
   border: none;
   color: rgba(255, 255, 255, 0.42);
   cursor: pointer;
   font-size: 12px;
+  padding: 10px;
+  text-decoration: none;
+}
+
+.help-button::visited {
+  text-decoration: none;
 }
 

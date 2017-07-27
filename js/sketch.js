@@ -122,8 +122,6 @@ var bassLong = new Wad({
 
 $(document).ready(function() {
 
-    showModal($('#modal'));
-
     $('#input').keydown(function(e) {
     if (e.keyCode == 13) {
         changeTicker(); 
@@ -222,6 +220,9 @@ $(document).ready(function() {
         }
 
     });
+
+    $('.about-modal').modaal();
+    $('.help-modal').modaal();
 });
 
 function deselectAll() {
