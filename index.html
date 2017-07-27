@@ -72,39 +72,55 @@
 
     <div class="row about">
 
+        <button id="startModal2">Keyboard Shortcuts</button>
         <button id="startModal">What is this?</button>
+
 
         <div id="modal" aria-hidden="true" aria-labelledby="modalTitle" aria-describedby="modalDescription" role="dialog">
 
-        <div role="document">
+  <!--       <div role="document"> -->
          <div id="modalDescription" class="screen-reader-offscreen">Beginning of dialog window. Escape will cancel and close the window.</div>
          <h1 id="modalTitle" tabindex="-1">Title of Applicaton</h1>
          <div id="about-project" aria-label="About the Project">Say something about the project here?</div>
-         <div class="Keyboard Shortcuts" aria-label="Keyboard Shortcuts">
 
-             <h2 aria-hidden="true">Keyboard Shortcuts:</h2>
-             <p><b>g</b> &nbsp; Traverse left</p>
-             <p><b>h</b> &nbsp; Traverse right</p>
-             <p class="hidden">Comma - Jump to beginning</p>
-             <p aria-hidden="true"><b>,</b> &nbsp; Jump to beginning</p>
-             <p class="hidden">Period - Jump to end</p>
-             <p aria-hidden="true"><b>.</b> &nbsp; Jump to end</p>
-             <p class="hidden">Semicolon - Skip to previous intersection point</p>
-             <p aria-hidden="true"><b>;</b> &nbsp; Skip to previous intersection point</p>
-             <p class="hidden">Apostraphe - Skip to next intersection point</p>
-             <p aria-hidden="true"><b>'</b> &nbsp; Skip to next intersection point</p>
-             <p><b>o</b> &nbsp; Jump to previous month</p>
-             <p><b>p</b> &nbsp; Jump to next month</p>
-             <p class="hidden">Dash - Decrease screen reader speed</p>
-             <p aria-hidden="true"><b>-</b> &nbsp; Decrease screen reader speed</p>
-             <p><b>=</b> &nbsp; Increase screen reader speed</p>
+        <button id="modalCloseButton" class="modalCloseButton" title="Close dialog"><img id="cancel" src="x.png" alt="close the dialog"></button>
 
-         </div>
+     <!--    </div> -->
+        </div>
 
-        <button id="modalCloseButton" class="modalCloseButton" title="Close registration form"><img id="cancel" src="x.png" alt="close the dialog"></button>
+        <div id="modal2" aria-hidden="true" aria-labelledby="modalTitle" aria-describedby="modalDescription" role="dialog">
+            <div id="modalDescription" class="screen-reader-offscreen">Beginning of dialog window. Escape will cancel and close the window.</div>
+            <h1 id="modalTitle" tabindex="-1">Keyboard Shortcuts</h1>
+
+             <div aria-label="Keyboard Shortcuts">
+                <p class="hidden">G - Traverse left</p>
+                <p aria-hidden="true"><b>g</b> - Traverse left</p>
+                <p class="hidden">H - Traverse right</p>
+                <p aria-hidden="true"><b>h</b> - Traverse right</p>
+                <p class="hidden">Comma - Jump to beginning</p>
+                <p aria-hidden="true"><b>,</b> - Jump to beginning</p>
+                <p class="hidden">Period - Jump to end</p>
+                <p aria-hidden="true"><b>.</b> - Jump to end</p>
+                <p class="hidden">Semicolon - Skip to previous intersection point</p>
+                <p aria-hidden="true"><b>;</b> - Skip to previous intersection point</p>
+                <p class="hidden">Apostraphe - Skip to next intersection point</p>
+                <p aria-hidden="true"><b>'</b> - Skip to next intersection point</p>
+                <p class="hidden">O - Jump to previous month</p>
+                <p aria-hidden="true"><b>o</b> - Jump to previous month</p>
+                <p class="hidden">P - Jump to next month</p>
+                <p aria-hidden="true"><b>p</b> - Jump to next month</p>
+                <p class="hidden">Dash - Decrease screen reader speed</p>
+                <p aria-hidden="true"><b>-</b> - Decrease screen reader speed</p>
+                <p class="hidden">Equals - Increase screen reader speed</p>
+                <p aria-hidden="true"><b>=</b> - Increase screen reader speed</p>
+            </div>
+
+        <button id="modalCloseButton2" class="modalCloseButton2" title="Close dialog"><img id="cancel2" src="x.png" alt="close the dialog"></button>
 
         </div>
         </div>
+
+
 
         <div id="modalOverlay" tabindex="-1" style="display: block;"></div>
 

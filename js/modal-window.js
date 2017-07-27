@@ -41,25 +41,40 @@ var focusableElementsString = "a[href], area[href], input:not([disabled]), selec
 var focusedElementBeforeModal;
 
 $(document).ready(function() {
+
     jQuery('#startModal').click(function(e) {
         showModal($('#modal'));
     });
+    jQuery('#startModal2').click(function(e) {
+        showModal($('#modal2'));
+    });
+
     jQuery('#cancel').click(function(e) {
-        hideModal();
+        hideModal($('#modal'));
     });
-    jQuery('#cancelButton').click(function(e) {
-        hideModal();
+    jQuery('#cancel2').click(function(e) {
+        hideModal($('#modal2'));
     });
-    jQuery('#enter').click(function(e) {
-        enterButtonModal();
-    });
+
+    // jQuery('#cancelButton').click(function(e) {
+    //     hideModal($('#modal'));
+    // });
+    // jQuery('#enter').click(function(e) {
+    //     enterButtonModal();
+    // });
+
     jQuery('#modalCloseButton').click(function(e) {
-        hideModal();
+        hideModal($('#modal'));
     });
+    jQuery('#modalCloseButton2').click(function(e) {
+        hideModal($('#modal'));
+    });
+
+
     jQuery('#modal').keydown(function(event) {
-        trapTabKey($(this), event);
+        trapEscapeKey($(this), event);
     })
-    jQuery('#modal').keydown(function(event) {
+    jQuery('#modal2').keydown(function(event) {
         trapEscapeKey($(this), event);
     })
 
@@ -138,12 +153,12 @@ function setInitialFocusModal(obj) {
 
 }
 
-function enterButtonModal() {
-    // BEGIN logic for executing the Enter button action for the modal window
-    alert('form submitted');
-    // END logic for executing the Enter button action for the modal window
-    hideModal();
-}
+// function enterButtonModal() {
+//     // BEGIN logic for executing the Enter button action for the modal window
+//     alert('form submitted');
+//     // END logic for executing the Enter button action for the modal window
+//     hideModal();
+// }
 
 function setFocusToFirstItemInModal(obj){
     // get list of all children elements in given object
@@ -156,12 +171,12 @@ function setFocusToFirstItemInModal(obj){
 function showModal(obj) {
     jQuery('#mainPage').attr('aria-hidden', 'true'); // mark the main page as hidden
     jQuery('#modalOverlay').css('display', 'block'); // insert an overlay to prevent clicking and make a visual change to indicate the main apge is not available
-    jQuery('#modal').css('display', 'block'); // make the modal window visible
-    jQuery('#modal').attr('aria-hidden', 'false'); // mark the modal window as visible
+    obj.css('display', 'block'); // make the modal window visible
+    obj.attr('aria-hidden', 'false'); // mark the modal window as visible
 
     // attach a listener to redirect the tab to the modal window if the user somehow gets out of the modal window
     jQuery('body').on('focusin','#mainPage',function() {
-        setFocusToFirstItemInModal(jQuery('#modal'));
+        setFocusToFirstItemInModal(obj);
     })
 
     // save current focus
@@ -170,10 +185,10 @@ function showModal(obj) {
     setFocusToFirstItemInModal(obj);
 }
 
-function hideModal() {
+function hideModal(obj) {
     jQuery('#modalOverlay').css('display', 'none'); // remove the overlay in order to make the main screen available again
-    jQuery('#modal').css('display', 'none'); // hide the modal window
-    jQuery('#modal').attr('aria-hidden', 'true'); // mark the modal window as hidden
+    obj.css('display', 'none'); // hide the modal window
+    obj.attr('aria-hidden', 'true'); // mark the modal window as hidden
     jQuery('#mainPage').attr('aria-hidden', 'false'); // mark the main page as visible
 
     // remove the listener which redirects tab keys in the main content area to the modal

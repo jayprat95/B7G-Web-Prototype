@@ -12,7 +12,7 @@
 	padding:0;
 }
 
-#modal {
+#modal, #modal2 {
 	color: black !important;
 	width:72%;
 	margin-left:auto;
@@ -30,7 +30,7 @@
 	box-shadow:none;
 	border-color:transparent;
 }
-#modal h1 {
+#modal h1, #modal2 h1 {
 	text-align:center;
 	outline-style:none;
 	box-shadow:none;
@@ -38,11 +38,11 @@
 	margin-bottom: 30px;
 }
 
-#modal h2 {
+#modal h2,#modal2 h2 {
 	font-size: 14px;
 }
 
-.modalCloseButton {
+.modalCloseButton, .modalCloseButton2 {
 	float:right;
 	position:absolute;
 	top:20px;
@@ -51,7 +51,7 @@
 	background: none;
 	border: none;
 }
-.modalCloseButton img {
+.modalCloseButton img, .modalCloseButton2 img {
 	border:0;
 }
 
@@ -63,6 +63,6 @@
 	top:auto;
 }
 
-#cancel{
+#cancel, #cancel2{
 	width: 20px;
 }
