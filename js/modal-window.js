@@ -56,13 +56,6 @@ $(document).ready(function() {
         hideModal($('#modal2'));
     });
 
-    // jQuery('#cancelButton').click(function(e) {
-    //     hideModal($('#modal'));
-    // });
-    // jQuery('#enter').click(function(e) {
-    //     enterButtonModal();
-    // });
-
     jQuery('#modalCloseButton').click(function(e) {
         hideModal($('#modal'));
     });
@@ -90,10 +83,12 @@ function trapEscapeKey(obj, evt) {
 
         // get list of focusable items
         var cancelElement;
-        cancelElement = o.filter("#cancel")
+        cancelElement = o.filter("#cancel");
+        cancelElement2 = o.filter("#cancel2");
 
         // close the modal window
         cancelElement.click();
+        cancelElement2.click();
         evt.preventDefault();
     }
 
@@ -153,13 +148,6 @@ function setInitialFocusModal(obj) {
 
 }
 
-// function enterButtonModal() {
-//     // BEGIN logic for executing the Enter button action for the modal window
-//     alert('form submitted');
-//     // END logic for executing the Enter button action for the modal window
-//     hideModal();
-// }
-
 function setFocusToFirstItemInModal(obj){
     // get list of all children elements in given object
     var o = obj.find('*');
@@ -196,5 +184,5 @@ function hideModal(obj) {
 
     // set focus back to element that had it before the modal was opened
     // focusedElementBeforeModal.focus();
-    jQuery("#changeCompany").focus();
+    jQuery("#tickerName").focus();
 }

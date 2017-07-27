@@ -21,7 +21,7 @@
 
 <body>
 
-    <div id="content">
+    <div id="mainPage">
             
             <div aria-label="Change Company" class="row changeCompany">
                 <input id="input" placeholder="New Ticker Name, Ex. AAPL" aria-label="New Ticker Input" type="text" name="tickername" class="tickerfield">
@@ -57,8 +57,6 @@
                 <input class="button"  id="graphView" aria-label="Turn Off 50 Day Simple Moving Average" type="submit" value="Turn Off 50 Day Simple Moving Average">
             </div>
 
-    
-
     <div id="canvas-container" aria-hidden="true"> </div>
 
     <div class="row sightedValues" id="sighted-vals" aria-hidden="true"> 
@@ -70,27 +68,26 @@
         
     </div>
 
-    <div class="row about">
-
+    <div class="row about" aria-label="Help">
         <button id="startModal2">Keyboard Shortcuts</button>
         <button id="startModal">What is this?</button>
+    </div>
+</div>
 
+<div class="modalWrap">
+        <div id="modal" aria-hidden="true">
 
-        <div id="modal" aria-hidden="true" aria-labelledby="modalTitle" aria-describedby="modalDescription" role="dialog">
+             <div id="modalDescription" class="screen-reader-offscreen">Beginning of dialog window. Escape will cancel and close the window.</div>
+             <h1 id="modalTitle" tabindex="-1" aria-describedby="modalDescription">Title of Applicaton</h1>
+             <div id="about-project" aria-label="About the Project">Say something about the project here?</div>
 
-  <!--       <div role="document"> -->
-         <div id="modalDescription" class="screen-reader-offscreen">Beginning of dialog window. Escape will cancel and close the window.</div>
-         <h1 id="modalTitle" tabindex="-1">Title of Applicaton</h1>
-         <div id="about-project" aria-label="About the Project">Say something about the project here?</div>
+            <button id="modalCloseButton" class="modalCloseButton" title="Close dialog"><img id="cancel" src="x.png" alt="close the dialog"></button>
 
-        <button id="modalCloseButton" class="modalCloseButton" title="Close dialog"><img id="cancel" src="x.png" alt="close the dialog"></button>
-
-     <!--    </div> -->
         </div>
 
-        <div id="modal2" aria-hidden="true" aria-labelledby="modalTitle" aria-describedby="modalDescription" role="dialog">
+        <div id="modal2" aria-hidden="true">
             <div id="modalDescription" class="screen-reader-offscreen">Beginning of dialog window. Escape will cancel and close the window.</div>
-            <h1 id="modalTitle" tabindex="-1">Keyboard Shortcuts</h1>
+            <h1 id="modalTitle" tabindex="-1" aria-describedby="modalDescription">Keyboard Shortcuts</h1>
 
              <div aria-label="Keyboard Shortcuts">
                 <p class="hidden">G - Traverse left</p>
@@ -101,10 +98,10 @@
                 <p aria-hidden="true"><b>,</b> - Jump to beginning</p>
                 <p class="hidden">Period - Jump to end</p>
                 <p aria-hidden="true"><b>.</b> - Jump to end</p>
-                <p class="hidden">Semicolon - Skip to previous intersection point</p>
-                <p aria-hidden="true"><b>;</b> - Skip to previous intersection point</p>
-                <p class="hidden">Apostraphe - Skip to next intersection point</p>
-                <p aria-hidden="true"><b>'</b> - Skip to next intersection point</p>
+                <p class="hidden">L - Skip to previous intersection point</p>
+                <p aria-hidden="true"><b>l</b> - Skip to previous intersection point</p>
+                <p class="hidden">Semicolon - Skip to next intersection point</p>
+                <p aria-hidden="true"><b>;</b> - Skip to next intersection point</p>
                 <p class="hidden">O - Jump to previous month</p>
                 <p aria-hidden="true"><b>o</b> - Jump to previous month</p>
                 <p class="hidden">P - Jump to next month</p>
@@ -124,11 +121,7 @@
 
         <div id="modalOverlay" tabindex="-1" style="display: block;"></div>
 
-
-    </div>
-
-</div>
-
+<div>
     
 </body>
 

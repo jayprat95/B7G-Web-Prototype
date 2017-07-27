@@ -66,3 +66,14 @@
 #cancel, #cancel2{
 	width: 20px;
 }
+
+.modalWrap {
+	position: relative;
+	width: 100%;
+	height: 100%;
+	display: flex;
+	flex-direction: row;
+	flex-wrap: nowrap;
+	justify-content: center;
+	align-items: center;
+}

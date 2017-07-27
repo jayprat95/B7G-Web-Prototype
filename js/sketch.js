@@ -204,7 +204,6 @@ $(document).ready(function() {
     });
 
     $(".switch").mousedown(function() {
-        console.log("clicked");
 
         //TODO change variables 
         var on = "Turn Off 50 Day Simple Moving Average";
@@ -891,7 +890,7 @@ function checkBegEnd() {
 
 function skipToCrossing() {
 
-    if (key == '\'') {
+    if (key == ';' ) {
         //forward
 
         if (detailsPlaying) {
@@ -916,7 +915,7 @@ function skipToCrossing() {
         }
         earcon.play();
 
-    } else if (key == ';') {
+    } else if (key == 'l' || key == 'L') {
         //backward
 
         if (detailsPlaying) {
@@ -944,7 +943,7 @@ function skipToCrossing() {
 
 function skipToMonths() {
 
-    if (key == 'p') {
+    if (key == 'p' || key == 'P') {
         //forward
         if (detailsPlaying) {
             stopSpeech();
@@ -967,7 +966,7 @@ function skipToMonths() {
         }
         playMonth();
 
-    } else if (key == 'o') {
+    } else if (key == 'o' || key == 'O') {
         //backward
         if (detailsPlaying) {
             stopSpeech();
