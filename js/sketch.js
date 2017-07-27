@@ -58,6 +58,10 @@ var mappedLow;
 var mappedHigh;
 
 var fontsize = 11;
+var rubikFont;
+var letterSpacingMonth = 10;
+var letterSpacingYaxis = 9;
+var letterSpacingYear = 8;
 
 // COLORS ---------------------------------------------
 
@@ -463,6 +467,7 @@ function preload() {
     table = loadTable("assets/tickers.csv", "csv", "header");
     getData();
     earcon = loadSound('assets/earcon.mp3');
+    rubikFont = loadFont('assets/Rubik-Light.ttf');
 }
 
 function setup() {
@@ -1094,9 +1099,19 @@ function drawYAxis(yaxis) {
         line(xshift-6, yPos, xshift+1, yPos);
         textAlign(RIGHT);
         fill(255);
-        textFont("Rubik");
+        textFont(rubikFont);
         textSize(fontsize);
-        text(i, xshift - 15, yPos + 4);
+        textS(i, xshift - 30, yPos + 4, letterSpacingYaxis);
+    }
+}
+
+function textS(te, x, y, spacing) {
+    var t = String(te);
+    var xshift = (t.length * spacing) / 2;
+    var startx = x - xshift +5;
+
+    for(var i = 0; i < t.length; i++ ){
+        text(t[i], startx + i*spacing, y);
     }
 }
 
@@ -1123,6 +1138,11 @@ function drawXAxis(i, xPos){
         stroke(255);
         line(xPos, graphHeight+8, xPos, graphHeight+15);
 
+        textAlign(CENTER);
+        fill(255);
+        textFont(rubikFont);
+        textSize(fontsize);
+        textS(data[i].date.getDate(), xPos, graphHeight+40,letterSpacingMonth);
     }
 
     if(data[i].newmonth) {
@@ -1136,26 +1156,24 @@ function drawXAxis(i, xPos){
 
         textAlign(CENTER);
         fill(255);
-        textFont("Rubik");
+        textFont(rubikFont);
         textSize(fontsize);
         if(timerange == "fiveyears") {
-            if(data[i].date.getMonth() == 0 || data[i].date.getMonth() == 6) {
-                text(monthsAbbv[data[i].date.getMonth()], xPos, graphHeight+40);
-            }
             if(data[i].date.getMonth() == 0) {
-                text(data[i].date.getFullYear(), xPos, graphHeight+60);
+                textS(data[i].date.getFullYear(), xPos, graphHeight+40,letterSpacingYear);
+                strokeWeight(1);
+                stroke(255);
+                line(xPos, graphHeight+6, xPos, graphHeight+17);
             }
-        } else if(timerange == "oneyear") {
-            if(data[i].date.getMonth() == 0 || data[i].date.getMonth() == 2 || data[i].date.getMonth() == 4 || data[i].date.getMonth() == 6 || data[i].date.getMonth() == 8 || data[i].date.getMonth() == 10) {
-                text(monthsAbbv[data[i].date.getMonth()], xPos, graphHeight+40);
-            }
-            if(data[i].date.getMonth() == 0) {
-                text(data[i].date.getFullYear(), xPos, graphHeight+60);
-            }
+        } else if (timerange == "onemonth"){
+            textS(monthsAbbv[data[i].date.getMonth()], xPos, graphHeight+60,letterSpacingMonth);
+            strokeWeight(1);
+            stroke(255);
+            line(xPos, graphHeight+6, xPos, graphHeight+17);
         } else {
-            text(monthsAbbv[data[i].date.getMonth()], xPos, graphHeight+40);
+            textS(monthsAbbv[data[i].date.getMonth()], xPos, graphHeight+40,letterSpacingMonth);
             if(data[i].date.getMonth() == 0) {
-                text(data[i].date.getFullYear(), xPos, graphHeight+60);
+                textS(data[i].date.getFullYear(), xPos, graphHeight+60,letterSpacingYear);
             }
         }
     }

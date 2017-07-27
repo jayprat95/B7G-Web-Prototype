@@ -30,7 +30,7 @@
   	margin: 0;
     background: rgb(40, 59, 74);
     font-weight: 300 !important;
-    letter-spacing: 2px;
+    letter-spacing: 10px !important;
     text-transform: uppercase;
   }
 
