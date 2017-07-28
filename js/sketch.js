@@ -481,7 +481,6 @@ function switchLoc(olddata, newdata) {
     var newDate = newdata[0].date;
 
     for(i in newdata) {
-        console.log(i);
         if(newdata[i].date > newDate && newdata[i].date <= currentDate) {
             newDate = newdata[i].date;
             loc = i;
@@ -1124,7 +1123,6 @@ function drawYAxis(yaxis) {
     var initialTick = getInitalTick(absLow, units);
 
     for( i = initialTick; i < absHigh; i += units) {
-        //console.log(absHigh);
         strokeWeight(1);
         stroke(255);
         var yPos = map(i, absLow, absHigh, newLow, newHigh);
