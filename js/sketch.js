@@ -947,7 +947,7 @@ function skipToCrossing() {
         }
         earcon.play();
 
-    } else if (key == 'l' || key == 'L'  && !modalOpen) {
+    } else if (key == 'l' || key == 'L'  && !modalOpen && $("#input").is(":focus") == false) {
         //backward
 
         if (detailsPlaying) {
