@@ -311,6 +311,9 @@ input:checked + .slider:before {
   font-size: 12px;
   padding: 10px;
   text-decoration: none;
+  outline-style:none;
+  box-shadow:none;
+  border-color:transparent;
 }
 
 .help-button::visited {
