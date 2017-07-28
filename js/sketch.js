@@ -946,6 +946,7 @@ function skipToCrossing() {
             }
         }
         earcon.play();
+        playCrossDirection();
 
     } else if (key == 'l' || key == 'L'  && !modalOpen && $("#input").is(":focus") == false) {
         //backward
@@ -970,7 +971,17 @@ function skipToCrossing() {
             }
         }
         earcon.play();
+        playCrossDirection();
     }
+}
+
+function playCrossDirection() {
+    if(data[loc].overOrUnder == 1) {
+        textToSpeech.speak("below");
+    } else {
+        textToSpeech.speak("above");
+    }
+    
 }
 
 function skipToMonths() {
