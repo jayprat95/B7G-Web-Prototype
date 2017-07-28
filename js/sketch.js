@@ -144,31 +144,31 @@ $(document).ready(function() {
 
     $("#onemonth").mousedown(function() {
         timerange = "onemonth";
-        changeData();
+        changeData("#onemonth");
         $("#onemonth").attr('aria-label', 'Change to One Month, Selected');
     });
 
     $("#threemonths").mousedown(function() {
         timerange = "threemonths";
-        changeData();
+        changeData("#threemonths");
         $("#threemonths").attr('aria-label', 'Change to Three Months, Selected');
     });
 
     $("#sixmonths").mousedown(function() {
         timerange = "sixmonths";
-        changeData();
+        changeData("#sixmonths");
         $("#sixmonths").attr('aria-label', 'Change to Six Months, Selected');
     });
 
     $("#oneyear").mousedown(function() {
         timerange = "oneyear";
-        changeData();
+        changeData("#oneyear");
         $("#oneyear").attr('aria-label', 'Change to One Year, Selected');
     });
 
     $("#fiveyears").mousedown(function() {
         timerange = "fiveyears";
-        changeData();
+        changeData("#fiveyears");
         $("#fiveyears").attr('aria-label', 'Change to Five Years, Selected');
     });
 
@@ -467,12 +467,12 @@ function setHighLow() {
     $("#locallow").text("Low of Current View: " + absLow);
 }
 
-function changeData() {
+function changeData(button) {
     var olddata = data;
     data = setData();
     switchLoc(olddata, data);
     deselectAll();
-    $(this).addClass('buttonSelected');
+    $(button).addClass('buttonSelected');
 }
 
 function switchLoc(olddata, newdata) {
