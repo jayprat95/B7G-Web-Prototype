@@ -177,6 +177,10 @@
       font-size: 12px;
   }
 
+  .highlowrow {
+    padding-top: 4 !important;
+    padding-bottom: 20px !important;
+  }
 
 /* Change Date Range Row */
 

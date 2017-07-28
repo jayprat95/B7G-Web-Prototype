@@ -115,7 +115,6 @@ var aboveLong = new Wad({
     env: { attack: 0.05, decay: 0.0, sustain: 1, hold: 4, release: 0.0},
 });
 
-
 //DOM LISTENERS ---------------------------------------------
 
 $(document).ready(function() {
