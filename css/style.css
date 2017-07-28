@@ -22,31 +22,27 @@
     font-weight: 400;
   }
 
-  canvas {
-  	position: relative; 
-  	top: 0; 
-  	left: 0; 
-  	z-index: 1;
-  	margin: 0;
-    background: rgb(40, 59, 74);
-    font-weight: 300 !important;
-    letter-spacing: 10px !important;
-    text-transform: uppercase;
-  }
-
   #content {
   	position: relative; 
   	z-index: 2; 
     padding-bottom: 20px;
   }
 
-  .form {
-  	padding: 20px;
+  .row{
+    padding-left: 75px;
+    padding-right: 75px;
+    padding-top: 10px;
+    padding-bottom: 15px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
   }
 
-  .buttonSelected {
-    background-color: white !important; 
-    color: black !important;
+  .subrow{
+    display: inline-block;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
   }
 
   .button {
@@ -61,57 +57,21 @@
     text-transform: uppercase;
   }
 
-  .tickerDetails {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: space-around;
-    padding-top: 0 !important;
-/*    padding-bottom: 0 !important;*/
+  .buttonSelected {
+    background-color: white !important; 
+    color: black !important;
   }
 
-
-  .changeDateRange .button {
-      margin-right: 10px;
+  .hidden {
+    position:absolute;
+    left:-10000px;
+    top:auto;
+    width:1px;
+    height:1px;
+    overflow:hidden;
   }
 
-  #onemonth{
-      margin-right: 0;
-  }
-
-  .tickerName {
-    padding-top: 20px !important;
-    justify-content: space-between;
-    
-  }
-
-  #tickerName {
-    font-size: 22px;
-    margin-right: 10px;
-    align-self: flex-start;
-    font-weight: 400;
-  }
-
-  #currentGraph {
-    font-size: 20px;
-    align-self: flex-start;
-  }
-
-  #toggle {
-    align-self: flex-end;
-    justify-content: flex-end;
-    display:table;
-  }
-
-  #indicator-label {
-    display:table-cell;
-    vertical-align:middle;
-    padding-right: 15px;
-    font-size: 10px;
-    text-transform: uppercase;
-    line-height: 15px;
-    text-align: right;
-  }
+/*  Change Company Row */
 
   .changeCompany {
     background-color: rgb(93,116,132);
@@ -152,54 +112,101 @@
       flex: 1;
   }
 
-  .detail {
-    flex: 1;
-    font-size: 14px;
-    display: inline-block;
-/*    min-width: 180px;*/
-    margin-left: 10px;
-  }
-
-  #current-price {
-    margin-left: 0;
-
-  }
-
-  #percent-change {
-
-  }
-
-  #point-change {
-
-  }
-
-  #date-range {
-    flex: 2;
-  }
-
-  .row{
-    padding-left: 75px;
-    padding-right: 75px;
-    padding-top: 10px;
-    padding-bottom: 15px;
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-  }
-
-  .subrow{
-    display: inline-block;
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-  }
-
   .tickerfield {
     width: 25%;
     padding: 6px 12px;
     margin: 8px 0;
     box-sizing: border-box;
   }
+
+
+/* Ticker Name Row */
+
+  .tickerName {
+    padding-top: 20px !important;
+    justify-content: space-between;
+  }
+
+  #tickerName {
+    font-size: 22px;
+    margin-right: 10px;
+    align-self: flex-start;
+    font-weight: 400;
+  }
+
+  #toggle {
+    align-self: flex-end;
+    justify-content: flex-end;
+    display:table;
+  }
+
+  #indicator-label {
+    display:table-cell;
+    vertical-align:middle;
+    padding-right: 15px;
+    font-size: 10px;
+    text-transform: uppercase;
+    line-height: 15px;
+    text-align: right;
+  }
+
+/* Ticker Details Row */
+
+  .tickerDetails {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    padding-top: 0 !important;
+  }
+
+  .detail {
+    flex: 1;
+    font-size: 14px;
+    display: inline-block;
+    margin-left: 10px;
+  }
+
+  #current-price {
+    margin-left: 0;
+  }
+
+/* High Low Row */
+
+  .highlow {
+      font-size: 12px;
+  }
+
+
+/* Change Date Range Row */
+
+  .changeDateRange .button {
+      margin-right: 10px;
+  }
+
+  #onemonth{
+      margin-right: 0;
+  }
+
+  #date-range {
+    flex: 2;
+  }
+
+/* Canvas */
+
+  canvas {
+    position: relative; 
+    top: 0; 
+    left: 0; 
+    z-index: 1;
+    margin: 0;
+    background: rgb(40, 59, 74);
+    font-weight: 300 !important;
+    letter-spacing: 10px !important;
+    text-transform: uppercase;
+  }
+
+/* Sighted Values Row */
 
   #sighted-vals {
     background-color: rgb(93,116,132);
@@ -217,110 +224,90 @@
     text-align: center;
   }
 
-  /* The switch - the box around the slider */
-.switch {
-  position: relative;
-  display: inline-block;
-  width: 44px;
-  height: 28px;
-}
 
-/* Hide default HTML checkbox */
-.switch input {display:none;}
+/* Help Row */
 
-/* The slider */
-.slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: #CED5D8;
-  -webkit-transition: .1s;
-  transition: .1s;
-}
+  .about {
+    justify-content: center;
+  }
 
-.slider:before {
-  position: absolute;
-  content: "";
-  height: 20px;
-  width: 20px;
-  left: 4px;
-  bottom: 4px;
-  background-color: white;
-  -webkit-transition: .1s;
-  transition: .1s;
-}
+  #about-project {
+    margin-bottom: 30px;
+  }
 
-input:checked + .slider {
-  background-color: rgb(67,146,241);
-}
-
-input:focus + .slider {
-  box-shadow: 0 0 1px rgb(67,146,241);
-}
-
-input:checked + .slider:before {
-  -webkit-transform: translateX(16px);
-  -ms-transform: translateX(16px);
-  transform: translateX(16px);
-}
-
-/* Rounded sliders */
-.slider.round {
-  border-radius: 34px;
-}
-
-.slider.round:before {
-  border-radius: 50%;
-}
-
-.hidden {
-  position:absolute;
-  left:-10000px;
-  top:auto;
-  width:1px;
-  height:1px;
-  overflow:hidden;
-}
-
-.about {
-  justify-content: center;
-}
-
-#about-project {
-  margin-bottom: 30px;
-}
-
-#modalbutton {
-  text-align: center;
-  flex: 1;
-}
-
-#modal {
-  font-size: 12px;
-}
-
-.help-button {
-  font-style: italic;
-  background: none;
-  border: none;
-  color: rgba(255, 255, 255, 0.42);
-  cursor: pointer;
-  font-size: 12px;
-  padding: 10px;
-  text-decoration: none;
-  outline-style:none;
-  box-shadow:none;
-  border-color:transparent;
-}
-
-.help-button::visited {
-  text-decoration: none;
-}
-
-.highlow {
+  .help-button {
+    font-style: italic;
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.42);
+    cursor: pointer;
     font-size: 12px;
-}
+    padding: 10px;
+    text-decoration: none;
+    outline-style:none;
+    box-shadow:none;
+    border-color:transparent;
+  }
+
+  .help-button::visited {
+    text-decoration: none;
+  }
+
+/* Toggle */
+
+  .switch {
+    position: relative;
+    display: inline-block;
+    width: 44px;
+    height: 28px;
+  }
+
+  .switch input {display:none;}
+
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #CED5D8;
+    -webkit-transition: .1s;
+    transition: .1s;
+  }
+
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 20px;
+    width: 20px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: .1s;
+    transition: .1s;
+  }
+
+  input:checked + .slider {
+    background-color: rgb(67,146,241);
+  }
+
+  input:focus + .slider {
+    box-shadow: 0 0 1px rgb(67,146,241);
+  }
+
+  input:checked + .slider:before {
+    -webkit-transform: translateX(16px);
+    -ms-transform: translateX(16px);
+    transform: translateX(16px);
+  }
+
+  .slider.round {
+    border-radius: 34px;
+  }
+
+  .slider.round:before {
+    border-radius: 50%;
+  }
+
 
