@@ -131,41 +131,31 @@ $(document).ready(function() {
 
     $("#onemonth").mousedown(function() {
         timerange = "onemonth";
-        data = setData();
-        deselectAll();
-        $(this).addClass('buttonSelected');
+        changeData();
         $("#onemonth").attr('aria-label', 'Change to One Month, Selected');
     });
 
     $("#threemonths").mousedown(function() {
         timerange = "threemonths";
-        data = setData();
-        deselectAll();
-        $(this).addClass('buttonSelected');
+        changeData();
         $("#threemonths").attr('aria-label', 'Change to Three Months, Selected');
     });
 
     $("#sixmonths").mousedown(function() {
         timerange = "sixmonths";
-        data = setData();
-        deselectAll();
-        $(this).addClass('buttonSelected');
+        changeData();
         $("#sixmonths").attr('aria-label', 'Change to Six Months, Selected');
     });
 
     $("#oneyear").mousedown(function() {
         timerange = "oneyear";
-        data = setData();
-        deselectAll();
-        $(this).addClass('buttonSelected');
+        changeData();
         $("#oneyear").attr('aria-label', 'Change to One Year, Selected');
     });
 
     $("#fiveyears").mousedown(function() {
         timerange = "fiveyears";
-        data = setData();
-        deselectAll();
-        $(this).addClass('buttonSelected');
+        changeData();
         $("#fiveyears").attr('aria-label', 'Change to Five Years, Selected');
     });
 
@@ -225,6 +215,28 @@ $(document).ready(function() {
     $('.help-modal').modaal();
 });
 
+function switchLoc(olddata, newdata) {
+    
+    var currentDate = olddata[loc].date;
+    var newDate = newdata[0].date;
+
+    for(i in newdata) {
+        console.log(i);
+        if(newdata[i].date > newDate && newdata[i].date <= currentDate) {
+            newDate = newdata[i].date;
+            loc = i;
+        } 
+    }
+}
+
+function changeData() {
+    var olddata = data;
+    data = setData();
+    switchLoc(olddata, data);
+    deselectAll();
+    $(this).addClass('buttonSelected');
+}
+
 function deselectAll() {
     $("#onemonth").removeClass('buttonSelected');
     $("#threemonths").removeClass('buttonSelected');
@@ -263,7 +275,6 @@ class Day {
 //GET DATA ---------------------------------------------
 
 function setData() {
-
     var dataset;
     //TODO: add notification so users know that the location changed
     if (timerange == "onemonth") {
@@ -303,8 +314,7 @@ function setData() {
         absLow = localSMALow;
     }
 
-    setHightLow();
-
+    setHighLow();
     return dataset;
 }
 
@@ -463,7 +473,7 @@ function afterData(thedata) {
 
 }
 
-function setHightLow() {
+function setHighLow() {
     $("#localhigh").text("High of Current View: " + absHigh);
     $("#locallow").text("Low of Current View: " + absLow);
 }
