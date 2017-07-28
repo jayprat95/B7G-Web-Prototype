@@ -63,6 +63,8 @@ var letterSpacingMonth = 10;
 var letterSpacingYaxis = 9;
 var letterSpacingYear = 8;
 
+var modalOpen = false;
+
 // COLORS ---------------------------------------------
 
 var darkblue;
@@ -102,9 +104,6 @@ var bass = new Wad({
     env: { attack: 0.05, decay: 0.02, sustain: 1, hold: .01, release: 0.02 },
 });
 
-
-
-
 var pianoLong = new Wad({
     source: 'square',
     env: { attack: 0.05, decay: 0.0, sustain: 1, hold: 4, release: 0.0 },
@@ -128,7 +127,6 @@ $(document).ready(function() {
             $(this).blur(); 
         }
     });
-
 
     $("#onemonth").mousedown(function() {
         timerange = "onemonth";
@@ -212,8 +210,25 @@ $(document).ready(function() {
 
     });
 
-    $('.about-modal').modaal();
-    $('.help-modal').modaal();
+    $('.about-modal').modaal({
+        before_open: function() {
+            modalOpen = true;
+        },
+        after_close: function() {
+            modalOpen = false;
+        },
+        animation_speed: 5
+    });
+
+    $('.help-modal').modaal({
+        before_open: function() {
+            modalOpen = true;
+        },
+        after_close: function() {
+            modalOpen = false;
+        },
+        animation_speed: 5
+    });
 });
 
 function switchLoc(olddata, newdata) {
@@ -796,16 +811,16 @@ function checkLeftRight() {
 
     var note = midiToFreq(map(data[loc].magnitude, localMagLow, localMagHigh, lowMagmap, highMagmap));
 
-    if(loc == 0 && (key == 'g' || key == 'G')) {
+    if(loc == 0 && (key == 'g' || key == 'G') && !modalOpen) {
         textToSpeech.speak("Beginning");
     }
-    else if((key == 'h' || key == 'H') && loc == data.length - 1) {
+    else if((key == 'h' || key == 'H') && loc == data.length - 1 && !modalOpen) {
         textToSpeech.speak("End");
     }
 
 
 
-    if ((key == 'g' || key == 'G') && loc > 0 && $("#input").is(":focus") == false ) {
+    if ((key == 'g' || key == 'G') && loc > 0 && $("#input").is(":focus") == false  && !modalOpen) {
 
         if (detailsPlaying) {
             stopSpeech();
@@ -836,7 +851,7 @@ function checkLeftRight() {
         }
 
 
-    } else if ((key == 'h' || key == 'H') && loc < data.length - 1 && $("#input").is(":focus") == false) {
+    } else if ((key == 'h' || key == 'H') && loc < data.length - 1 && $("#input").is(":focus") == false && !modalOpen) {
 
 
         if (detailsPlaying) {
@@ -883,7 +898,7 @@ function setToBeg(time) {
 
 function checkBegEnd() {
 
-    if (key == '.') {
+    if (key == '.' && !modalOpen) {
 
         if (detailsPlaying) {
             stopSpeech();
@@ -894,7 +909,7 @@ function checkBegEnd() {
 
         textToSpeech.speak("End" + " "  + data[loc].dateStr);
         
-    } else if (key == ',') {
+    } else if (key == ',' && !modalOpen) {
 
         if (detailsPlaying) {
             stopSpeech();
@@ -909,7 +924,7 @@ function checkBegEnd() {
 
 function skipToCrossing() {
 
-    if (key == ';' ) {
+    if (key == ';'  && !modalOpen) {
         //forward
 
         if (detailsPlaying) {
@@ -934,7 +949,7 @@ function skipToCrossing() {
         }
         earcon.play();
 
-    } else if (key == 'l' || key == 'L') {
+    } else if (key == 'l' || key == 'L'  && !modalOpen) {
         //backward
 
         if (detailsPlaying) {
@@ -962,7 +977,7 @@ function skipToCrossing() {
 
 function skipToMonths() {
 
-    if (key == 'p' || key == 'P') {
+    if (key == 'p' || key == 'P'  && !modalOpen) {
         //forward
         if (detailsPlaying) {
             stopSpeech();
@@ -985,7 +1000,7 @@ function skipToMonths() {
         }
         playMonth();
 
-    } else if (key == 'o' || key == 'O') {
+    } else if (key == 'o' || key == 'O' && !modalOpen) {
         //backward
         if (detailsPlaying) {
             stopSpeech();
