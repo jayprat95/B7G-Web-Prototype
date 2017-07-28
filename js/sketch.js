@@ -92,15 +92,31 @@ var query = quandlQ + addtl;
 // TIMBRE SOUNDS ---------------------------------------------
 
 var below = new Wad({
-    source: 'sine',
+    source: 'triangle',
     env: { attack: 0.05, decay: 0.005, sustain: 1, hold: .01, release: 0.005 },
-    filter: { type: 'lowpass', frequency: 600, q: 7, env: { attack: .07,frequency: 1600 }
+    tuna   : {
+        Overdrive : {
+            outputGain: 1,         //0 to 1+
+            drive: 0.2,              //0 to 1
+            curveAmount: 0,          //0 to 1
+            algorithmIndex: 5,       //0 to 5, selects one of our drive algorithms
+            bypass: 0
+        }
     }
 });
 
 var above = new Wad({
     source: 'triangle',
     env: { attack: 0.05, decay: 0.02, sustain: 1, hold: .01, release: 0.02 },
+    tuna   : {
+        Overdrive : {
+            outputGain: 0,         //0 to 1+
+            drive: 0.1,              //0 to 1
+            curveAmount: 0.9,          //0 to 1
+            algorithmIndex: 0,       //0 to 5, selects one of our drive algorithms
+            bypass: 0
+        }
+    }
 });
 
 var belowLong = new Wad({
