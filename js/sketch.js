@@ -87,7 +87,6 @@ var tickerCompany = "Apple";
 var fromDate = new Date(new Date().setFullYear(new Date().getFullYear() - 1));
 var toDate = new Date();
 var addtl = "&ticker=" + ticker + "&date.gte=" + toJSONLocal(fromDate) + "&date.lte=" + toJSONLocal(toDate);
-
 var query = quandlQ + addtl;
 
 // TIMBRE SOUNDS ---------------------------------------------
@@ -170,7 +169,6 @@ $(document).ready(function() {
 
     $("#graphView").mousedown(function() {
 
-        //TODO change variables 
         var on = "Turn Off 50 Day Simple Moving Average";
         var off = "Turn On 50 Day Simple Moving Average"
 
@@ -192,7 +190,6 @@ $(document).ready(function() {
 
     $(".switch").mousedown(function() {
 
-        //TODO change variables 
         var on = "Turn Off 50 Day Simple Moving Average";
         var off = "Turn On 50 Day Simple Moving Average"
 
@@ -231,43 +228,6 @@ $(document).ready(function() {
     });
 });
 
-function switchLoc(olddata, newdata) {
-    
-    var currentDate = olddata[loc].date;
-    var newDate = newdata[0].date;
-
-    for(i in newdata) {
-        console.log(i);
-        if(newdata[i].date > newDate && newdata[i].date <= currentDate) {
-            newDate = newdata[i].date;
-            loc = i;
-        } 
-    }
-}
-
-function changeData() {
-    var olddata = data;
-    data = setData();
-    switchLoc(olddata, data);
-    deselectAll();
-    $(this).addClass('buttonSelected');
-}
-
-function deselectAll() {
-    $("#onemonth").removeClass('buttonSelected');
-    $("#threemonths").removeClass('buttonSelected');
-    $("#sixmonths").removeClass('buttonSelected');
-    $("#oneyear").removeClass('buttonSelected');
-    $("#fiveyears").removeClass('buttonSelected');
-
-    $("#onemonth").attr('aria-label', 'Change to One Month');
-    $("#threemonths").attr('aria-label', 'Change to Three Months');
-    $("#sixmonths").attr('aria-label', 'Change to Six Months');
-    $("#oneyear").attr('aria-label', 'Change to One Year');
-    $("#fiveyears").attr('aria-label', 'Change to Five Years');
-
-}
-
 //DAY OBJECT ---------------------------------------------
 
 class Day {
@@ -288,7 +248,7 @@ class Day {
     }
 }
 
-//GET DATA ---------------------------------------------
+//GET & SET DATA ---------------------------------------------
 
 function setData() {
     var dataset;
@@ -479,8 +439,6 @@ function afterData(thedata) {
 
     data = setData();
 
-
-    //
     if (data != undefined && data[0] != undefined) {
         setTickerDetails();
     } else {
@@ -492,6 +450,43 @@ function afterData(thedata) {
 function setHighLow() {
     $("#localhigh").text("High of Current View: " + absHigh);
     $("#locallow").text("Low of Current View: " + absLow);
+}
+
+function changeData() {
+    var olddata = data;
+    data = setData();
+    switchLoc(olddata, data);
+    deselectAll();
+    $(this).addClass('buttonSelected');
+}
+
+function switchLoc(olddata, newdata) {
+    
+    var currentDate = olddata[loc].date;
+    var newDate = newdata[0].date;
+
+    for(i in newdata) {
+        console.log(i);
+        if(newdata[i].date > newDate && newdata[i].date <= currentDate) {
+            newDate = newdata[i].date;
+            loc = i;
+        } 
+    }
+}
+
+function deselectAll() {
+    $("#onemonth").removeClass('buttonSelected');
+    $("#threemonths").removeClass('buttonSelected');
+    $("#sixmonths").removeClass('buttonSelected');
+    $("#oneyear").removeClass('buttonSelected');
+    $("#fiveyears").removeClass('buttonSelected');
+
+    $("#onemonth").attr('aria-label', 'Change to One Month');
+    $("#threemonths").attr('aria-label', 'Change to Three Months');
+    $("#sixmonths").attr('aria-label', 'Change to Six Months');
+    $("#oneyear").attr('aria-label', 'Change to One Year');
+    $("#fiveyears").attr('aria-label', 'Change to Five Years');
+
 }
 
 //P5 DEFAULT FUNCTIONS ---------------------------------------------
@@ -631,9 +626,6 @@ function playMag(note, abovebelow, long) {
 function playValue() {
 
     if (key == ' ') {
-
-
-        //TODO check this logic for double spacebar 
 
         if (detailsPlaying == true) {
 
@@ -797,7 +789,6 @@ function toJSONLocal(date) {
 // RESET ---------------------------------------------
 
 function resetDetails() {
-    // detailsPlaying = false;
     monthPlaying = false;
 }
 
@@ -817,8 +808,6 @@ function checkLeftRight() {
     else if((key == 'h' || key == 'H') && loc == data.length - 1 && !modalOpen) {
         textToSpeech.speak("End");
     }
-
-
 
     if ((key == 'g' || key == 'G') && loc > 0 && $("#input").is(":focus") == false  && !modalOpen) {
 
@@ -850,7 +839,6 @@ function checkLeftRight() {
             textToSpeech.speak("Beginning");
         }
 
-
     } else if ((key == 'h' || key == 'H') && loc < data.length - 1 && $("#input").is(":focus") == false && !modalOpen) {
 
 
@@ -858,7 +846,6 @@ function checkLeftRight() {
             stopSpeech();
             detailsPlaying = false; 
         }
-
 
         if (keyLength == 0 || keyLength > 10) {
             loc++;
@@ -881,10 +868,7 @@ function checkLeftRight() {
         if (loc == data.length - 1) {
             textToSpeech.speak("End");
         }
-
-
     }
-
 }
 
 function setToBeg(time) {
@@ -1267,16 +1251,6 @@ function drawVisGraphA() {
 
 function drawVisGraphB() {
 
-    // strokeWeight(1);   
-
-    // stroke(0,255,0);
-    // line(0, newLow, width, newLow);
-    // line(0, newHigh, width, newHigh);
-
-    // stroke(0,255,255);
-    // line(0, mappedLow, width, mappedLow);
-    // line(0, mappedHigh, width, mappedHigh);
-
     setGradient(xshift, ystart, width, graphHeight, gradhigh, gradlow, "Y_AXIS");
 
     if (data != undefined && data[0] != undefined) {
@@ -1362,6 +1336,8 @@ function drawVisGraphB() {
     }
 
 }
+
+//DRAWING HELPERS ---------------------------------------------
 
 function setGradient(x, y, w, h, c1, c2, axis) {
 
