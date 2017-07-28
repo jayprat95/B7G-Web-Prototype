@@ -91,26 +91,26 @@ var query = quandlQ + addtl;
 
 // TIMBRE SOUNDS ---------------------------------------------
 
-var piano = new Wad({
+var below = new Wad({
     source: 'sine',
     env: { attack: 0.05, decay: 0.005, sustain: 1, hold: .01, release: 0.005 },
     filter: { type: 'lowpass', frequency: 600, q: 7, env: { attack: .07,frequency: 1600 }
     }
 });
 
-var bass = new Wad({
+var above = new Wad({
     source: 'triangle',
     env: { attack: 0.05, decay: 0.02, sustain: 1, hold: .01, release: 0.02 },
 });
 
-var pianoLong = new Wad({
+var belowLong = new Wad({
     source: 'square',
     env: { attack: 0.05, decay: 0.0, sustain: 1, hold: 4, release: 0.0 },
     filter: { type: 'lowpass', frequency: 600, q: 7, env: { attack: .07,frequency: 1600 }
     }
 });
 
-var bassLong = new Wad({
+var aboveLong = new Wad({
     source: 'triangle',
     env: { attack: 0.05, decay: 0.0, sustain: 1, hold: 4, release: 0.0},
 });
@@ -609,15 +609,15 @@ function playMag(note, abovebelow, long) {
 
     if(long) {
         if (abovebelow == 1) {
-            piano.play({ pitch: note });
+            below.play({ pitch: note });
         } else if (abovebelow == -1) {
-            bass.play({ pitch: note });
+            above.play({ pitch: note });
         }
     } else {
         if (abovebelow == 1) {
-            piano.play({ pitch: note });
+            below.play({ pitch: note });
         } else if (abovebelow == -1) {
-            bass.play({ pitch: note });
+            above.play({ pitch: note });
         }
     }
     
