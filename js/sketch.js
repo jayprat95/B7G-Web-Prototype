@@ -500,7 +500,12 @@ function setFirstSkip(){
         }
     }
 
-    firstSkipFiveYears = lastFiveYears[0].date;
+    for(i in lastFiveYears) {
+        if(lastFiveYears[i].crossed) {
+            firstSkipFiveYears = lastFiveYears[i].date;
+            break;
+        }
+    }
 
 }
 
@@ -1003,7 +1008,7 @@ function skipToCrossing() {
             stopSpeech();
         }
 
-        if( whichFirstSkip() != data[loc].date) {
+        if( whichFirstSkip() != data[loc].date && !(data[loc].date < whichFirstSkip()) ) {
 
             for(i = skips.length - 1; i > -1; i-- ) {
                 if(skips[i].date < data[loc].date) {
