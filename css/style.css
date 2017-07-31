@@ -77,28 +77,39 @@
     padding-top: 15px;
     padding-bottom: 15px;
     display: flex;
+    flex-direction: row;
     align-items: center;
     -moz-box-shadow:0 0 8px 0 rgb(40, 59, 74);
     -webkit-box-shadow:0 0 8px 0 rgb(40, 59, 74);
     box-shadow:0 0 8px 0 rgb(40, 59, 74);
     z-index: 100000;
     position: relative;
+/*    justify-content: flex-end;*/
   }
 
   .nameHeader img {
+    position: absolute;
     width: 25px;
-    padding-left: 30px;
-    padding-right: 20px
+    margin-left: -45px;
+  }
+
+  .nameHeader .button {
+    padding: 8.5px 12px
+  }
+
+  .nameHeader .button:disabled {
+    background-color: #CED5D8;
   }
 
   #appname{
-    /*line-height: 30px;*/
     font-weight: 400;
+    flex: 2;
+    margin-right: 40px;
   }
 
 /*  Change Company Row */
 
-  .changeCompany {
+/*  .changeCompany {
     background-color: rgb(93,116,132);
     padding-top: 5px !important;
     padding-bottom: 5px !important;
@@ -113,10 +124,11 @@
 
   .changeCompany .button:disabled {
     background-color: #CED5D8;
-  }
+  }*/
 
   #input {
-      flex: 4.75;
+    margin-right: 10px;
+    flex: 2;
   }
 
   #input::-webkit-input-placeholder { /* Chrome/Opera/Safari */
@@ -137,11 +149,11 @@
   }
 
   #submit {
+      letter-spacing: 1px;
       flex: 1;
   }
 
   .tickerfield {
-    width: 25%;
     padding: 6px 12px;
     margin: 8px 0;
     box-sizing: border-box;
@@ -255,7 +267,7 @@
     flex: 1;
     font-size: 12px;
     text-align: left;
-    padding-left: 10px;
+    padding-left: 15px;
   }
 
   #curr-extra {

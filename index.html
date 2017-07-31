@@ -23,14 +23,12 @@
 
     <div id="mainPage">
 
-            <div aria-label="Header" class="nameHeader">
+            <div aria-label="Header" class="row nameHeader">
                 <img src="logo.png" aria-label="Logo"> <span id="appname" aria-label="Application Name">Stockgrok</span>
-            </div>
-            
-            <div aria-label="Change Company" class="row changeCompany">
                 <input id="input" placeholder="New Ticker Name, Ex. AAPL" aria-label="New Ticker Input" type="text" name="tickername" class="tickerfield">
                 <input class="button" id="submit" aria-label="New Ticker Submit" type="submit" value="Submit" onclick="changeTicker()">
             </div>
+            
             <div class="row tickerName">
                 <div id="tickerName"></div> 
                 <div id="toggle" aria-hidden="true">
@@ -41,6 +39,7 @@
                     </label>
                 </div>
             </div>
+            
             <div class="row tickerDetails" aria-label="Ticker Details" class="row">
                     <div class="detail" id="current-price"></div>
                     <div aria-hidden="true" class="linebreak2"></div>
