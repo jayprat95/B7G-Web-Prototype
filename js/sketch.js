@@ -564,9 +564,11 @@ function draw() {
     }
 
     if (data[loc]) {
+        var percentDiff = ((data[loc].close - data[loc].sma50)/data[loc].sma50).toFixed(4); 
         $("#curr-date").text("Date: " + data[loc]['dateStr']);
+        $("#curr-percent").text("% Difference: " + percentDiff);
         $("#curr-price").text("Closing Price: " + data[loc]['close']);
-        $("#curr-sma").text("SMA50: " + data[loc]['sma50']);
+        $("#curr-sma").text("50 Day SMA: " + data[loc]['sma50']);
     }
 
     prevLoc = loc;
@@ -938,7 +940,6 @@ function skipToCrossing() {
                                loc = j;
                             }
                             keyLength++;
-                            
                         }
                     }
                 }

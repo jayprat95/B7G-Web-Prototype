@@ -254,9 +254,7 @@
 
 }
 
-@media only screen and (max-width : 930px) {
-
-    /* Sighted Values Row */
+@media only screen and (max-width : 842px) {
 
     .sightedValues {
         flex-direction: column !important;
@@ -265,8 +263,79 @@
     }
 
     .val {
+        text-align: center;
+    }
+
+    #curr-label{
+        display: none;
+    }
+
+    #curr-date{
+        flex: 1;
+    }
+
+    #curr-percent{
+        flex: 1;
+    }
+
+    #curr-price{
+        flex: 1;
+    }
+
+    #curr-sma{
+        flex: 1;
+    }
+
+    #curr-extra {
+        display: none;
+        padding: 0;
+    }
+
+
+}
+
+@media only screen and (max-width : 930px) {
+
+    /* Sighted Values Row */
+
+    .sightedValues {
+/*        flex-direction: column !important;*/
+        padding-top: 10px !important;
+        padding-bottom: 10px !important;
+    }
+
+    .val {
         padding-top: 2px;
         padding-bottom: 2px;
+    }
+
+    #curr-label{
+        flex: 1;
+    }
+
+    #curr-date{
+        flex: 2;
+    }
+
+    #curr-percent{
+        flex: 2;
+    }
+
+    #curr-price{
+        flex: 2;
+    }
+
+    #curr-sma{
+        flex: 2;
+    }
+
+    #curr-extra {
+        flex: 1;
+        display: flex;
+    }
+
+    .linebreak3{
+        width: 100%;
     }
 }
 

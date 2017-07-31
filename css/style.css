@@ -226,8 +226,17 @@
   .val {
     flex: 1;
     font-size: 12px;
-    text-align: center;
+    text-align: left;
+    padding-left: 10px;
   }
+
+  #curr-extra {
+    display: none;
+  }
+
+  .linebreak3{
+        width: 0%;
+    }
 
 
 /* Help Row */
