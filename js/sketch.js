@@ -1469,7 +1469,7 @@ function dottedLine(x, ylownum, yhighnum, segLeng, spaceLeng) {
 }
 
 function drawTriangle(loc) {
-    fill(borderblue);
+    fill(gradlow);
     noStroke();
     triangle(loc-10, canvasHeight, loc, canvasHeight-12, loc+10,canvasHeight);
 
