@@ -35,7 +35,7 @@ var dataReceived = false;
 
 var rate = 1.5;
 
-var canvasHeight = 400;
+var canvasHeight = 350;
 var graphHeight = canvasHeight - yshift - ystart;
 var rightpadding = 73;
 

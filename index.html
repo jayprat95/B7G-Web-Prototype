@@ -22,6 +22,10 @@
 <body>
 
     <div id="mainPage">
+
+            <div aria-label="Header" class="nameHeader">
+                <img src="logo.png" aria-label="Logo"> <span id="appname" aria-label="Application Name">Stockgrok</span>
+            </div>
             
             <div aria-label="Change Company" class="row changeCompany">
                 <input id="input" placeholder="New Ticker Name, Ex. AAPL" aria-label="New Ticker Input" type="text" name="tickername" class="tickerfield">
@@ -86,13 +90,13 @@
 
 
 <div id="about-modal" style="display:none;">
-    <h1 id="modalTitle" tabindex="-1">Title of Applicaton</h1>
-    <div id="about-project" aria-label="About the Project">Say something about the project here?</div>
+    <h1 id="modalTitle" tabindex="-1">Welcome to Stockgrok</h1>
+    <div id="about-project" aria-label="About the Project">This is team B7G's Capstone Project for Carnegie Mellon's Masters in Human-Computer Interaction Program with client Bloomberg LP.<br><br>The goal of this project was to make financial visualizations more accessible to those who are visually impaired. With the 50 Day Simple Moving Average turned on, users can hear the magnitude of difference between the 50 Day Simple Moving Average Line and the Closing Price line, allowing them to easily grok trends and make buy or sell decisions without visualizations.</div>
 </div>
 
 <div id="help-modal" style="display:none;">
     <h1 id="modalTitle" tabindex="-1">Keyboard Shortcuts</h1>
-    <div aria-label="Keyboard Shortcuts">
+    <div aria-label="Keyboard Shortcuts" id="keyboardShortcuts">
         <p class="hidden">G - Traverse left</p>
         <p aria-hidden="true"><b>g</b> - Traverse left</p>
         <p class="hidden">H - Traverse right</p>

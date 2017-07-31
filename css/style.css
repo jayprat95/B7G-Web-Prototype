@@ -71,10 +71,38 @@
     overflow:hidden;
   }
 
+  .nameHeader {
+    background-color: white;
+    color: rgb(40, 59, 74);
+    padding-top: 15px;
+    padding-bottom: 15px;
+    display: flex;
+    align-items: center;
+    -moz-box-shadow:0 0 8px 0 rgb(40, 59, 74);
+    -webkit-box-shadow:0 0 8px 0 rgb(40, 59, 74);
+    box-shadow:0 0 8px 0 rgb(40, 59, 74);
+    z-index: 100000;
+    position: relative;
+  }
+
+  .nameHeader img {
+    width: 25px;
+    padding-left: 30px;
+    padding-right: 20px
+  }
+
+  #appname{
+    /*line-height: 30px;*/
+    font-weight: 400;
+  }
+
 /*  Change Company Row */
 
   .changeCompany {
     background-color: rgb(93,116,132);
+    padding-top: 5px !important;
+    padding-bottom: 5px !important;
+    z-index: -100000;
   }
 
   .changeCompany .button {
@@ -88,7 +116,7 @@
   }
 
   #input {
-      flex: 8;
+      flex: 4.75;
   }
 
   #input::-webkit-input-placeholder { /* Chrome/Opera/Safari */
@@ -217,8 +245,8 @@
     background-color: rgb(93,116,132);
     padding-left: 0 !important;
     padding-right: 0 !important;
-    padding-top: 20px;
-    padding-bottom: 20px;
+    padding-top: 10px;
+    padding-bottom: 10px;
     margin-right: 75px;
     margin-left: 75px;
   }
@@ -245,10 +273,6 @@
     justify-content: center;
   }
 
-  #about-project {
-    margin-bottom: 30px;
-  }
-
   .help-button {
     font-style: italic;
     background: none;
@@ -265,6 +289,18 @@
 
   .help-button::visited {
     text-decoration: none;
+  }
+
+/* Modals */
+
+  #about-project {
+    margin-bottom: 30px;
+    font-size: 13px;
+    line-height: 18px;
+  }
+
+  #keyboardShortcuts {
+    font-size: 13px;
   }
 
 /* Toggle */
