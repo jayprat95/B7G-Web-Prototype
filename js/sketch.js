@@ -65,6 +65,12 @@ var letterSpacingYear = 8;
 
 var modalOpen = false;
 
+var firstSkipOneMonth;
+var firstSkipThreeMonths;
+var firstSkipSixMonths;
+var firstSkipOneYear;
+var firstSkipFiveYears;
+
 // COLORS ---------------------------------------------
 
 var darkblue;
@@ -459,6 +465,42 @@ function afterData(thedata) {
     } else {
         setTimeout(function() { setTickerDetails(); }, 100);
     }
+
+    setFirstSkip();
+
+}
+
+function setFirstSkip(){
+
+    for(i in lastMonth) {
+        if(lastMonth[i].crossed) {
+            firstSkipOneMonth = lastMonth[i].date;
+            break;
+        }
+    }
+
+    for(i in lastThreeMonths) {
+        if(lastThreeMonths[i].crossed) {
+            firstSkipThreeMonths = lastThreeMonths[i].date;
+            break;
+        }
+    }
+
+    for(i in lastSixMonths) {
+        if(lastSixMonths[i].crossed) {
+            firstSkipSixMonths = lastSixMonths[i].date;
+            break;
+        }
+    }
+
+    for(i in lastOneYear) {
+        if(lastOneYear[i].crossed) {
+            firstSkipOneYear = lastOneYear[i].date;
+            break;
+        }
+    }
+
+    firstSkipFiveYears = lastFiveYears[0].date;
 
 }
 
@@ -961,25 +1003,48 @@ function skipToCrossing() {
             stopSpeech();
         }
 
-        for(i = skips.length - 1; i > -1; i-- ) {
-            if(skips[i].date < data[loc].date) {
-                if(skips[i].date >= data[0].date) {
-                    for(j in data) {
-                        if(data[j].date == skips[i].date) {
-                            if(keyLength == 0 || keyLength > 10) {
-                               loc = j;
+        if( whichFirstSkip() != data[loc].date) {
+
+            for(i = skips.length - 1; i > -1; i-- ) {
+                if(skips[i].date < data[loc].date) {
+                    if(skips[i].date >= data[0].date) {
+                        for(j in data) {
+                            if(data[j].date == skips[i].date) {
+                                if(keyLength == 0 || keyLength > 10) {
+                                   loc = j;
+                                }
+                                keyLength++;
                             }
-                            keyLength++;
                         }
                     }
+                    break;
                 }
-                break;
             }
+            earcon.play();
+            playCrossDirection();
         }
-        earcon.play();
-        playCrossDirection();
         
     }
+}
+
+function whichFirstSkip() {
+
+    var skip;
+
+    if (timerange == "onemonth") {
+        skip = firstSkipOneMonth;
+    } else if (timerange == "threemonths") {
+        skip = firstSkipThreeMonths;
+    } else if (timerange == "sixmonths") {
+        skip = firstSkipSixMonths;
+    } else if (timerange == "oneyear") {
+        skip = firstSkipOneYear;
+    } else if (timerange == "fiveyears") {
+        skip = firstSkipFiveYears;
+    }
+
+    return skip;
+
 }
 
 function playCrossDirection() {
