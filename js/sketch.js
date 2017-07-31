@@ -821,7 +821,8 @@ function checkLeftRight() {
     if(loc == 0 && (key == 'g' || key == 'G') && !modalOpen) {
         textToSpeech.speak("Beginning");
     }
-    else if((key == 'h' || key == 'H') && loc == data.length - 1 && !modalOpen) {
+    
+    if((key == 'h' || key == 'H') && loc == data.length - 1 && !modalOpen) {
         textToSpeech.speak("End");
     }
 
@@ -931,23 +932,27 @@ function skipToCrossing() {
             stopSpeech();
         }
 
-        for(i = 0; i < skips.length; i++ ) {
-            if(skips[i].date > data[loc].date) {
-                if(skips[i].date <= data[data.length-1].date) {
-                    for(j in data) {
-                        if(data[j].date == skips[i].date) {
-                            if(keyLength == 0 || keyLength > 10) {
-                               loc = j;
+        if(skips[skips.length-1].date != data[loc].date) {
+
+            for(i = 0; i < skips.length; i++ ) {
+                if(skips[i].date > data[loc].date) {
+                    if(skips[i].date <= data[data.length-1].date) {
+                        for(j in data) {
+                            if(data[j].date == skips[i].date) {
+                                if(keyLength == 0 || keyLength > 10) {
+                                   loc = j;
+                                }
+                                keyLength++;
                             }
-                            keyLength++;
                         }
                     }
+                    break;
                 }
-                break;
             }
+            earcon.play();
+            playCrossDirection();
+
         }
-        earcon.play();
-        playCrossDirection();
 
     } else if (key == 'l' || key == 'L'  && !modalOpen && $("#input").is(":focus") == false) {
         //backward
@@ -973,6 +978,7 @@ function skipToCrossing() {
         }
         earcon.play();
         playCrossDirection();
+        
     }
 }
 
