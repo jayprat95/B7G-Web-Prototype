@@ -1260,7 +1260,14 @@ function drawXAxis(i, xPos){
         fill(255);
         textFont(rubikFont);
         textSize(fontsize);
-        textS(data[i].date.getDate(), xPos, graphHeight+40,letterSpacingMonth);
+        if($( window ).width() < 650) {
+            if(data[i].date.getDate() % 2 == 0) {
+                textS(data[i].date.getDate(), xPos, graphHeight+40,letterSpacingMonth);
+            }
+        } else {
+            textS(data[i].date.getDate(), xPos, graphHeight+40,letterSpacingMonth);
+        }
+        
     }
 
     if(data[i].newmonth) {
@@ -1285,6 +1292,16 @@ function drawXAxis(i, xPos){
             }
         } else if (timerange == "onemonth"){
             textS(monthsAbbv[data[i].date.getMonth()], xPos, graphHeight+60,letterSpacingMonth);
+            strokeWeight(1);
+            stroke(255);
+            line(xPos, graphHeight+6, xPos, graphHeight+17);
+        } else if (timerange == "oneyear" && $( window ).width() < 650){
+            if(data[i].date.getMonth() == 0 || data[i].date.getMonth() == 2 || data[i].date.getMonth() == 4 || data[i].date.getMonth() == 6 || data[i].date.getMonth() == 8 || data[i].date.getMonth() == 10) {
+                textS(monthsAbbv[data[i].date.getMonth()], xPos, graphHeight+40,letterSpacingMonth);
+            }
+            if(data[i].date.getMonth() == 0) {
+                textS(data[i].date.getFullYear(), xPos, graphHeight+60,letterSpacingYear);
+            }
             strokeWeight(1);
             stroke(255);
             line(xPos, graphHeight+6, xPos, graphHeight+17);

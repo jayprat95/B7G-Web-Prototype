@@ -127,44 +127,6 @@
     }
 }
 
-@media only screen and (max-width : 570px) {
-
-    .linebreak4{
-        width: 100%;
-    }
-
-    #input {
-        width: 100%;
-        margin-right: 0;
-    }
-
-    #submit {
-        width: 100%;
-        margin-bottom: 10px;
-    }
-
-    #appname {
-        padding-top: 10px;
-        padding-bottom: 10px;
-        margin: 0;
-        text-align: center;
-        margin-right: -35px;
-    }
-
-    .nameHeader {
-        justify-content: center;
-    }
-
-    .nameHeader img {
-        position: absolute;
-        width: 25px;
-        margin-left: -35px;
-        margin-top: -3px;
-    }
-
-}
-
-
 @media only screen and (min-width : 590px) {
 
     /* Ticker Details Row */
@@ -234,6 +196,69 @@
 
 }
 
+@media only screen and (max-width : 589.5px) {
+    .linebreak4{
+        width: 100%;
+    }
+
+    #appname {
+        padding-top: 10px;
+        padding-bottom: 10px;
+        margin: 0;
+        text-align: center;
+        margin-right: -35px;
+    }
+
+    .nameHeader {
+        justify-content: center;
+    }
+
+    .nameHeader img {
+        position: absolute;
+        width: 25px;
+        margin-left: -35px;
+        margin-top: -3px;
+    }
+
+    #input {
+        width: 100%;
+        margin-right: 0;
+    }
+
+    #submit {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    .sightedValues {
+        flex-direction: column !important;
+        padding-top: 10px !important;
+        padding-bottom: 10px !important;
+    }
+
+    #curr-date{
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+    }
+
+    #curr-percent{
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+    }
+
+    #curr-price{
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        margin-bottom: 5px;
+    }
+
+    #curr-sma{
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        margin-bottom: 5px;
+    }
+}
+
 @media only screen and (min-width : 650px) {
 
     /* Ticker Name Row */
@@ -266,7 +291,6 @@
 
     .changeDateRange .button {
         margin-right: 10px;
-        /*width: calc(19% - 10px);*/
     }
 
     #submit {
@@ -274,7 +298,7 @@
     }
 
     #input {
-        width: calc((100% - 40px) / 5 * 2);
+        width: calc((100% - 20px) / 5 * 2);
         margin-right: 10px;
     }
 
@@ -322,13 +346,7 @@
 
 @media only screen and (max-width : 842px) {
 
-    .sightedValues {
-        flex-direction: column !important;
-        padding-top: 10px !important;
-        padding-bottom: 10px !important;
-    }
-
-    .val {
+/*    .val {
         text-align: center;
     }
 
@@ -350,12 +368,7 @@
 
     #curr-sma{
         flex: 1;
-    }
-
-    #curr-extra {
-        display: none;
-        padding: 0;
-    }
+    }*/
 
 
 }
@@ -365,7 +378,6 @@
     /* Sighted Values Row */
 
     .sightedValues {
-/*        flex-direction: column !important;*/
         padding-top: 10px !important;
         padding-bottom: 10px !important;
     }
@@ -373,31 +385,30 @@
     .val {
         padding-top: 2px;
         padding-bottom: 2px;
+        flex: 2;
+        text-align: center;
     }
 
     #curr-label{
-        flex: 1;
+        display: none;
     }
 
     #curr-date{
-        flex: 2;
+        padding-left: 75px;
+        margin-bottom: 5px;
     }
 
     #curr-percent{
-        flex: 2;
+        padding-right: 75px;
+        margin-bottom: 5px;
     }
 
     #curr-price{
-        flex: 2;
+        padding-left: 75px;
     }
 
     #curr-sma{
-        flex: 2;
-    }
-
-    #curr-extra {
-        flex: 1;
-        display: flex;
+        padding-right: 75px;
     }
 
     .linebreak3{
