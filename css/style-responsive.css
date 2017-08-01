@@ -1,26 +1,13 @@
 
-/* Custom, iPhone Retina */ 
 @media only screen and (min-width : 320px) {
 
+    /* Ticker Name Row */
+
     #tickerName {
         min-width: 100%;
     }
 
-    #currentGraph {
-        min-width: 100%;
-    }
-
-    .changeDateRange {
-        display: inline-block;
-        display: flex;
-        flex-direction: column;
-        flex-wrap: wrap;
-    }
-
-    .changeDateRange .button {
-        margin-bottom: 5px;
-        margin-right: 0;
-    }
+    /* Ticker Details Row */
 
     #current-price {
         flex: 2;
@@ -50,31 +37,45 @@
     .linebreak2{
         width: 100%;
     }
+
+    /* High Low Row */
+
+    #locallow {
+        margin-top: 8px;
+    }
+
+    /* Change Date Range Row */
+
+    .changeDateRange {
+        display: inline-block;
+        display: flex;
+        flex-direction: column;
+        flex-wrap: wrap;
+    }
+
+    .changeDateRange .button {
+        margin-bottom: 5px;
+        margin-right: 0;
+    }
 }
 
+@media only screen and (max-width : 420px) {
 
-/* Extra Small Devices, Phones */ 
+    #input {
+        margin-right: 0;
+    }
+
+}
+
 @media only screen and (min-width : 480px) {
 
+    /* Ticker Name Row */
+
     #tickerName {
         min-width: 100%;
     }
 
-    #currentGraph {
-        min-width: 100%;
-    }
-
-    .changeDateRange {
-        display: inline-block;
-        display: flex;
-        flex-direction: column;
-        flex-wrap: wrap;
-    }
-
-    .changeDateRange .button {
-        margin-bottom: 5px;
-        margin-right: 0;
-    }
+    /* Ticker Details Row */
 
     #current-price {
         flex: 2;
@@ -104,9 +105,68 @@
     .linebreak2{
         width: 100%;
     }
+
+    /* High Low Row */
+
+    #locallow {
+        margin-top: 8px;
+    }
+
+    /* Change Date Range Row */
+
+    .changeDateRange {
+        display: inline-block;
+        display: flex;
+        flex-direction: column;
+        flex-wrap: wrap;
+    }
+
+    .changeDateRange .button {
+        margin-bottom: 5px;
+        margin-right: 0;
+    }
 }
 
-@media only screen and (min-width : 500px) {
+@media only screen and (min-width : 590px) {
+
+    /* Ticker Details Row */
+
+    #current-price {
+        flex: 2;
+        margin-left: 0;
+    }
+    
+    #percent-change {
+        flex: 3;
+        margin-left: 0;
+        margin-top: 8px;
+    }
+    
+    #point-change {
+        flex: 2;
+        margin-left: 0;
+    }
+    
+    #date-range {
+        flex: 3;
+        margin-left: 0;
+    }
+
+    .linebreak{
+        width: 100%;
+    }
+
+    .linebreak2{
+        width: 100%;
+    }
+
+    /* High Low Row */
+
+    #locallow {
+        margin-top: 8px;
+    }
+
+    /* Change Date Range Row */
 
     .changeDateRange {
         justify-content: flex-start;
@@ -123,51 +183,103 @@
         flex: 1;
     }
 
-    #current-price {
-        flex: 2;
-        margin-left: 0;
-    }
-    
-    #percent-change {
-        flex: 3;
-        margin-left: 0;
-        margin-top: 8px;
-    }
-    
-    #point-change {
-        flex: 2;
-        margin-left: 0;
-    }
-    
-    #date-range {
-        flex: 3;
-        margin-left: 0;
+    #submit {
+        width: calc((100% - 4px) / 5);
     }
 
-    .linebreak{
-        width: 100%;
+    #input {
+        width: calc((100% - 4px) / 5 * 2);
+        margin-right: 1px;
     }
 
-    .linebreak2{
-        width: 100%;
-    }
+
 
 }
 
-/* Small Devices, Other */
+@media only screen and (max-width : 589.5px) {
+    .linebreak4{
+        width: 100%;
+    }
+
+    #appname {
+        padding-top: 10px;
+        padding-bottom: 10px;
+        margin: 0;
+        text-align: center;
+        margin-right: -35px;
+    }
+
+    .nameHeader {
+        justify-content: center;
+    }
+
+    .nameHeader img {
+        position: absolute;
+        width: 25px;
+        margin-left: -35px;
+        margin-top: -3px;
+    }
+
+    #input {
+        width: 100%;
+        margin-right: 0;
+    }
+
+    #submit {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    .sightedValues {
+        flex-direction: column !important;
+        padding-top: 10px !important;
+        padding-bottom: 10px !important;
+    }
+
+    #curr-date{
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+    }
+
+    #curr-percent{
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+    }
+
+    #curr-price{
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        margin-bottom: 5px;
+    }
+
+    #curr-sma{
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        margin-bottom: 5px;
+    }
+}
+
 @media only screen and (min-width : 650px) {
+
+    /* Ticker Name Row */
 
     #tickerName {
         min-width: 0%;
     }
 
-    #currentGraph {
-        min-width: 0%;
-    }
+    /* Ticker Details Row */
 
     #percent-change {
         margin-top: 0px;
     }
+
+    /* High Low Row */
+
+    #locallow {
+        margin-top: 0px;
+    }
+
+    /* Change Date Range Row */
 
     .changeDateRange {
         justify-content: flex-start;
@@ -181,6 +293,15 @@
         margin-right: 10px;
     }
 
+    #submit {
+        width: calc((100% - 40px) / 5);
+    }
+
+    #input {
+        width: calc((100% - 20px) / 5 * 2);
+        margin-right: 10px;
+    }
+
     .linebreak2{
         width: 0%;
     }
@@ -188,35 +309,75 @@
 
 }
 
-/* Small Devices, Tablets */
-@media only screen and (min-width : 768px) {
+@media only screen and (max-width : 768px) {
 
-    #tickerName {
-        min-width: 0;
-    }
-
-    #currentGraph {
-        min-width: 0;
-    }
-
-
-}
-
-/*@media only screen and (max-width : 839px) {
+    /* Ticker Name Row */
 
     #tickerName{
         min-width: 100%;
     }
 
     #toggle{
-        margin-top: 10px;
+        margin-top: 15px;
+        padding-top: 5px;
+        padding-bottom: 5px;
+    }
+
+    #indicator-label { 
+        text-align: left;
     }
 }
-*/
-@media only screen and (max-width : 915px) {
+
+@media only screen and (min-width : 768px) {
+
+    /* Ticker Name Row */
+
+    #tickerName {
+        min-width: 0;
+    }
+
+    #toggle{
+        margin-top: 0;
+        padding-top: 0;
+        padding-bottom: 0;
+    }
+
+}
+
+@media only screen and (max-width : 842px) {
+
+/*    .val {
+        text-align: center;
+    }
+
+    #curr-label{
+        display: none;
+    }
+
+    #curr-date{
+        flex: 1;
+    }
+
+    #curr-percent{
+        flex: 1;
+    }
+
+    #curr-price{
+        flex: 1;
+    }
+
+    #curr-sma{
+        flex: 1;
+    }*/
+
+
+}
+
+@media only screen and (max-width : 930px) {
+
+    /* Sighted Values Row */
 
     .sightedValues {
-        flex-direction: column !important;
         padding-top: 10px !important;
         padding-bottom: 10px !important;
     }
@@ -224,15 +385,46 @@
     .val {
         padding-top: 2px;
         padding-bottom: 2px;
+        flex: 2;
+        text-align: center;
+    }
+
+    #curr-label{
+        display: none;
+    }
+
+    #curr-date{
+        padding-left: 75px;
+        margin-bottom: 5px;
+    }
+
+    #curr-percent{
+        padding-right: 75px;
+        margin-bottom: 5px;
+    }
+
+    #curr-price{
+        padding-left: 75px;
+    }
+
+    #curr-sma{
+        padding-right: 75px;
+    }
+
+    .linebreak3{
+        width: 100%;
     }
 }
 
-/* Medium Devices, Desktops */
-@media only screen and (max-width : 1065px) {
+@media only screen and (max-width : 1200px) {
+
+    /* Change Date Range Row */
 
     .changeDateRange {
         justify-content: flex-start;
     }
+
+    /* Ticker Details Row */
 
     #current-price {
         flex: 2;
@@ -257,16 +449,21 @@
         width: 100%;
     }
 
-    #tickerName{
-        min-width: 100%;
+    /* High Low Row */
+
+    #localhigh {
+      flex: 2;
     }
 
-    #toggle{
-        margin-top: 10px;
+    #locallow {
+      flex: 3;
+      margin-left: 0px;
     }
 }
 
-@media only screen and (min-width : 1065px) {
+@media only screen and (min-width : 1200px) {
+
+    /* Ticker Details Row */
     
     #current-price {
         flex: 1;
@@ -293,9 +490,15 @@
         width: 0%;
     }
 
-}
+    /* High Low Row */
 
-/* Large Devices, Wide Screens */
-@media only screen and (min-width : 1200px) {
+    #localhigh {
+      flex: 1;
+    }
+
+    #locallow {
+      flex: 4;
+      margin-left: 4px;
+    }
 
 }

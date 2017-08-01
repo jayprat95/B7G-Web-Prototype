@@ -3,7 +3,7 @@
 var osc, fft, dataset, table, monthPlaying, localHigh, localLow, localMagHigh, localMagLow, absLow, absHigh, localSMAHigh, localSMALow;
 
 var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-var monthsAbbv = ["Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec"];
+var monthsAbbv = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
 
 var loc = 0;
 var data = [];
@@ -35,7 +35,7 @@ var dataReceived = false;
 
 var rate = 1.5;
 
-var canvasHeight = 400;
+var canvasHeight = 350;
 var graphHeight = canvasHeight - yshift - ystart;
 var rightpadding = 73;
 
@@ -58,6 +58,18 @@ var mappedLow;
 var mappedHigh;
 
 var fontsize = 11;
+var rubikFont;
+var letterSpacingMonth = 10;
+var letterSpacingYaxis = 9;
+var letterSpacingYear = 8;
+
+var modalOpen = false;
+
+var firstSkipOneMonth;
+var firstSkipThreeMonths;
+var firstSkipSixMonths;
+var firstSkipOneYear;
+var firstSkipFiveYears;
 
 // COLORS ---------------------------------------------
 
@@ -81,89 +93,88 @@ var tickerCompany = "Apple";
 var fromDate = new Date(new Date().setFullYear(new Date().getFullYear() - 1));
 var toDate = new Date();
 var addtl = "&ticker=" + ticker + "&date.gte=" + toJSONLocal(fromDate) + "&date.lte=" + toJSONLocal(toDate);
-
 var query = quandlQ + addtl;
 
 // TIMBRE SOUNDS ---------------------------------------------
 
-var piano = new Wad({
+var below = new Wad({
     source: 'sine',
     env: { attack: 0.05, decay: 0.005, sustain: 1, hold: .01, release: 0.005 },
-    filter: { type: 'lowpass', frequency: 600, q: 7, env: { attack: .07,frequency: 1600 }
+    tuna   : {
+        Overdrive : {
+            outputGain: 1,         //0 to 1+
+            drive: 1,              //0 to 1
+            curveAmount: 0.1,          //0 to 1
+            algorithmIndex: 2,       //0 to 5, selects one of our drive algorithms
+            bypass: 0
+        }
     }
 });
 
-var bass = new Wad({
+var above = new Wad({
     source: 'triangle',
     env: { attack: 0.05, decay: 0.02, sustain: 1, hold: .01, release: 0.02 },
+    tuna   : {
+        Overdrive : {
+            outputGain: 0,         //0 to 1+
+            drive: 0.2,              //0 to 1
+            curveAmount: 0.9,          //0 to 1
+            algorithmIndex: 0,       //0 to 5, selects one of our drive algorithms
+            bypass: 0
+        }
+    }
 });
 
-
-
-
-var pianoLong = new Wad({
+var belowLong = new Wad({
     source: 'square',
     env: { attack: 0.05, decay: 0.0, sustain: 1, hold: 4, release: 0.0 },
     filter: { type: 'lowpass', frequency: 600, q: 7, env: { attack: .07,frequency: 1600 }
     }
 });
 
-var bassLong = new Wad({
+var aboveLong = new Wad({
     source: 'triangle',
     env: { attack: 0.05, decay: 0.0, sustain: 1, hold: 4, release: 0.0},
 });
-
 
 //DOM LISTENERS ---------------------------------------------
 
 $(document).ready(function() {
 
-    showModal($('#modal'));
-
     $('#input').keydown(function(e) {
-    if (e.keyCode == 13) {
-        changeTicker(); 
-    }
-});
-
+        if (e.keyCode == 13) {
+            changeTicker(); 
+            $(this).blur(); 
+        }
+    });
 
     $("#onemonth").mousedown(function() {
         timerange = "onemonth";
-        data = setData();
-        deselectAll();
-        $(this).addClass('buttonSelected');
+        changeData("#onemonth");
         $("#onemonth").attr('aria-label', 'Change to One Month, Selected');
     });
 
     $("#threemonths").mousedown(function() {
         timerange = "threemonths";
-        data = setData();
-        deselectAll();
-        $(this).addClass('buttonSelected');
+        changeData("#threemonths");
         $("#threemonths").attr('aria-label', 'Change to Three Months, Selected');
     });
 
     $("#sixmonths").mousedown(function() {
         timerange = "sixmonths";
-        data = setData();
-        deselectAll();
-        $(this).addClass('buttonSelected');
+        changeData("#sixmonths");
         $("#sixmonths").attr('aria-label', 'Change to Six Months, Selected');
     });
 
     $("#oneyear").mousedown(function() {
         timerange = "oneyear";
-        data = setData();
-        deselectAll();
-        $(this).addClass('buttonSelected');
+        changeData("#oneyear");
         $("#oneyear").attr('aria-label', 'Change to One Year, Selected');
     });
 
     $("#fiveyears").mousedown(function() {
         timerange = "fiveyears";
-        data = setData();
-        deselectAll();
-        $(this).addClass('buttonSelected');
+        changeData("#fiveyears");
         $("#fiveyears").attr('aria-label', 'Change to Five Years, Selected');
     });
 
@@ -179,62 +190,64 @@ $(document).ready(function() {
 
     $("#graphView").mousedown(function() {
 
-        //TODO change variables 
-        var on = "Turn Off Indicator";
-        var off = "Turn On Indicator"
+        var on = "Turn Off 50 Day Simple Moving Average";
+        var off = "Turn On 50 Day Simple Moving Average"
 
         if ($(this).attr("value") == on) {
             $(this).attr("aria-label", off);
             $(this).attr("value", off);
             currentGraph = 2;
-            $("#tickerName").text("Company: " + tickerCompany + ", (Closing Values)");
+            $("#tickerName").text("Company: " + tickerCompany + " (" +ticker+ ")"); //+ ", (Closing Values)"
             $('#checkbox').attr('checked', false);
         } else if ($(this).attr("value") == off) {
             $(this).attr("aria-label", on);
             $(this).attr("value", on);
             currentGraph = 1;
-            $("#tickerName").text("Company: " + tickerCompany + ", (Closing Values with 50 Day Simple Moving Average)");
+            $("#tickerName").text("Company: " + tickerCompany + " (" +ticker+ ")"); //+ ", (Closing Values with 50 Day Simple Moving Average)"
             $('#checkbox').attr('checked', true);
         }
 
     });
 
     $(".switch").mousedown(function() {
-        console.log("clicked");
 
-        //TODO change variables 
-        var on = "Turn Off Indicator";
-        var off = "Turn On Indicator"
+        var on = "Turn Off 50 Day Simple Moving Average";
+        var off = "Turn On 50 Day Simple Moving Average"
 
         if ($("#graphView").attr("value") == on) {
             $("#graphView").attr("aria-label", off);
             $("#graphView").attr("value", off);
             currentGraph = 2;
-            $("#tickerName").text("Company: " + tickerCompany + ", (Closing Values)");
+            $("#tickerName").text("Company: " + tickerCompany + " (" +ticker+ ")"); //+ ", (Closing Values)"
         } else if ($("#graphView").attr("value") == off) {
             $("#graphView").attr("aria-label", on);
             $("#graphView").attr("value", on);
             currentGraph = 1;
-            $("#tickerName").text("Company: " + tickerCompany + ", (Closing Values with Indicator)");
+            $("#tickerName").text("Company: " + tickerCompany + " (" +ticker+ ")"); //+ ", (Closing Values with Indicator)"
         }
 
     });
+
+    $('.about-modal').modaal({
+        before_open: function() {
+            modalOpen = true;
+        },
+        after_close: function() {
+            modalOpen = false;
+        },
+        animation_speed: 5
+    });
+
+    $('.help-modal').modaal({
+        before_open: function() {
+            modalOpen = true;
+        },
+        after_close: function() {
+            modalOpen = false;
+        },
+        animation_speed: 5
+    });
 });
-
-function deselectAll() {
-    $("#onemonth").removeClass('buttonSelected');
-    $("#threemonths").removeClass('buttonSelected');
-    $("#sixmonths").removeClass('buttonSelected');
-    $("#oneyear").removeClass('buttonSelected');
-    $("#fiveyears").removeClass('buttonSelected');
-
-    $("#onemonth").attr('aria-label', 'Change to One Month');
-    $("#threemonths").attr('aria-label', 'Change to Three Months');
-    $("#sixmonths").attr('aria-label', 'Change to Six Months');
-    $("#oneyear").attr('aria-label', 'Change to One Year');
-    $("#fiveyears").attr('aria-label', 'Change to Five Years');
-
-}
 
 //DAY OBJECT ---------------------------------------------
 
@@ -256,10 +269,9 @@ class Day {
     }
 }
 
-//GET DATA ---------------------------------------------
+//GET & SET DATA ---------------------------------------------
 
 function setData() {
-
     var dataset;
     //TODO: add notification so users know that the location changed
     if (timerange == "onemonth") {
@@ -299,6 +311,7 @@ function setData() {
         absLow = localSMALow;
     }
 
+    setHighLow();
     return dataset;
 }
 
@@ -447,13 +460,93 @@ function afterData(thedata) {
 
     data = setData();
 
-
-    //
     if (data != undefined && data[0] != undefined) {
         setTickerDetails();
     } else {
         setTimeout(function() { setTickerDetails(); }, 100);
     }
+
+    setFirstSkip();
+
+}
+
+function setFirstSkip(){
+
+    for(i in lastMonth) {
+        if(lastMonth[i].crossed) {
+            firstSkipOneMonth = lastMonth[i].date;
+            break;
+        }
+    }
+
+    for(i in lastThreeMonths) {
+        if(lastThreeMonths[i].crossed) {
+            firstSkipThreeMonths = lastThreeMonths[i].date;
+            break;
+        }
+    }
+
+    for(i in lastSixMonths) {
+        if(lastSixMonths[i].crossed) {
+            firstSkipSixMonths = lastSixMonths[i].date;
+            break;
+        }
+    }
+
+    for(i in lastOneYear) {
+        if(lastOneYear[i].crossed) {
+            firstSkipOneYear = lastOneYear[i].date;
+            break;
+        }
+    }
+
+    for(i in lastFiveYears) {
+        if(lastFiveYears[i].crossed) {
+            firstSkipFiveYears = lastFiveYears[i].date;
+            break;
+        }
+    }
+
+}
+
+function setHighLow() {
+    $("#localhigh").text("High of Current View: " + absHigh);
+    $("#locallow").text("Low of Current View: " + absLow);
+}
+
+function changeData(button) {
+    var olddata = data;
+    data = setData();
+    switchLoc(olddata, data);
+    deselectAll();
+    $(button).addClass('buttonSelected');
+}
+
+function switchLoc(olddata, newdata) {
+    
+    var currentDate = olddata[loc].date;
+    var newDate = newdata[0].date;
+
+    for(i in newdata) {
+        if(newdata[i].date > newDate && newdata[i].date <= currentDate) {
+            newDate = newdata[i].date;
+            loc = i;
+        } 
+    }
+}
+
+function deselectAll() {
+    $("#onemonth").removeClass('buttonSelected');
+    $("#threemonths").removeClass('buttonSelected');
+    $("#sixmonths").removeClass('buttonSelected');
+    $("#oneyear").removeClass('buttonSelected');
+    $("#fiveyears").removeClass('buttonSelected');
+
+    $("#onemonth").attr('aria-label', 'Change to One Month');
+    $("#threemonths").attr('aria-label', 'Change to Three Months');
+    $("#sixmonths").attr('aria-label', 'Change to Six Months');
+    $("#oneyear").attr('aria-label', 'Change to One Year');
+    $("#fiveyears").attr('aria-label', 'Change to Five Years');
 
 }
 
@@ -463,6 +556,7 @@ function preload() {
     table = loadTable("assets/tickers.csv", "csv", "header");
     getData();
     earcon = loadSound('assets/earcon.mp3');
+    rubikFont = loadFont('assets/Rubik-Light.ttf');
 }
 
 function setup() {
@@ -480,7 +574,7 @@ function setup() {
     dotColor = color(21, 102, 177);
 
     $('#submit').attr('disabled', true);
-    $("#tickerName").text("Company: " + tickerCompany + ", (Closing Values with 50 Day Simple Moving Average)");
+    $("#tickerName").text("Company: " + tickerCompany + " (" +ticker+ ")"); //+ ", (Closing Values with 50 Day Simple Moving Average)"
     $("#oneyear").addClass('buttonSelected');
 
     var canvas = createCanvas(windowWidth - rightpadding, canvasHeight);
@@ -517,9 +611,11 @@ function draw() {
     }
 
     if (data[loc]) {
+        var percentDiff = ((data[loc].close - data[loc].sma50)/data[loc].sma50).toFixed(4); 
         $("#curr-date").text("Date: " + data[loc]['dateStr']);
+        $("#curr-percent").text("% Difference: " + percentDiff);
         $("#curr-price").text("Closing Price: " + data[loc]['close']);
-        $("#curr-sma").text("SMA50: " + data[loc]['sma50']);
+        $("#curr-sma").text("50 Day SMA: " + data[loc]['sma50']);
     }
 
     prevLoc = loc;
@@ -576,15 +672,15 @@ function playMag(note, abovebelow, long) {
 
     if(long) {
         if (abovebelow == 1) {
-            piano.play({ pitch: note });
+            below.play({ pitch: note });
         } else if (abovebelow == -1) {
-            bass.play({ pitch: note });
+            above.play({ pitch: note });
         }
     } else {
         if (abovebelow == 1) {
-            piano.play({ pitch: note });
+            below.play({ pitch: note });
         } else if (abovebelow == -1) {
-            bass.play({ pitch: note });
+            above.play({ pitch: note });
         }
     }
     
@@ -593,9 +689,6 @@ function playMag(note, abovebelow, long) {
 function playValue() {
 
     if (key == ' ') {
-
-
-        //TODO check this logic for double spacebar 
 
         if (detailsPlaying == true) {
 
@@ -616,7 +709,7 @@ function playValue() {
             percentChange *= 100; 
             percentChange = parseFloat((percentChange).toFixed(4));
 
-            textToSpeech.speak(data[loc].dateStr + " , percent change: " + percentChange + " , Closing price: " + data[loc].close + " , Fifty Day Simple Moving Average: " + data[loc].sma50);
+            textToSpeech.speak(data[loc].dateStr + " , Percent Difference: " + percentChange + " , Closing Price: " + data[loc].close + " , Fifty Day Simple Moving Average: " + data[loc].sma50);
         }
     }
 }
@@ -669,9 +762,9 @@ function changeTicker() {
         tickerCompany = row.getString("Description");
 
         if(currentGraph == 2) {
-            $("#tickerName").text("Company: " + tickerCompany + ", (Closing Values)");
+            $("#tickerName").text("Company: " + tickerCompany + " (" +ticker+ ")"); //+ ", (Closing Values)"
         } else {
-            $("#tickerName").text("Company: " + tickerCompany + ", (Closing Values with 50 Day Simple Moving Average)");
+            $("#tickerName").text("Company: " + tickerCompany + " (" +ticker+ ")"); //+ ", (Closing Values with 50 Day Simple Moving Average)"
         }
 
         $(".tickerfield").val("");
@@ -759,7 +852,6 @@ function toJSONLocal(date) {
 // RESET ---------------------------------------------
 
 function resetDetails() {
-    // detailsPlaying = false;
     monthPlaying = false;
 }
 
@@ -773,16 +865,15 @@ function checkLeftRight() {
 
     var note = midiToFreq(map(data[loc].magnitude, localMagLow, localMagHigh, lowMagmap, highMagmap));
 
-    if(loc == 0 && (key == 'g' || key == 'G')) {
+    if(loc == 0 && (key == 'g' || key == 'G') && !modalOpen) {
         textToSpeech.speak("Beginning");
     }
-    else if((key == 'h' || key == 'H') && loc == data.length - 1) {
+    
+    if((key == 'h' || key == 'H') && loc == data.length - 1 && !modalOpen) {
         textToSpeech.speak("End");
     }
 
-
-
-    if ((key == 'g' || key == 'G') && loc > 0 && $("#input").is(":focus") == false ) {
+    if ((key == 'g' || key == 'G') && loc > 0 && $("#input").is(":focus") == false  && !modalOpen) {
 
         if (detailsPlaying) {
             stopSpeech();
@@ -812,15 +903,13 @@ function checkLeftRight() {
             textToSpeech.speak("Beginning");
         }
 
-
-    } else if ((key == 'h' || key == 'H') && loc < data.length - 1 && $("#input").is(":focus") == false) {
+    } else if ((key == 'h' || key == 'H') && loc < data.length - 1 && $("#input").is(":focus") == false && !modalOpen) {
 
 
         if (detailsPlaying) {
             stopSpeech();
             detailsPlaying = false; 
         }
-
 
         if (keyLength == 0 || keyLength > 10) {
             loc++;
@@ -843,10 +932,7 @@ function checkLeftRight() {
         if (loc == data.length - 1) {
             textToSpeech.speak("End");
         }
-
-
     }
-
 }
 
 function setToBeg(time) {
@@ -860,7 +946,7 @@ function setToBeg(time) {
 
 function checkBegEnd() {
 
-    if (key == '.') {
+    if (key == '.' && !modalOpen) {
 
         if (detailsPlaying) {
             stopSpeech();
@@ -871,7 +957,7 @@ function checkBegEnd() {
 
         textToSpeech.speak("End" + " "  + data[loc].dateStr);
         
-    } else if (key == ',') {
+    } else if (key == ',' && !modalOpen) {
 
         if (detailsPlaying) {
             stopSpeech();
@@ -886,60 +972,98 @@ function checkBegEnd() {
 
 function skipToCrossing() {
 
-    if (key == '\'') {
+    if (key == ';'  && !modalOpen) {
         //forward
 
         if (detailsPlaying) {
             stopSpeech();
         }
 
-        for(i = 0; i < skips.length; i++ ) {
-            if(skips[i].date > data[loc].date) {
-                if(skips[i].date <= data[data.length-1].date) {
-                    for(j in data) {
-                        if(data[j].date == skips[i].date) {
-                            if(keyLength == 0 || keyLength > 10) {
-                               loc = j;
+        if(skips[skips.length-1].date != data[loc].date) {
+
+            for(i = 0; i < skips.length; i++ ) {
+                if(skips[i].date > data[loc].date) {
+                    if(skips[i].date <= data[data.length-1].date) {
+                        for(j in data) {
+                            if(data[j].date == skips[i].date) {
+                                if(keyLength == 0 || keyLength > 10) {
+                                   loc = j;
+                                }
+                                keyLength++;
                             }
-                            keyLength++;
-                            
                         }
                     }
+                    break;
                 }
-                break;
             }
-        }
-        earcon.play();
+            earcon.play();
+            playCrossDirection();
 
-    } else if (key == ';') {
+        }
+
+    } else if (key == 'l' || key == 'L'  && !modalOpen && $("#input").is(":focus") == false) {
         //backward
 
         if (detailsPlaying) {
             stopSpeech();
         }
 
-        for(i = skips.length - 1; i > -1; i-- ) {
-            if(skips[i].date < data[loc].date) {
-                if(skips[i].date >= data[0].date) {
-                    for(j in data) {
-                        if(data[j].date == skips[i].date) {
-                            if(keyLength == 0 || keyLength > 10) {
-                               loc = j;
+        if( whichFirstSkip() != data[loc].date && !(data[loc].date < whichFirstSkip()) ) {
+
+            for(i = skips.length - 1; i > -1; i-- ) {
+                if(skips[i].date < data[loc].date) {
+                    if(skips[i].date >= data[0].date) {
+                        for(j in data) {
+                            if(data[j].date == skips[i].date) {
+                                if(keyLength == 0 || keyLength > 10) {
+                                   loc = j;
+                                }
+                                keyLength++;
                             }
-                            keyLength++;
                         }
                     }
+                    break;
                 }
-                break;
             }
+            earcon.play();
+            playCrossDirection();
         }
-        earcon.play();
+        
     }
+}
+
+function whichFirstSkip() {
+
+    var skip;
+
+    if (timerange == "onemonth") {
+        skip = firstSkipOneMonth;
+    } else if (timerange == "threemonths") {
+        skip = firstSkipThreeMonths;
+    } else if (timerange == "sixmonths") {
+        skip = firstSkipSixMonths;
+    } else if (timerange == "oneyear") {
+        skip = firstSkipOneYear;
+    } else if (timerange == "fiveyears") {
+        skip = firstSkipFiveYears;
+    }
+
+    return skip;
+
+}
+
+function playCrossDirection() {
+    if(data[loc].overOrUnder == 1) {
+        textToSpeech.speak("below");
+    } else {
+        textToSpeech.speak("above");
+    }
+    
 }
 
 function skipToMonths() {
 
-    if (key == 'p') {
+    if (key == 'p' || key == 'P'  && !modalOpen) {
         //forward
         if (detailsPlaying) {
             stopSpeech();
@@ -962,7 +1086,7 @@ function skipToMonths() {
         }
         playMonth();
 
-    } else if (key == 'o') {
+    } else if (key == 'o' || key == 'O' && !modalOpen) {
         //backward
         if (detailsPlaying) {
             stopSpeech();
@@ -1087,16 +1211,25 @@ function drawYAxis(yaxis) {
     var initialTick = getInitalTick(absLow, units);
 
     for( i = initialTick; i < absHigh; i += units) {
-        //console.log(absHigh);
         strokeWeight(1);
         stroke(255);
         var yPos = map(i, absLow, absHigh, newLow, newHigh);
         line(xshift-6, yPos, xshift+1, yPos);
         textAlign(RIGHT);
         fill(255);
-        textFont("Rubik");
+        textFont(rubikFont);
         textSize(fontsize);
-        text(i, xshift - 15, yPos + 4);
+        textS(i, xshift - 30, yPos + 4, letterSpacingYaxis);
+    }
+}
+
+function textS(te, x, y, spacing) {
+    var t = String(te);
+    var xshift = (t.length * spacing) / 2;
+    var startx = x - xshift +5;
+
+    for(var i = 0; i < t.length; i++ ){
+        text(t[i], startx + i*spacing, y);
     }
 }
 
@@ -1123,6 +1256,18 @@ function drawXAxis(i, xPos){
         stroke(255);
         line(xPos, graphHeight+8, xPos, graphHeight+15);
 
+        textAlign(CENTER);
+        fill(255);
+        textFont(rubikFont);
+        textSize(fontsize);
+        if($( window ).width() < 650) {
+            if(data[i].date.getDate() % 2 == 0) {
+                textS(data[i].date.getDate(), xPos, graphHeight+40,letterSpacingMonth);
+            }
+        } else {
+            textS(data[i].date.getDate(), xPos, graphHeight+40,letterSpacingMonth);
+        }
+        
     }
 
     if(data[i].newmonth) {
@@ -1136,26 +1281,34 @@ function drawXAxis(i, xPos){
 
         textAlign(CENTER);
         fill(255);
-        textFont("Rubik");
+        textFont(rubikFont);
         textSize(fontsize);
         if(timerange == "fiveyears") {
-            if(data[i].date.getMonth() == 0 || data[i].date.getMonth() == 6) {
-                text(monthsAbbv[data[i].date.getMonth()], xPos, graphHeight+40);
-            }
             if(data[i].date.getMonth() == 0) {
-                text(data[i].date.getFullYear(), xPos, graphHeight+60);
+                textS(data[i].date.getFullYear(), xPos, graphHeight+40,letterSpacingYear);
+                strokeWeight(1);
+                stroke(255);
+                line(xPos, graphHeight+6, xPos, graphHeight+17);
             }
-        } else if(timerange == "oneyear") {
+        } else if (timerange == "onemonth"){
+            textS(monthsAbbv[data[i].date.getMonth()], xPos, graphHeight+60,letterSpacingMonth);
+            strokeWeight(1);
+            stroke(255);
+            line(xPos, graphHeight+6, xPos, graphHeight+17);
+        } else if (timerange == "oneyear" && $( window ).width() < 650){
             if(data[i].date.getMonth() == 0 || data[i].date.getMonth() == 2 || data[i].date.getMonth() == 4 || data[i].date.getMonth() == 6 || data[i].date.getMonth() == 8 || data[i].date.getMonth() == 10) {
-                text(monthsAbbv[data[i].date.getMonth()], xPos, graphHeight+40);
+                textS(monthsAbbv[data[i].date.getMonth()], xPos, graphHeight+40,letterSpacingMonth);
             }
             if(data[i].date.getMonth() == 0) {
-                text(data[i].date.getFullYear(), xPos, graphHeight+60);
+                textS(data[i].date.getFullYear(), xPos, graphHeight+60,letterSpacingYear);
             }
+            strokeWeight(1);
+            stroke(255);
+            line(xPos, graphHeight+6, xPos, graphHeight+17);
         } else {
-            text(monthsAbbv[data[i].date.getMonth()], xPos, graphHeight+40);
+            textS(monthsAbbv[data[i].date.getMonth()], xPos, graphHeight+40,letterSpacingMonth);
             if(data[i].date.getMonth() == 0) {
-                text(data[i].date.getFullYear(), xPos, graphHeight+60);
+                textS(data[i].date.getFullYear(), xPos, graphHeight+60,letterSpacingYear);
             }
         }
     }
@@ -1194,8 +1347,8 @@ function drawVisGraphA() {
         noStroke();
         vertex(width, 0);
         fill(darkblue);
-        stroke(lightblue);
-        strokeWeight(2);
+        stroke(white);
+        strokeWeight(1);
         endShape(CLOSE);
 
         drawAxis();
@@ -1215,16 +1368,6 @@ function drawVisGraphA() {
 }
 
 function drawVisGraphB() {
-
-    // strokeWeight(1);   
-
-    // stroke(0,255,0);
-    // line(0, newLow, width, newLow);
-    // line(0, newHigh, width, newHigh);
-
-    // stroke(0,255,255);
-    // line(0, mappedLow, width, mappedLow);
-    // line(0, mappedHigh, width, mappedHigh);
 
     setGradient(xshift, ystart, width, graphHeight, gradhigh, gradlow, "Y_AXIS");
 
@@ -1268,8 +1411,8 @@ function drawVisGraphB() {
         noStroke();
         vertex(width, 0);
         fill(darkblue);
-        stroke(lightblue);
-        strokeWeight(2);
+        stroke(white);
+        strokeWeight(1);
         endShape(CLOSE);
 
         lastY = map(data[0].close, absLow, absHigh, newLow, newHigh);
@@ -1283,7 +1426,7 @@ function drawVisGraphB() {
 
                 if (data[i].sma50 != 0 || data[i - 1].sma50 != 0) {
                     strokeWeight(2);
-                    stroke(white);
+                    stroke(lightblue);
                     line(lastxPos, lastS, xPos, map(data[i].sma50, absLow, absHigh, newLow, newHigh));
                 }
 
@@ -1311,6 +1454,8 @@ function drawVisGraphB() {
     }
 
 }
+
+//DRAWING HELPERS ---------------------------------------------
 
 function setGradient(x, y, w, h, c1, c2, axis) {
 
@@ -1341,7 +1486,7 @@ function dottedLine(x, ylownum, yhighnum, segLeng, spaceLeng) {
 }
 
 function drawTriangle(loc) {
-    fill(borderblue);
+    fill(gradlow);
     noStroke();
     triangle(loc-10, canvasHeight, loc, canvasHeight-12, loc+10,canvasHeight);
 
