@@ -32,7 +32,7 @@
     padding-left: 75px;
     padding-right: 75px;
     padding-top: 10px;
-    padding-bottom: 15px;
+    padding-bottom: 10px;
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
@@ -89,8 +89,9 @@
 
   .nameHeader img {
     position: absolute;
-    width: 25px;
+    width: 27px;
     margin-left: -45px;
+    margin-top: -4px;
   }
 
   .nameHeader .button {
@@ -104,7 +105,7 @@
   #appname{
     font-weight: 400;
     flex: 2;
-    margin-right: 40px;
+    /*margin-right: 40px;*/
   }
 
 /*  Change Company Row */
@@ -150,7 +151,7 @@
 
   #submit {
       letter-spacing: 1px;
-      flex: 1;
+      width: calc((100% - 30px) / 5);
   }
 
   .tickerfield {
@@ -197,7 +198,7 @@
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: space-around;
-    padding-top: 0 !important;
+    padding-top: 3px !important;
   }
 
   .detail {
@@ -218,15 +219,15 @@
   }
 
   .highlowrow {
-    padding-top: 4 !important;
-    padding-bottom: 20px !important;
+    padding-bottom: 15px !important;
   }
 
 /* Change Date Range Row */
 
   .changeDateRange .button {
-      margin-right: 10px;
+      /*margin-right: 10px;*/
       letter-spacing: 1px;
+      /*width:calc(100% - 80px);*/
   }
 
   #onemonth{
@@ -277,7 +278,6 @@
   .linebreak3{
         width: 0%;
     }
-
 
 /* Help Row */
 

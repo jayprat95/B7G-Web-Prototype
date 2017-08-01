@@ -59,6 +59,14 @@
     }
 }
 
+@media only screen and (max-width : 420px) {
+
+    #input {
+        margin-right: 0;
+    }
+
+}
+
 @media only screen and (min-width : 480px) {
 
     /* Ticker Name Row */
@@ -119,8 +127,45 @@
     }
 }
 
-@media only screen and (min-width : 590px) {
+@media only screen and (max-width : 570px) {
 
+    .linebreak4{
+        width: 100%;
+    }
+
+    #input {
+        width: 100%;
+        margin-right: 0;
+    }
+
+    #submit {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    #appname {
+        padding-top: 10px;
+        padding-bottom: 10px;
+        margin: 0;
+        text-align: center;
+        margin-right: -35px;
+    }
+
+    .nameHeader {
+        justify-content: center;
+    }
+
+    .nameHeader img {
+        position: absolute;
+        width: 25px;
+        margin-left: -35px;
+        margin-top: -3px;
+    }
+
+}
+
+
+@media only screen and (min-width : 590px) {
 
     /* Ticker Details Row */
 
@@ -176,6 +221,17 @@
         flex: 1;
     }
 
+    #submit {
+        width: calc((100% - 4px) / 5);
+    }
+
+    #input {
+        width: calc((100% - 4px) / 5 * 2);
+        margin-right: 1px;
+    }
+
+
+
 }
 
 @media only screen and (min-width : 650px) {
@@ -209,6 +265,16 @@
     }
 
     .changeDateRange .button {
+        margin-right: 10px;
+        /*width: calc(19% - 10px);*/
+    }
+
+    #submit {
+        width: calc((100% - 40px) / 5);
+    }
+
+    #input {
+        width: calc((100% - 40px) / 5 * 2);
         margin-right: 10px;
     }
 
