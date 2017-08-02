@@ -88,8 +88,8 @@ var dotColor;
 
 //TODO: move API key out of repository 
 var quandlQ = "https://www.quandl.com/api/v3/datatables/WIKI/PRICES.json?api_key=" + config.API_KEY + "&qopts.columns=open,high,low,close,volume,date";
-var ticker = "AAPL";
-var tickerCompany = "Apple";
+var ticker = "MCD";
+var tickerCompany = "McDonalds";
 var fromDate = new Date(new Date().setFullYear(new Date().getFullYear() - 1));
 var toDate = new Date();
 var addtl = "&ticker=" + ticker + "&date.gte=" + toJSONLocal(fromDate) + "&date.lte=" + toJSONLocal(toDate);
@@ -383,11 +383,13 @@ function afterData(thedata) {
         sma50 = parseFloat((sma50).toFixed(4));
 
         if (i > 0) {
-            if ((sma50 - thedata['datatable']['data'][i - 1][3]) > 0) {
-                prevdirection = 1;
-            } else if ((sma50 - thedata['datatable']['data'][i - 1][3]) < 0) {
-                prevdirection = -1;
-            }
+            // if ((sma50 - thedata['datatable']['data'][i - 1][3]) > 0) {
+            //     prevdirection = 1;
+            // } else if ((sma50 - thedata['datatable']['data'][i - 1][3]) < 0) {
+            //     prevdirection = -1;
+            // }
+
+            
 
             var currentDate = new Date(thedata['datatable']['data'][i][5]);
             currentDate.setDate(currentDate.getDate() + 1);
@@ -401,11 +403,23 @@ function afterData(thedata) {
 
         }
 
-        if (prevdirection != direction) {
-            crossing = true;
-        }
+
 
         if (sma50 != 0) {
+
+            if(lastFiveYears.length > 0) {
+                var previousDate = lastFiveYears[lastFiveYears.length-1]; 
+                if(previousDate != null) {
+                    prevdirection = previousDate.overOrUnder; 
+                }
+                if (prevdirection != direction) {
+                    crossing = true;
+                }                
+            }
+
+
+
+
             var newDate = "" + months[d.getMonth()] + " " + d.getDate() + ", " + d.getFullYear();
 
             
@@ -886,6 +900,7 @@ function checkLeftRight() {
 
             if (loc < data.length - 1) {
                 if (data[loc].crossed) {
+                    console.log(data[loc]); 
                     if(currentGraph == 1) {
                         earcon.setVolume(1);
                         earcon.play();                        
