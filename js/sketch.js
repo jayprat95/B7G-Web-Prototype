@@ -90,8 +90,13 @@ var dotColor;
 var quandlQ = "https://www.quandl.com/api/v3/datatables/WIKI/PRICES.json?api_key=" + config.API_KEY + "&qopts.columns=open,high,low,close,volume,date";
 var ticker = "AAPL";
 var tickerCompany = "Apple";
-var fromDate = new Date(new Date().setFullYear(new Date().getFullYear() - 1));
-var toDate = new Date();
+// var fromDate = new Date(new Date().setFullYear(new Date().getFullYear() - 1));
+// var toDate = new Date();
+
+var customDate = Date.parse("July 31, 2016");
+var toDate = new Date(customDate);
+var fromDate = new Date(toDate.setFullYear(toDate.getFullYear() - 1));
+
 var addtl = "&ticker=" + ticker + "&date.gte=" + toJSONLocal(fromDate) + "&date.lte=" + toJSONLocal(toDate);
 var query = quandlQ + addtl;
 
@@ -100,42 +105,60 @@ var query = quandlQ + addtl;
 var below = new Wad({
     source: 'sine',
     env: { attack: 0.05, decay: 0.005, sustain: 1, hold: .01, release: 0.005 },
-    tuna   : {
-        Overdrive : {
-            outputGain: 1,         //0 to 1+
-            drive: 1,              //0 to 1
-            curveAmount: 0.1,          //0 to 1
-            algorithmIndex: 2,       //0 to 5, selects one of our drive algorithms
-            bypass: 0
-        }
-    }
+    // tuna   : {
+    //     Delay : {
+    //         feedback: 0.45,    //0 to 1+
+    //         delayTime: 150,    //1 to 10000 milliseconds
+    //         wetLevel: 0.1,    //0 to 1+
+    //         dryLevel: 1,       //0 to 1+
+    //         cutoff: 2000,      //cutoff frequency of the built in lowpass-filter. 20 to 22050
+    //         bypass: 0
+    //     }
+    // },
+    volume : 1
 });
 
 var above = new Wad({
     source: 'triangle',
     env: { attack: 0.05, decay: 0.02, sustain: 1, hold: .01, release: 0.02 },
-    tuna   : {
-        Overdrive : {
-            outputGain: 0,         //0 to 1+
-            drive: 0.2,              //0 to 1
-            curveAmount: 0.9,          //0 to 1
-            algorithmIndex: 0,       //0 to 5, selects one of our drive algorithms
-            bypass: 0
-        }
-    }
+    // tuna   : {
+    //     Overdrive : {      
+    //         curveAmount: 0.9,       
+    //         algorithmIndex: 0
+    //     }
+    // },
+    volume : .6
 });
 
 var belowLong = new Wad({
-    source: 'square',
-    env: { attack: 0.05, decay: 0.0, sustain: 1, hold: 4, release: 0.0 },
-    filter: { type: 'lowpass', frequency: 600, q: 7, env: { attack: .07,frequency: 1600 }
-    }
+    source: 'sine',
+    env: { attack: 0.05, decay: 0.005, sustain: 1, hold: 4, release: 0.005 },
+    // tuna   : {
+    //     Delay : {
+    //         feedback: 0.45,    //0 to 1+
+    //         delayTime: 150,    //1 to 10000 milliseconds
+    //         wetLevel: 0.25,    //0 to 1+
+    //         dryLevel: 1,       //0 to 1+
+    //         cutoff: 2000,      //cutoff frequency of the built in lowpass-filter. 20 to 22050
+    //         bypass: 0
+    //     }
+    // }
 });
 
 var aboveLong = new Wad({
     source: 'triangle',
-    env: { attack: 0.05, decay: 0.0, sustain: 1, hold: 4, release: 0.0},
+    env: { attack: 0.05, decay: 0.02, sustain: 1, hold: 4, release: 0.02 },
+    // tuna   : {
+    //     Overdrive : {
+    //         outputGain: 0,         //0 to 1+
+    //         drive: 0.2,              //0 to 1
+    //         curveAmount: 0.9,          //0 to 1
+    //         algorithmIndex: 0,       //0 to 5, selects one of our drive algorithms
+    //         bypass: 0
+    //     }
+    // }
 });
+
 
 //DOM LISTENERS ---------------------------------------------
 
@@ -317,11 +340,12 @@ function setData() {
 
 
 function getData() {
+
     var fromDate = new Date();
     fromDate.setFullYear(new Date().getFullYear() - 5);
-    //get earlier dates for moving averages 
     fromDate.setDate(fromDate.getDate() - 200);
     var toDate = new Date();
+
     var addtl = "&ticker=" + ticker + "&date.gte=" + toJSONLocal(fromDate) + "&date.lte=" + toJSONLocal(toDate);
     var query = quandlQ + addtl;
 
