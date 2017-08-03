@@ -87,7 +87,7 @@ var dotColor;
 // API STUFF ---------------------------------------------
 
 //TODO: move API key out of repository 
-var quandlQ = "https://www.quandl.com/api/v3/datatables/WIKI/PRICES.json?api_key=" + config.API_KEY + "&qopts.columns=open,high,low,close,volume,date";
+var quandlQ = "https://www.quandl.com/api/v3/datatables/WIKI/PRICES.json?api_key=" + "iz12PA5nC-YLyESare9X" + "&qopts.columns=open,high,low,close,volume,date";
 
 var ticker = "MCD";
 var tickerCompany = "McDonalds";
