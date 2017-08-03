@@ -638,7 +638,11 @@ function draw() {
     }
 
     if (data[loc]) {
-        var percentDiff = ((data[loc].close - data[loc].sma50)/data[loc].sma50).toFixed(4); 
+        // var percentDiff = ((data[loc].close - data[loc].sma50)/data[loc].sma50).toFixed(4); 
+        var percentDiff = ((data[loc].close - data[loc].sma50)/data[loc].sma50); 
+            percentDiff *= 100; 
+            percentDiff = parseFloat((percentDiff).toFixed(4));
+
         $("#curr-date").text("Date: " + data[loc]['dateStr']);
         $("#curr-percent").text("% Difference: " + percentDiff);
         $("#curr-price").text("Closing Price: " + data[loc]['close']);
@@ -822,7 +826,11 @@ function setTickerDetails() {
     }
 
     var pt = (data[data.length - 1].close - data[data.length - 1].open).toFixed(4);
-    var pcnt = (pt / data[data.length - 1].open * 100).toFixed(4);
+    // var pcnt = (pt / data[data.length - 1].open * 100).toFixed(4);
+
+    var pcnt = ((data[loc].close - data[loc].sma50)/data[loc].sma50); 
+    pcnt *= 100; 
+    pcnt = parseFloat((pcnt).toFixed(4));
 
     var minusSign = "\u2212";
 
