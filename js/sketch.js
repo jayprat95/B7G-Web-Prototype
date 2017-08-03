@@ -347,7 +347,6 @@ function getData() {
     var finalURL = proxy + query;
 
     $.getJSON(finalURL, function( data ) {
-        console.log(data);
         afterData(data);
     });
 }
@@ -675,11 +674,48 @@ function keyReleased() {
 function mousePressed() {
     playOnClick();
     setTickerDetails();
+
+    var currentDate = new Date(data[loc].date);
+
+    if (data[loc].newmonth && prevLoc != newLoc) {
+        monthPlaying = true;
+        if (currentDate.getMonth() == 0) {
+            textToSpeech.speak(currentDate.getFullYear() + " " + months[currentDate.getMonth()]);
+        } else {
+            textToSpeech.speak(months[currentDate.getMonth()]);
+        }
+    }
 }
 
 function mouseDragged() {
     playOnClick();
+
+    if (data[loc].crossed) {
+        if(currentGraph == 1) {
+            earcon.setVolume(1);
+            earcon.play();                        
+        }
+    }
 }
+
+function mouseReleased() {
+    playMonth();
+}
+
+// function doubleClicked() {
+
+//     console.log("hi");
+
+//     var note = midiToFreq(map(data[loc].magnitude, localMagLow, localMagHigh, lowMagmap, highMagmap));
+//     playPoint(note, true); 
+//     //calculate items at this time 
+//     var percentChange = ((data[loc].close - data[loc].sma50)/data[loc].sma50); 
+//     percentChange *= 100; 
+//     percentChange = parseFloat((percentChange).toFixed(4));
+
+//     textToSpeech.speak(data[loc].dateStr + " , Percent Difference: " + percentChange + " , Closing Price: " + data[loc].close + " , Fifty Day Simple Moving Average: " + data[loc].sma50);
+    
+// }
 
 function isInside() {
     if (mouseX > xshift && mouseX < width && mouseY > 0 && mouseY < height) {
