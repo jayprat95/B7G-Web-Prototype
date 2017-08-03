@@ -826,11 +826,11 @@ function setTickerDetails() {
     }
 
     var pt = (data[data.length - 1].close - data[data.length - 1].open).toFixed(4);
-    // var pcnt = (pt / data[data.length - 1].open * 100).toFixed(4);
+    var pcnt = (pt / data[data.length - 1].open * 100).toFixed(4);
 
-    var pcnt = ((data[loc].close - data[loc].sma50)/data[loc].sma50); 
-    pcnt *= 100; 
-    pcnt = parseFloat((pcnt).toFixed(4));
+    // var pcnt = ((data[loc].close - data[loc].sma50)/data[loc].sma50); 
+    // pcnt *= 100; 
+    // pcnt = parseFloat((pcnt).toFixed(4));
 
     var minusSign = "\u2212";
 
