@@ -322,54 +322,77 @@ function getData() {
     var addtl = "&ticker=" + ticker + "&date.gte=" + toJSONLocal(fromDate) + "&date.lte=" + toJSONLocal(toDate);
     var query = quandlQ + addtl;
 
-    // console.log(query);
+    console.log(query);
 
-    $.getJSON(query).done(function(d) {
-        afterData(d);
-    })
+    // $.get(query).done(function (data) {
+    //     console.log(data);
+    //     afterData(data);
+    // });
+
+
+    // $.getJSON(query).done(function(d) {
+    //     afterData(d);
+    // })
 
     // makeCorsRequest(query);
 
+    $.ajax({
+
+      // The 'type' property sets the HTTP method.
+      // A value of 'PUT' or 'DELETE' will trigger a preflight request.
+      type: 'GET',
+
+      // The URL to make the request to.
+      url: query,
+
+      // The 'contentType' property sets the 'Content-Type' header.
+      // The JQuery default for this property is
+      // 'application/x-www-form-urlencoded; charset=UTF-8', which does not trigger
+      // a preflight. If you set this value to anything other than
+      // application/x-www-form-urlencoded, multipart/form-data, or text/plain,
+      // you will trigger a preflight request.
+      contentType: 'text/plain',
+
+      xhrFields: {
+        // The 'xhrFields' property sets additional fields on the XMLHttpRequest.
+        // This can be used to set the 'withCredentials' property.
+        // Set the value to 'true' if you'd like to pass cookies to the server.
+        // If this is enabled, your server must respond with the header
+        // 'Access-Control-Allow-Credentials: true'.
+        withCredentials: false
+      },
+
+      headers: {
+         'Access-Control-Allow-Origin': '*',
+      },
+
+      success: function(d) {
+        console.log("YES");
+        afterData(d);
+      },
+
+      error: function() {
+        console.log("NOPE");
+      }
+    });
+
     // $.ajax({
-
-    //   // The 'type' property sets the HTTP method.
-    //   // A value of 'PUT' or 'DELETE' will trigger a preflight request.
-    //   type: 'GET',
-
-    //   // The URL to make the request to.
-    //   url: query,
-
-    //   // The 'contentType' property sets the 'Content-Type' header.
-    //   // The JQuery default for this property is
-    //   // 'application/x-www-form-urlencoded; charset=UTF-8', which does not trigger
-    //   // a preflight. If you set this value to anything other than
-    //   // application/x-www-form-urlencoded, multipart/form-data, or text/plain,
-    //   // you will trigger a preflight request.
-    //   contentType: 'text/plain',
-
-    //   xhrFields: {
-    //     // The 'xhrFields' property sets additional fields on the XMLHttpRequest.
-    //     // This can be used to set the 'withCredentials' property.
-    //     // Set the value to 'true' if you'd like to pass cookies to the server.
-    //     // If this is enabled, your server must respond with the header
-    //     // 'Access-Control-Allow-Credentials: true'.
-    //     withCredentials: false
-    //   },
-
-    //   headers: {
-    //     // Set any custom headers here.
-    //     // If you set any non-simple headers, your server must include these
-    //     // headers in the 'Access-Control-Allow-Headers' response header.
-    //   },
-
-    //   success: function() {
-    //     console.log("YES");
-    //   },
-
-    //   error: function() {
-    //     console.log("NOPE");
-    //   }
-    // });
+    //       url: query,
+    //       type: 'GET',
+    //       dataType: 'jsonp',
+    //       cors: true ,
+    //       contentType:'application/json',
+    //       secure: true,
+    //                 headers: {
+    //                     'Access-Control-Allow-Origin': '*',
+    //                 },
+    //       beforeSend: function (xhr) {
+    //           xhr.setRequestHeader ("Authorization", "Basic " + btoa(""));
+    //       },
+    //       success: function (data){
+    //         afterData(data);
+    //       }
+    //   })
 }
 
 function afterData(thedata) {
