@@ -102,16 +102,12 @@ var query = quandlQ + addtl;
 var below = new Wad({
     source: 'sine',
     env: { attack: 0.05, decay: 0.005, sustain: 1, hold: .01, release: 0.005 },
-    // tuna   : {
-    //     Delay : {
-    //         feedback: 0.45,    //0 to 1+
-    //         delayTime: 150,    //1 to 10000 milliseconds
-    //         wetLevel: 0.1,    //0 to 1+
-    //         dryLevel: 1,       //0 to 1+
-    //         cutoff: 2000,      //cutoff frequency of the built in lowpass-filter. 20 to 22050
-    //         bypass: 0
-    //     }
-    // },
+    tuna   : {
+        Overdrive : {      
+            curveAmount: 0.9,       
+            algorithmIndex: 3
+        }
+    },
     volume : 1
 });
 
@@ -130,16 +126,12 @@ var above = new Wad({
 var belowLong = new Wad({
     source: 'sine',
     env: { attack: 0.05, decay: 0.005, sustain: 1, hold: 4, release: 0.005 },
-    // tuna   : {
-    //     Delay : {
-    //         feedback: 0.45,    //0 to 1+
-    //         delayTime: 150,    //1 to 10000 milliseconds
-    //         wetLevel: 0.25,    //0 to 1+
-    //         dryLevel: 1,       //0 to 1+
-    //         cutoff: 2000,      //cutoff frequency of the built in lowpass-filter. 20 to 22050
-    //         bypass: 0
-    //     }
-    // }
+        tuna   : {
+        Overdrive : {      
+            curveAmount: 0.9,       
+            algorithmIndex: 3
+        }
+    },
 });
 
 var aboveLong = new Wad({
