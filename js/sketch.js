@@ -338,9 +338,18 @@ function getData() {
     var addtl = "&ticker=" + ticker + "&date.gte=" + toJSONLocal(fromDate) + "&date.lte=" + toJSONLocal(toDate);
     var query = quandlQ + addtl;
 
-    $.getJSON(query).done(function(d) {
-        afterData(d);
-    })
+    // $.getJSON(query).done(function(d) {
+    //     afterData(d);
+    // })
+
+    var proxy = 'https://cors-anywhere.herokuapp.com/';
+
+    var finalURL = proxy + query;
+
+    $.getJSON(finalURL, function( data ) {
+        console.log(data);
+        afterData(data);
+    });
 }
 
 function afterData(thedata) {
