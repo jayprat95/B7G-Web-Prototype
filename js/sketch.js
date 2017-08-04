@@ -636,7 +636,7 @@ function draw() {
         drawVisGraphA();
     }
 
-    if (buttonDown) {
+    if (buttonDown && $("#input").is(":focus") == false) {
         checkLeftRight();
         playValue();
         changeRate();
@@ -698,9 +698,9 @@ function mouseDragged() {
     }
 }
 
-function mouseReleased() {
-    playMonth();
-}
+// function mouseReleased() {
+//     playMonth();
+// }
 
 // function doubleClicked() {
 
@@ -953,7 +953,7 @@ function checkLeftRight() {
         textToSpeech.speak("End");
     }
 
-    if ((key == 'g' || key == 'G') && loc > 0 && $("#input").is(":focus") == false  && !modalOpen) {
+    if ((key == 'g' || key == 'G') && loc > 0  && !modalOpen) {
 
         if (detailsPlaying) {
             stopSpeech();
@@ -983,7 +983,7 @@ function checkLeftRight() {
             textToSpeech.speak("Beginning");
         }
 
-    } else if ((key == 'h' || key == 'H') && loc < data.length - 1 && $("#input").is(":focus") == false && !modalOpen) {
+    } else if ((key == 'h' || key == 'H') && loc < data.length - 1 && !modalOpen) {
 
 
         if (detailsPlaying) {
@@ -1026,7 +1026,7 @@ function setToBeg(time) {
 
 function checkBegEnd() {
 
-    if (key == '.' && !modalOpen) {
+    if (key == '.' && !modalOpen ) {
 
         if (detailsPlaying) {
             stopSpeech();
@@ -1037,7 +1037,7 @@ function checkBegEnd() {
 
         textToSpeech.speak("End" + " "  + data[loc].dateStr);
         
-    } else if (key == ',' && !modalOpen) {
+    } else if (key == ',' && !modalOpen ) {
 
         if (detailsPlaying) {
             stopSpeech();
@@ -1052,7 +1052,7 @@ function checkBegEnd() {
 
 function skipToCrossing() {
 
-    if (key == ';'  && !modalOpen) {
+    if (key == ';'  && !modalOpen ) {
         //forward
 
         if (detailsPlaying) {
@@ -1081,7 +1081,7 @@ function skipToCrossing() {
 
         }
 
-    } else if (key == 'l' || key == 'L'  && !modalOpen && $("#input").is(":focus") == false) {
+    } else if (key == 'l' || key == 'L'  && !modalOpen ) {
         //backward
 
         if (detailsPlaying) {
@@ -1143,7 +1143,7 @@ function playCrossDirection() {
 
 function skipToMonths() {
 
-    if (key == 'p' || key == 'P'  && !modalOpen) {
+    if (key == 'p' || key == 'P'  && !modalOpen ) {
         //forward
         if (detailsPlaying) {
             stopSpeech();
@@ -1166,7 +1166,7 @@ function skipToMonths() {
         }
         playMonth();
 
-    } else if (key == 'o' || key == 'O' && !modalOpen) {
+    } else if (key == 'o' || key == 'O' && !modalOpen ) {
         //backward
         if (detailsPlaying) {
             stopSpeech();
