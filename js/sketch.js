@@ -285,6 +285,7 @@ class Day {
 
 function setData() {
     var dataset;
+
     //TODO: add notification so users know that the location changed
     if (timerange == "onemonth") {
         dataset = lastMonth;
@@ -360,6 +361,7 @@ function afterData(thedata) {
 
 
     var unprocessedData = thedata['datatable']['data'];
+
 
     //find the right date 
     var index = 0;
@@ -449,31 +451,33 @@ function afterData(thedata) {
         }
     });
 
+    var oldDate = new Date(2018,1,1);
+
     lastMonth = [];
-    var lastMonthDate = new Date();
-    lastMonthDate.setMonth(new Date().getMonth() - 1);
+    var lastMonthDate = oldDate;
+    lastMonthDate.setMonth(oldDate.getMonth() - 1);
 
     lastThreeMonths = [];
-    var lastThreeMonthsDate = new Date();
-    lastThreeMonthsDate.setMonth(new Date().getMonth() - 3);
+    var lastThreeMonthsDate = oldDate;
+    lastThreeMonthsDate.setMonth(oldDate.getMonth() - 3);
 
     lastSixMonths = [];
-    var lastSixMonthsDate = new Date();
-    lastSixMonthsDate.setMonth(new Date().getMonth() - 6);
+    var lastSixMonthsDate = oldDate;
+    lastSixMonthsDate.setMonth(oldDate.getMonth() - 6);
 
     lastOneYear = [];
-    var lastYearDate = new Date();
-    lastYearDate.setFullYear(new Date().getFullYear() - 1);
+    var lastYearDate = oldDate;
+    lastYearDate.setFullYear(oldDate.getFullYear() - 1);
 
     for (var i = 0; i < lastFiveYears.length - 1; i++) {
+
 
         var item = lastFiveYears[i];
         var thedate = new Date(item.date);
 
-
         if (thedate > lastMonthDate) {
             lastMonth.push(item);
-        }
+        } 
         if (thedate > lastThreeMonthsDate) {
             lastThreeMonths.push(item);
         }
@@ -492,6 +496,7 @@ function afterData(thedata) {
             newmonths.push(item);
         }
     }
+
 
     data = setData();
 
